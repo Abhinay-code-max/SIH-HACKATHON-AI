@@ -1,6 +1,6 @@
 """
 Main FastAPI Application Entrypoint.
-Serves Local APIs, Offline Surveillance Dashboard, and Human Annotation Studio.
+Serves Multi-Camera Live Intelligence, Command Dashboard, Evidence Viewer, and Annotation Studio.
 Complies with Rule 2: Absolute Offline Operation (Zero internet, strictly localhost).
 """
 
@@ -18,11 +18,12 @@ if str(ROOT_DIR) not in sys.path:
 
 from backend.app.api.routes import router as api_router
 from backend.app.api.annotation_routes import router as annotation_router
+from backend.app.api.evidence_routes import router as evidence_router
 
 app = FastAPI(
-    title="Offline Security & Surveillance Grid",
-    description="Local edge system API, dashboard, and dataset annotation studio.",
-    version="0.2.0",
+    title="BORDER SENTINEL — Autonomous Defense & Intelligence Grid",
+    description="Local edge system for multi-camera AI tracking, geofence tripwires, and evidence collection.",
+    version="1.0.0",
 )
 
 # Enable CORS for localhost access
@@ -36,8 +37,14 @@ app.add_middleware(
 
 app.include_router(api_router)
 app.include_router(annotation_router)
+app.include_router(evidence_router)
 
-# Mount extracted frames for local annotation studio image loading
+# Mount evidence snapshots for operator review
+EVIDENCE_DIR = ROOT_DIR / "data" / "evidence"
+EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/evidence", StaticFiles(directory=str(EVIDENCE_DIR)), name="evidence")
+
+# Mount extracted frames for local annotation studio
 EXTRACTED_FRAMES_DIR = ROOT_DIR / "dataset" / "extracted_frames"
 if EXTRACTED_FRAMES_DIR.is_dir():
     app.mount("/dataset/extracted_frames", StaticFiles(directory=str(EXTRACTED_FRAMES_DIR)), name="extracted_frames")
@@ -49,15 +56,15 @@ ANNOTATE_FILE = FRONTEND_DIR / "annotate.html"
 
 @app.get("/")
 def serve_dashboard():
-    """Serves the self-contained offline surveillance dashboard."""
+    """Serves the BORDER SENTINEL multi-camera command dashboard."""
     if INDEX_FILE.is_file():
         return FileResponse(INDEX_FILE)
-    return JSONResponse({"system": "Offline Surveillance Grid", "status": "ONLINE_LOCAL"})
+    return JSONResponse({"system": "BORDER SENTINEL", "status": "ONLINE_LOCAL"})
 
 
 @app.get("/annotate")
 def serve_annotation_studio():
-    """Serves the local human-in-the-loop annotation and verification studio."""
+    """Serves the local human-in-the-loop annotation studio."""
     if ANNOTATE_FILE.is_file():
         return FileResponse(ANNOTATE_FILE)
     return JSONResponse({"error": "annotate.html not found"})
@@ -67,18 +74,17 @@ def serve_annotation_studio():
 def get_system_info():
     """Returns local system overview."""
     return {
-        "system": "Offline Surveillance & Defense Prototype",
-        "version": "0.2.0",
+        "system": "BORDER SENTINEL Tactical Defense Grid",
+        "version": "1.0.0",
         "network_mode": "100% AIR-GAPPED OFFLINE",
-        "endpoints": {
-            "surveillance_dashboard": "/",
-            "annotation_studio": "/annotate",
-            "health": "/api/health",
-            "cameras": "/api/cameras",
-            "events": "/api/events",
-            "map_data": "/api/map",
-            "annotation_items": "/api/annotation/items",
-        },
+        "features": [
+            "Multi-Camera Concurrency",
+            "ByteTrack Persistent Object Tracking",
+            "Geofence Polygon & Virtual Tripwire Intelligence",
+            "Forensic Evidence Snapshotting & Dossiers",
+            "Operator Dispatch (Acknowledge, Dismiss, Escalate)",
+            "Zero-Tile Vector GIS Offline Map",
+        ],
     }
 
 

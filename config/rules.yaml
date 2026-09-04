@@ -1,0 +1,56 @@
+# =====================================================================
+# EVENT INTELLIGENCE & SECURITY RULES CONFIGURATION
+# Border Sentinel / Tactical Surveillance Grid
+# =====================================================================
+
+version: "1.0.0"
+
+# 1. Restricted Zones (Polygon Geofences in Normalized Coordinates [x, y] from 0.0 to 1.0)
+zones:
+  - zone_id: "ZONE_RESTRICTED_ALPHA"
+    name: "Critical Perimeter & Command Bunker"
+    camera_id: "CAM_01"
+    severity: "CRITICAL"
+    polygon:
+      - [0.0, 0.4]
+      - [0.5, 0.4]
+      - [0.5, 1.0]
+      - [0.0, 1.0]
+    restricted_classes: ["person", "car", "truck", "motorcycle"]
+    alert_on_entry: true
+
+  - zone_id: "ZONE_VEHICLE_GATE"
+    name: "Gate 1 Vehicle Checkpoint"
+    camera_id: "CAM_02"
+    severity: "HIGH"
+    polygon:
+      - [0.2, 0.2]
+      - [0.8, 0.2]
+      - [0.8, 0.9]
+      - [0.2, 0.9]
+    restricted_classes: ["truck", "bus"]
+    alert_on_entry: true
+
+# 2. Virtual Boundary Tripwires (Line crossing from Start [x1, y1] to End [x2, y2])
+tripwires:
+  - wire_id: "WIRE_BORDER_FENCE_01"
+    name: "Outer Perimeter Fence Tripwire"
+    camera_id: "CAM_01"
+    severity: "CRITICAL"
+    line_start: [0.1, 0.5]
+    line_end: [0.9, 0.5]
+    crossing_direction: "ANY" # "NORTH", "SOUTH", "ANY"
+    target_classes: ["person", "vehicle", "car", "truck"]
+
+# 3. Loitering Detection (Dwell Time Threshold)
+loitering:
+  camera_id: "CAM_01"
+  dwell_time_seconds: 5.0   # Trigger alert if track persists > 5s in zone
+  target_classes: ["person"]
+  severity: "HIGH"
+
+# 4. Crowd Density Threshold
+crowd:
+  camera_id: "CAM_01"
+  threshold: 3              # Alert if >= 3 people in view
+  severity: "MEDIUM"

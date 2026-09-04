@@ -1,0 +1,10 @@
+[
+  {
+    "event_id": "EVT_00001",
+    "camera_id": "CAM_01",
+    "timestamp": "2026-09-04T10:11:19.717151+00:00",
+    "action": "ACKNOWLEDGE",
+    "operator": "Commander-Alpha",
+    "notes": "Perimeter guard dispatched."
+  }
+]

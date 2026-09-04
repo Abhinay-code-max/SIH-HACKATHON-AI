@@ -75,25 +75,15 @@ def get_map_data() -> Dict[str, Any]:
     return map_manager.build_integrated_map_payload()
 
 
+from backend.app.services.camera_manager import camera_manager
+
 @router.get("/stream/{camera_id}")
-def stream_camera(camera_id: str, conf: float = 0.35):
+def stream_camera(camera_id: str):
     """
-    Streams live annotated MJPEG frames over localhost.
-    Can be directly rendered in any browser via <img src="/api/stream/CAM_01" />.
+    Streams live annotated MJPEG frames with persistent tracking (ByteTrack),
+    virtual fence geofences, tripwires, and trajectory trails.
     """
-    cams = map_manager.get_camera_locations()
-    if camera_id not in cams:
-        raise HTTPException(status_code=404, detail=f"Camera {camera_id} not registered.")
-
-    # Route CAM_01 to webcam (0) or fallback to sample video
-    if camera_id == "CAM_01":
-        source = 0
-    elif camera_id == "CAM_02":
-        source = "data/sample-videos/sample_surveillance.mp4"
-    else:
-        source = "data/sample-videos/sample_surveillance.mp4"
-
     return StreamingResponse(
-        stream_service.generate_mjpeg_stream(source=source, conf_threshold=conf),
+        camera_manager.generate_live_mjpeg(camera_id=camera_id),
         media_type="multipart/x-mixed-replace; boundary=frame",
     )

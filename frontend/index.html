@@ -3,46 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surveillance & Threat Grid — 100% Offline</title>
+    <title>BORDER SENTINEL — Tactical Defense & Intelligence Grid</title>
     <style>
         :root {
-            --bg-base: #090D16;
-            --bg-surface: #111827;
-            --bg-card: #1F2937;
-            --bg-card-hover: #283548;
-            --border-subtle: #374151;
-            --border-highlight: #4B5563;
-            --text-main: #F9FAFB;
-            --text-muted: #9CA3AF;
-            --accent-blue: #3B82F6;
-            --accent-cyan: #06B6D4;
-            --sev-critical: #EF4444;
-            --sev-high: #F97316;
-            --sev-med: #FBBF24;
-            --sev-low: #10B981;
+            --bg-base: #06090F;
+            --bg-surface: #0E1420;
+            --bg-card: #151E2E;
+            --bg-card-hover: #1E293B;
+            --border: #243147;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --cyan: #06B6D4;
+            --blue: #3B82F6;
+            --green: #10B981;
+            --red: #EF4444;
+            --amber: #F59E0B;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            min-height: 100vh;
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* Header */
+        /* Top Header */
         header {
             background-color: var(--bg-surface);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,287 +46,269 @@
             align-items: center;
             gap: 12px;
         }
-
-        .brand-logo {
-            width: 32px;
-            height: 32px;
-            fill: var(--accent-cyan);
-        }
-
+        .brand-logo { width: 28px; height: 28px; fill: var(--cyan); }
         .brand h1 {
-            font-size: 16px;
-            letter-spacing: 1.5px;
+            font-size: 15px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            font-weight: 800;
+            font-weight: 900;
         }
-
         .brand span {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
             letter-spacing: 0.5px;
-            display: block;
         }
 
-        .system-status-bar {
+        .header-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .status-pill {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: monospace;
         }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--sev-low);
-            box-shadow: 0 0 8px var(--sev-low);
-            animation: pulse-dot 2s infinite;
+        .dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 6px var(--green);
+            animation: pulse 2s infinite;
         }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        .btn {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
+        .btn:hover { background: #1E293B; }
+        .btn-cyan { background: var(--cyan); color: #000; border-color: var(--cyan); }
 
-        /* Main Grid */
+        /* Main Multi-Camera & Tactical Grid */
         main {
             display: grid;
-            grid-template-columns: 1.15fr 1fr 0.85fr;
-            gap: 16px;
-            padding: 16px 24px;
+            grid-template-rows: 1.15fr 1fr;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 10px;
+            padding: 10px 16px;
             flex: 1;
-            height: calc(100vh - 70px);
-        }
-
-        @media (max-width: 1200px) {
-            main {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
+            height: calc(100vh - 50px);
+            overflow: hidden;
         }
 
         .panel {
             background-color: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .panel-header {
-            padding: 12px 16px;
+            padding: 8px 12px;
             background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .panel-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-main);
+            letter-spacing: 0.5px;
         }
 
-        /* Camera Feed */
-        .video-wrapper {
-            background-color: #000;
-            position: relative;
+        /* Top Left: Dual Camera Feed Grid */
+        .dual-cam-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
             flex: 1;
+            padding: 8px;
+            background-color: #030508;
+        }
+
+        .cam-box {
+            position: relative;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 380px;
         }
 
-        .video-wrapper img {
+        .cam-box img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             display: block;
         }
 
-        .video-hud-overlay {
+        .cam-hud-tag {
             position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(17, 24, 39, 0.85);
-            border: 1px solid var(--border-subtle);
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 11px;
+            top: 8px;
+            left: 8px;
+            background: rgba(14, 20, 32, 0.85);
+            border: 1px solid var(--border);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
             font-family: monospace;
-            color: #10B981;
+            color: var(--cyan);
             backdrop-filter: blur(4px);
         }
 
-        .cam-controls {
-            padding: 12px;
-            background-color: var(--bg-surface);
-            border-top: 1px solid var(--border-subtle);
-            display: flex;
-            gap: 8px;
-        }
-
-        .cam-btn {
-            flex: 1;
-            background-color: var(--bg-card);
-            color: var(--text-muted);
-            border: 1px solid var(--border-subtle);
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .cam-btn.active {
-            background-color: var(--accent-blue);
-            color: #FFFFFF;
-            border-color: var(--accent-blue);
-        }
-
-        /* Map Panel */
-        .map-wrapper {
-            flex: 1;
-            background-color: #080C14;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .map-svg-container {
-            width: 100%;
-            height: 100%;
-            min-height: 380px;
-        }
-
-        .map-legend {
-            display: flex;
-            gap: 12px;
-            padding: 8px 14px;
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border-subtle);
-            font-size: 11px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .legend-chip {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-        }
-
-        /* Event Feed Panel */
-        .event-filter-bar {
-            padding: 8px 12px;
-            background-color: var(--bg-card);
-            display: flex;
-            gap: 6px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .filter-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .filter-btn.active {
-            background-color: var(--border-subtle);
-            color: var(--text-main);
-        }
-
-        .event-list {
+        /* Top Right: Active Alerts & Investigation Queue */
+        .alerts-panel-body {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .event-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--sev-med);
-            border-radius: 6px;
-            padding: 10px 12px;
-            transition: transform 0.15s ease, background 0.15s ease;
+        .alert-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--amber);
+            border-radius: 4px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
         }
+        .alert-card:hover { background: var(--bg-card-hover); transform: translateX(2px); }
+        .alert-card.critical { border-left-color: var(--red); }
+        .alert-card.high { border-left-color: var(--amber); }
 
-        .event-card:hover {
-            background-color: var(--bg-card-hover);
-            transform: translateY(-1px);
-        }
-
-        .event-card.critical { border-left-color: var(--sev-critical); }
-        .event-card.high { border-left-color: var(--sev-high); }
-        .event-card.medium { border-left-color: var(--sev-med); }
-        .event-card.low { border-left-color: var(--sev-low); }
-
-        .event-card-header {
+        .alert-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .event-type {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .event-severity-badge {
-            font-size: 9px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 2px 6px;
+        }
+        .badge-sev {
+            font-size: 9px;
+            padding: 1px 5px;
             border-radius: 3px;
             text-transform: uppercase;
         }
+        .badge-critical { background: var(--red); color: #fff; }
+        .badge-high { background: var(--amber); color: #000; }
 
-        .event-severity-badge.critical { background: var(--sev-critical); color: #FFF; }
-        .event-severity-badge.high { background: var(--sev-high); color: #FFF; }
-        .event-severity-badge.medium { background: var(--sev-med); color: #000; }
-        .event-severity-badge.low { background: var(--sev-low); color: #FFF; }
+        /* Bottom Left: Offline Tactical GIS Map */
+        .map-wrapper {
+            flex: 1;
+            background-color: #05080E;
+            position: relative;
+        }
+        .map-svg { width: 100%; height: 100%; }
 
-        .event-details {
+        /* Bottom Right: Event Timeline */
+        .timeline-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-family: monospace;
             font-size: 11px;
-            color: var(--text-muted);
+        }
+
+        .timeline-row {
+            display: flex;
+            gap: 8px;
+            padding: 4px 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .timeline-time { color: var(--text-muted); }
+
+        /* Modal: Forensic Evidence Viewer */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            width: 750px;
+            max-width: 90vw;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            background: var(--bg-card);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            margin-top: 4px;
-            font-family: monospace;
+            align-items: center;
+            font-weight: bold;
         }
+        .modal-body {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 16px;
+        }
+        .evidence-img-box {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-height: 280px;
+        }
+        .evidence-img-box img { width: 100%; height: auto; object-fit: contain; }
+        .evidence-meta {
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .modal-actions {
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn-ack { background: var(--blue); color: #fff; border-color: var(--blue); }
+        .btn-esc { background: var(--red); color: #fff; border-color: var(--red); }
+        .btn-dsm { background: var(--bg-surface); color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -343,157 +318,179 @@
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
             <div>
-                <h1>Aegis Defense // Surveillance Grid</h1>
-                <span>Phase 1 Local Autonomous Edge Prototype</span>
+                <h1>BORDER SENTINEL // TACTICAL COMMAND</h1>
+                <span>Integrated Autonomous Defense & Multi-Camera Surveillance Grid</span>
             </div>
         </div>
 
-        <div class="system-status-bar">
+        <div class="header-actions">
             <div class="status-pill">
-                <div class="status-dot"></div>
-                <span id="hw-status">CUDA: RTX 4060 GPU</span>
+                <div class="dot"></div>
+                <span id="hw-status">RTX 4060 GPU | BYTE-TRACK ACTIVE</span>
             </div>
-            <div class="status-pill">
-                <span style="color: var(--sev-low);">AIR-GAPPED</span>
-                <span style="color: var(--text-muted);">| 100% OFFLINE</span>
+            <div class="status-pill" style="color: var(--green);">
+                AIR-GAPPED 100% OFFLINE
             </div>
-            <div class="status-pill">
-                <span id="model-status">MODEL: YOLOv8 Large</span>
-            </div>
+            <a href="/annotate" class="btn btn-cyan">AI Dataset Studio</a>
         </div>
     </header>
 
     <main>
-        <!-- Panel 1: Live Surveillance Video Stream -->
+        <!-- Top Left: Dual Camera Concurrent Feeds -->
         <section class="panel">
             <div class="panel-header">
-                <div class="panel-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                    </svg>
-                    Live AI Surveillance Stream
-                </div>
-                <span id="active-cam-tag" style="font-size: 11px; color: var(--accent-cyan); font-family: monospace;">CAM_01: LIVE WEBCAM</span>
+                <span>CONCURRENT SURVEILLANCE STREAMS (CAM_01 + CAM_02)</span>
+                <span style="color: var(--cyan); font-family: monospace;" id="cam-telemetry">2 FEEDS SYNCHRONIZED</span>
             </div>
-
-            <div class="video-wrapper">
-                <img id="mjpeg-stream" src="/api/stream/CAM_01" alt="Local Surveillance Stream" />
-                <div class="video-hud-overlay" id="video-hud">
-                    STREAM: ACTIVE | GPU INFERENCE: REAL-TIME
+            <div class="dual-cam-grid">
+                <div class="cam-box">
+                    <img src="/api/stream/CAM_01" alt="CAM 01 Live Stream" />
+                    <div class="cam-hud-tag">CAM_01: WEBCAM / DEMO FEED</div>
                 </div>
-            </div>
-
-            <div class="cam-controls">
-                <button class="cam-btn active" onclick="switchCamera('CAM_01')">CAM_01 (Live Webcam)</button>
-                <button class="cam-btn" onclick="switchCamera('CAM_02')">CAM_02 (Gate 1 Video)</button>
-                <button class="cam-btn" onclick="switchCamera('CAM_03')">CAM_03 (Perimeter)</button>
+                <div class="cam-box">
+                    <img src="/api/stream/CAM_02" alt="CAM 02 Live Stream" />
+                    <div class="cam-hud-tag">CAM_02: GATE 1 CHECKPOINT</div>
+                </div>
             </div>
         </section>
 
-        <!-- Panel 2: Offline GIS Vector Map -->
+        <!-- Top Right: Active Security Alerts -->
         <section class="panel">
             <div class="panel-header">
-                <div class="panel-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                        <line x1="8" y1="2" x2="8" y2="18"></line>
-                        <line x1="16" y1="6" x2="16" y2="22"></line>
-                    </svg>
-                    Offline Tactical Map Grid
-                </div>
-                <span style="font-size: 11px; color: #10B981; font-family: monospace;">SECTOR ALPHA</span>
+                <span>ACTIVE ALERTS & DISPATCH</span>
+                <span id="alert-counter" style="color: var(--red); font-family: monospace;">0 ACTIVE</span>
             </div>
+            <div class="alerts-panel-body" id="alerts-container">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
 
+        <!-- Bottom Left: Offline Tactical GIS Map -->
+        <section class="panel">
+            <div class="panel-header">
+                <span>OFFLINE TACTICAL GIS MAP</span>
+                <span style="color: var(--green); font-family: monospace;">SECTOR ALPHA PERIMETER</span>
+            </div>
             <div class="map-wrapper">
-                <svg id="offline-map-svg" class="map-svg-container" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+                <svg id="tactical-map-svg" class="map-svg" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <pattern id="grid-bg" width="40" height="40" patternUnits="userSpaceOnUse">
-                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#162032" stroke-width="1"/>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#111928" stroke-width="1"/>
                         </pattern>
                     </defs>
-                    <rect width="1000" height="800" fill="url(#grid-bg)" />
-                    <g id="map-zones-layer"></g>
-                    <g id="map-roads-layer"></g>
-                    <g id="map-cameras-layer"></g>
-                    <g id="map-events-layer"></g>
+                    <rect width="1000" height="800" fill="url(#grid)" />
+                    <g id="map-zones"></g>
+                    <g id="map-roads"></g>
+                    <g id="map-cameras"></g>
+                    <g id="map-alerts"></g>
                 </svg>
-
-                <div class="map-legend">
-                    <div class="legend-item"><div class="legend-chip" style="background:#3B82F6;"></div> Pedestrian Zone</div>
-                    <div class="legend-item"><div class="legend-chip" style="background:#F59E0B;"></div> Vehicle Checkpoint</div>
-                    <div class="legend-item"><div class="legend-chip" style="background:#EF4444;"></div> Command Perimeter</div>
-                    <div class="legend-item"><div class="legend-chip" style="background:#38BDF8; border-radius: 50%;"></div> CCTV Markers</div>
-                </div>
             </div>
         </section>
 
-        <!-- Panel 3: Live Threat & Security Event Log -->
+        <!-- Bottom Right: Real-time Event Timeline -->
         <section class="panel">
             <div class="panel-header">
-                <div class="panel-title">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                    Live Security Event Log
-                </div>
-                <span id="event-count-tag" style="font-size: 11px; color: var(--text-muted); font-family: monospace;">0 EVENTS</span>
+                <span>SECURITY EVENT TIMELINE</span>
+                <span style="color: var(--text-muted); font-family: monospace;">LIVE AUDIT</span>
             </div>
-
-            <div class="event-filter-bar">
-                <button class="filter-btn active" onclick="setEventFilter('ALL')">ALL</button>
-                <button class="filter-btn" onclick="setEventFilter('CRITICAL')">CRITICAL</button>
-                <button class="filter-btn" onclick="setEventFilter('HIGH')">HIGH</button>
-                <button class="filter-btn" onclick="setEventFilter('MEDIUM')">MEDIUM</button>
-            </div>
-
-            <div class="event-list" id="event-log-container">
-                <!-- Dynamically populated from /api/events -->
+            <div class="timeline-panel-body" id="timeline-container">
+                <!-- Timeline logs -->
             </div>
         </section>
     </main>
 
+    <!-- Modal: Forensic Evidence & Operator Dispatch -->
+    <div class="modal-overlay" id="evidence-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span id="modal-title">FORENSIC EVIDENCE DOSSIER</span>
+                <button onclick="closeModal()" style="background:none; border:none; color:var(--text); cursor:pointer; font-size:16px;">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="evidence-img-box">
+                    <img id="modal-snapshot" src="" alt="Evidence Snapshot" />
+                </div>
+                <div class="evidence-meta" id="modal-meta">
+                    <!-- Metadata populated dynamically -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-dsm" onclick="submitAction('DISMISS')">Dismiss Alarm</button>
+                <button class="btn btn-ack" onclick="submitAction('ACKNOWLEDGE')">Acknowledge</button>
+                <button class="btn btn-esc" onclick="submitAction('ESCALATE')">🚨 Escalate Threat</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        let currentCamera = 'CAM_01';
-        let currentFilter = 'ALL';
-        let allEvents = [];
+        let currentEvidenceList = [];
+        let activeEventId = null;
 
-        function switchCamera(camId) {
-            currentCamera = camId;
-            const img = document.getElementById('mjpeg-stream');
-            img.src = `/api/stream/${camId}?t=${Date.now()}`;
-
-            document.querySelectorAll('.cam-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText.includes(camId));
-            });
-
-            document.getElementById('active-cam-tag').innerText = `${camId}: ACTIVE FEED`;
-        }
-
-        function setEventFilter(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === filter);
-            });
-            renderEvents();
-        }
-
-        async function fetchHealth() {
+        async function fetchTelemetry() {
             try {
-                const res = await fetch('/api/health');
+                const res = await fetch('/api/cameras/telemetry');
                 if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById('hw-status').innerText = `${data.device.toUpperCase()}: ${data.device_name}`;
-                    document.getElementById('model-status').innerText = `MODEL: ${data.active_model} (${data.vram_allocated_mb} MB VRAM)`;
+                    const cams = await res.json();
+                    document.getElementById('cam-telemetry').innerText = cams.map(c => `${c.camera_id}: ${c.fps} FPS`).join(' | ');
                 }
-            } catch (err) {
-                console.error('Health fetch error:', err);
-            }
+            } catch (err) {}
         }
 
-        async function fetchMapData() {
+        async function fetchEvidenceAndAlerts() {
+            try {
+                const res = await fetch('/api/evidence');
+                if (!res.ok) return;
+                currentEvidenceList = await res.json();
+
+                const container = document.getElementById('alerts-container');
+                const timeline = document.getElementById('timeline-container');
+
+                document.getElementById('alert-counter').innerText = `${currentEvidenceList.length} LOGGED`;
+
+                // Render Alerts
+                if (currentEvidenceList.length === 0) {
+                    container.innerHTML = '<div style="color:var(--text-muted); font-size:11px; text-align:center; padding:20px;">No critical intrusions detected. Grid secure.</div>';
+                } else {
+                    container.innerHTML = currentEvidenceList.slice(0, 8).map(ev => {
+                        const sev = (ev.severity || 'high').toLowerCase();
+                        const timeStr = ev.timestamp.split('T')[1].slice(0, 8);
+                        const statusBadge = ev.operator_status !== 'NEW' ? `[${ev.operator_status}]` : '';
+                        return `
+                            <div class="alert-card ${sev}" onclick="openEvidenceModal('${ev.event_id}')">
+                                <div class="alert-header">
+                                    <span>${ev.event_type.replace(/_/g, ' ')} ${statusBadge}</span>
+                                    <span class="badge-sev badge-${sev}">${sev}</span>
+                                </div>
+                                <div style="font-size:12px; margin-top:4px;">
+                                    <strong>Target:</strong> ${ev.target.class.toUpperCase()} ${ev.target.track_id ? '#' + ev.target.track_id : ''} 
+                                    <span style="color:var(--cyan); font-size:10px;">(${((ev.target.confidence || 0) * 100).toFixed(0)}% conf)</span>
+                                </div>
+                                <div style="font-size:10px; color:var(--text-muted); margin-top:3px; display:flex; justify-content:space-between;">
+                                    <span>CAM: ${ev.camera_id}</span>
+                                    <span>${timeStr} UTC</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                // Render Timeline
+                timeline.innerHTML = currentEvidenceList.slice(0, 15).map(ev => {
+                    const timeStr = ev.timestamp.split('T')[1].slice(0, 8);
+                    const sevColor = ev.severity === 'CRITICAL' ? 'var(--red)' : 'var(--amber)';
+                    return `
+                        <div class="timeline-row">
+                            <span class="timeline-time">${timeStr}</span>
+                            <span style="color:${sevColor}">[${ev.camera_id}]</span>
+                            <span>${ev.event_type} (${ev.target.class} #${ev.target.track_id || '?'})</span>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {}
+        }
+
+        async function fetchTacticalMap() {
             try {
                 const res = await fetch('/api/map');
                 if (!res.ok) return;
@@ -501,139 +498,103 @@
 
                 const minLat = 17.4410, maxLat = 17.4490;
                 const minLon = 78.3740, maxLon = 78.3820;
-
                 function toSvg(lon, lat) {
-                    const x = (lon - minLon) / (maxLon - minLon) * 900 + 50;
-                    const y = 750 - (lat - minLat) / (maxLat - minLat) * 700;
-                    return [x.toFixed(1), y.toFixed(1)];
+                    return [
+                        ((lon - minLon) / (maxLon - minLon) * 900 + 50).toFixed(1),
+                        (750 - (lat - minLat) / (maxLat - minLat) * 700).toFixed(1)
+                    ];
                 }
 
-                // Render Zones
-                const zonesG = document.getElementById('map-zones-layer');
-                zonesG.innerHTML = '';
-                (data.zones.features || []).forEach(feat => {
-                    const coords = feat.geometry.coordinates[0];
-                    const pts = coords.map(p => toSvg(p[0], p[1]).join(',')).join(' ');
-                    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                    poly.setAttribute('points', pts);
-                    poly.setAttribute('fill', feat.properties.color || '#3B82F6');
-                    poly.setAttribute('fill-opacity', '0.25');
-                    poly.setAttribute('stroke', feat.properties.color || '#3B82F6');
-                    poly.setAttribute('stroke-width', '2');
-                    zonesG.appendChild(poly);
-                });
+                // Zones
+                const zG = document.getElementById('map-zones');
+                zG.innerHTML = (data.zones.features || []).map(f => {
+                    const pts = f.geometry.coordinates[0].map(p => toSvg(p[0], p[1]).join(',')).join(' ');
+                    return `<polygon points="${pts}" fill="${f.properties.color || '#3B82F6'}" fill-opacity="0.25" stroke="${f.properties.color}" stroke-width="2"/>`;
+                }).join('');
 
-                // Render Roads
-                const roadsG = document.getElementById('map-roads-layer');
-                roadsG.innerHTML = '';
-                (data.roads.features || []).forEach(feat => {
-                    const coords = feat.geometry.coordinates;
-                    const pts = coords.map(p => toSvg(p[0], p[1]).join(',')).join(' ');
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-                    line.setAttribute('points', pts);
-                    line.setAttribute('stroke', '#475569');
-                    line.setAttribute('stroke-width', '6');
-                    line.setAttribute('fill', 'none');
-                    roadsG.appendChild(line);
-                });
+                // Roads
+                const rG = document.getElementById('map-roads');
+                rG.innerHTML = (data.roads.features || []).map(f => {
+                    const pts = f.geometry.coordinates.map(p => toSvg(p[0], p[1]).join(',')).join(' ');
+                    return `<polyline points="${pts}" stroke="#475569" stroke-width="5" fill="none"/>`;
+                }).join('');
 
-                // Render Cameras
-                const camsG = document.getElementById('map-cameras-layer');
-                camsG.innerHTML = '';
-                (data.cameras || []).forEach(cam => {
-                    const [x, y] = toSvg(cam.lon, cam.lat);
-                    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    g.setAttribute('transform', `translate(${x}, ${y})`);
-                    g.style.cursor = 'pointer';
-                    g.onclick = () => switchCamera(cam.camera_id);
-                    g.innerHTML = `
-                        <circle r="12" fill="#1E293B" stroke="#38BDF8" stroke-width="3" />
-                        <circle r="4" fill="#38BDF8" />
-                        <text x="16" y="5" font-family="monospace" font-size="12" fill="#E2E8F0" font-weight="bold">${cam.camera_id}</text>
+                // Cameras
+                const cG = document.getElementById('map-cameras');
+                cG.innerHTML = (data.cameras || []).map(c => {
+                    const [x, y] = toSvg(c.lon, c.lat);
+                    return `
+                        <g transform="translate(${x}, ${y})">
+                            <circle r="10" fill="#0E1420" stroke="#06B6D4" stroke-width="2"/>
+                            <text x="14" y="4" font-family="monospace" font-size="11" fill="#F1F5F9" font-weight="bold">${c.camera_id}</text>
+                        </g>
                     `;
-                    camsG.appendChild(g);
-                });
+                }).join('');
 
-                // Render Event Markers
-                const evtsG = document.getElementById('map-events-layer');
-                evtsG.innerHTML = '';
-                (data.event_markers || []).forEach(ev => {
+                // Live Threat Markers
+                const aG = document.getElementById('map-alerts');
+                aG.innerHTML = (data.event_markers || []).map(ev => {
                     const [x, y] = toSvg(ev.lon, ev.lat);
-                    const sev = (ev.severity || 'low').toLowerCase();
-                    const color = sev === 'critical' ? '#EF4444' : (sev === 'high' || sev === 'medium' ? '#F59E0B' : '#10B981');
-                    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    g.setAttribute('transform', `translate(${x}, ${y})`);
-                    g.innerHTML = `
-                        <circle r="18" fill="${color}" fill-opacity="0.3">
-                            <animate attributeName="r" values="12;24;12" dur="2s" repeatCount="indefinite"/>
-                            <animate attributeName="fill-opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite"/>
-                        </circle>
-                        <circle r="7" fill="${color}" stroke="#FFFFFF" stroke-width="2"/>
+                    const col = ev.severity === 'critical' ? '#EF4444' : '#F59E0B';
+                    return `
+                        <g transform="translate(${x}, ${y})">
+                            <circle r="16" fill="${col}" fill-opacity="0.3">
+                                <animate attributeName="r" values="10;20;10" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle r="6" fill="${col}" stroke="#FFF" stroke-width="2"/>
+                        </g>
                     `;
-                    evtsG.appendChild(g);
-                });
+                }).join('');
 
-            } catch (err) {
-                console.error('Map fetch error:', err);
-            }
+            } catch (err) {}
         }
 
-        async function fetchEvents() {
-            try {
-                const res = await fetch('/api/events');
-                if (res.ok) {
-                    allEvents = await res.json();
-                    renderEvents();
-                }
-            } catch (err) {
-                console.error('Events fetch error:', err);
-            }
+        function openEvidenceModal(eventId) {
+            const ev = currentEvidenceList.find(e => e.event_id === eventId);
+            if (!ev) return;
+
+            activeEventId = eventId;
+            document.getElementById('modal-title').innerText = `DOSSIER: ${ev.event_id} — ${ev.event_type}`;
+            document.getElementById('modal-snapshot').src = ev.evidence_files.snapshot;
+
+            document.getElementById('modal-meta').innerHTML = `
+                <div><strong>Camera Source:</strong> ${ev.camera_id}</div>
+                <div><strong>Detected Target:</strong> ${ev.target.class.toUpperCase()} ${ev.target.track_id ? '(Track ID: #' + ev.target.track_id + ')' : ''}</div>
+                <div><strong>Confidence:</strong> ${(ev.target.confidence * 100).toFixed(1)}%</div>
+                <div><strong>Severity:</strong> <span style="color:${ev.severity === 'CRITICAL' ? 'var(--red)' : 'var(--amber)'}; font-weight:bold;">${ev.severity}</span></div>
+                <div><strong>Timestamp:</strong> ${ev.timestamp}</div>
+                <div><strong>Current Status:</strong> <span style="color:var(--cyan);">${ev.operator_status}</span></div>
+                <div><strong>Trajectory Points:</strong> ${ev.target.trajectory_trail.length} coordinates tracked</div>
+            `;
+
+            document.getElementById('evidence-modal').style.display = 'flex';
         }
 
-        function renderEvents() {
-            const container = document.getElementById('event-log-container');
-            const filtered = allEvents.filter(e => {
-                if (currentFilter === 'ALL') return true;
-                return (e.severity || '').toUpperCase() === currentFilter;
+        function closeModal() {
+            document.getElementById('evidence-modal').style.display = 'none';
+        }
+
+        async function submitAction(action) {
+            if (!activeEventId) return;
+            const res = await fetch(`/api/evidence/${activeEventId}/action`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action, operator_name: "Commander-Alpha" })
             });
-
-            document.getElementById('event-count-tag').innerText = `${filtered.length} EVENTS`;
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:20px;">No events matching filter.</div>';
-                return;
+            if (res.ok) {
+                closeModal();
+                fetchEvidenceAndAlerts();
             }
-
-            container.innerHTML = filtered.slice().reverse().map(e => {
-                const sev = (e.severity || 'low').toLowerCase();
-                const timeStr = e.timestamp ? e.timestamp.split('T')[1].slice(0, 8) : '--:--:--';
-                return `
-                    <div class="event-card ${sev}">
-                        <div class="event-card-header">
-                            <div class="event-type">${e.event_type || 'DETECTION'}</div>
-                            <span class="event-severity-badge ${sev}">${sev}</span>
-                        </div>
-                        <div style="font-size:12px; color:var(--text-main); font-weight:600;">
-                            ${e.class_name ? e.class_name.toUpperCase() : 'OBJECT'} 
-                            <span style="font-size:11px; color:var(--accent-cyan); font-weight:normal;">(${((e.confidence || 0) * 100).toFixed(1)}% conf)</span>
-                        </div>
-                        <div class="event-details">
-                            <span>SRC: ${e.source_id || 'CAM_01'}</span>
-                            <span>TIME: ${timeStr} UTC</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
 
-        // Initialize and setup polling
-        fetchHealth();
-        fetchMapData();
-        fetchEvents();
+        // Initialize polling
+        fetchTelemetry();
+        fetchEvidenceAndAlerts();
+        fetchTacticalMap();
 
-        setInterval(fetchHealth, 5000);
-        setInterval(fetchMapData, 5000);
-        setInterval(fetchEvents, 3000);
+        setInterval(fetchTelemetry, 3000);
+        setInterval(fetchEvidenceAndAlerts, 3000);
+        setInterval(fetchTacticalMap, 5000);
     </script>
 </body>
 </html>
