@@ -3,29 +3,29 @@
   "event_type": "RESTRICTED_ZONE_INTRUSION",
   "camera_id": "CAM_01",
   "severity": "CRITICAL",
-  "timestamp": "2026-09-04T10:11:19.614281+00:00",
+  "timestamp": "2026-09-04T10:17:54.342627+00:00",
   "target": {
     "class": "person",
     "confidence": 0.94,
     "track_id": 27,
     "bbox": [
       50,
-      220,
+      80,
       150,
-      420
+      220
     ],
     "trajectory_trail": [
       [
-        100.0,
+        150.0,
         200.0
       ],
       [
-        100.0,
-        250.0
+        180.0,
+        200.0
       ],
       [
-        100.0,
-        320.0
+        230.0,
+        200.0
       ]
     ]
   },
@@ -36,7 +36,7 @@
   "operator_status": "ACKNOWLEDGE",
   "operator_action_history": [
     {
-      "timestamp": "2026-09-04T10:11:19.717151+00:00",
+      "timestamp": "2026-09-04T10:17:54.561130+00:00",
       "action": "ACKNOWLEDGE",
       "operator": "Commander-Alpha",
       "notes": "Perimeter guard dispatched."
@@ -44,6 +44,6 @@
   ],
   "metadata": {
     "zone_id": "ZONE_RESTRICTED_ALPHA",
-    "zone_name": "Critical Perimeter & Command Bunker"
+    "zone_name": "Perimeter Sector Alpha (Doorway Access)"
   }
 }

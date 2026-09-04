@@ -1,31 +1,31 @@
 {
   "event_id": "EVT_00002",
-  "event_type": "LOITERING_DETECTED",
+  "event_type": "BOUNDARY_TRIPWIRE_BREACH",
   "camera_id": "CAM_01",
   "severity": "HIGH",
-  "timestamp": "2026-09-04T10:11:19.621783+00:00",
+  "timestamp": "2026-09-04T10:17:54.423068+00:00",
   "target": {
     "class": "person",
     "confidence": 0.94,
     "track_id": 27,
     "bbox": [
       50,
-      220,
+      80,
       150,
-      420
+      220
     ],
     "trajectory_trail": [
       [
-        100.0,
+        150.0,
         200.0
       ],
       [
-        100.0,
-        250.0
+        180.0,
+        200.0
       ],
       [
-        100.0,
-        320.0
+        230.0,
+        200.0
       ]
     ]
   },
@@ -36,7 +36,7 @@
   "operator_status": "NEW",
   "operator_action_history": [],
   "metadata": {
-    "dwell_seconds": 6.2,
-    "threshold": 5.0
+    "tripwire_id": "WIRE_BORDER_FENCE_01",
+    "name": "Threshold Virtual Fence"
   }
 }

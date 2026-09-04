@@ -44,11 +44,11 @@ def run_tracking_intelligence_tests():
             "track_id": 27,
             "class_name": "person",
             "confidence": 0.94,
-            "bbox": [50.0, 220.0, 150.0, 420.0],
-            "center": [100.0, 320.0],
-            "normalized_center": [0.156, 0.667],
-            "dwell_seconds": 6.2,  # exceeds 5.0s loitering
-            "trajectory": [(100.0, 200.0), (100.0, 250.0), (100.0, 320.0)],
+            "bbox": [50.0, 80.0, 150.0, 220.0],
+            "center": [100.0, 150.0],  # Inside doorway polygon [0.02..0.35, 0.05..0.55]
+            "normalized_center": [0.156, 0.312],
+            "dwell_seconds": 10.5,  # Exceeds 8.0s dwell threshold
+            "trajectory": [(150.0, 200.0), (180.0, 200.0), (230.0, 200.0)],  # Crosses x=192 tripwire line
         }
     ]
 

@@ -8,14 +8,14 @@ version: "1.0.0"
 # 1. Restricted Zones (Polygon Geofences in Normalized Coordinates [x, y] from 0.0 to 1.0)
 zones:
   - zone_id: "ZONE_RESTRICTED_ALPHA"
-    name: "Critical Perimeter & Command Bunker"
+    name: "Perimeter Sector Alpha (Doorway Access)"
     camera_id: "CAM_01"
     severity: "CRITICAL"
     polygon:
-      - [0.0, 0.4]
-      - [0.5, 0.4]
-      - [0.5, 1.0]
-      - [0.0, 1.0]
+      - [0.02, 0.05]
+      - [0.35, 0.05]
+      - [0.35, 0.55]
+      - [0.02, 0.55]
     restricted_classes: ["person", "car", "truck", "motorcycle"]
     alert_on_entry: true
 
@@ -34,18 +34,18 @@ zones:
 # 2. Virtual Boundary Tripwires (Line crossing from Start [x1, y1] to End [x2, y2])
 tripwires:
   - wire_id: "WIRE_BORDER_FENCE_01"
-    name: "Outer Perimeter Fence Tripwire"
+    name: "Threshold Virtual Fence"
     camera_id: "CAM_01"
-    severity: "CRITICAL"
-    line_start: [0.1, 0.5]
-    line_end: [0.9, 0.5]
-    crossing_direction: "ANY" # "NORTH", "SOUTH", "ANY"
-    target_classes: ["person", "vehicle", "car", "truck"]
+    severity: "HIGH"
+    line_start: [0.30, 0.05]
+    line_end: [0.30, 0.90]
+    crossing_direction: "ANY"
+    target_classes: ["person", "car", "truck"]
 
 # 3. Loitering Detection (Dwell Time Threshold)
 loitering:
   camera_id: "CAM_01"
-  dwell_time_seconds: 5.0   # Trigger alert if track persists > 5s in zone
+  dwell_time_seconds: 8.0   # Trigger alert if track persists > 8s in zone
   target_classes: ["person"]
   severity: "HIGH"
 

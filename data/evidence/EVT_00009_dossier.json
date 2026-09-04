@@ -1,0 +1,78 @@
+{
+  "event_id": "EVT_00009",
+  "event_type": "BOUNDARY_TRIPWIRE_BREACH",
+  "camera_id": "CAM_01",
+  "severity": "CRITICAL",
+  "timestamp": "2026-09-04T10:13:27.978237+00:00",
+  "target": {
+    "class": "chair",
+    "confidence": 0.427,
+    "track_id": 20,
+    "bbox": [
+      332,
+      154,
+      462,
+      327
+    ],
+    "trajectory_trail": [
+      [
+        410.3,
+        228.0
+      ],
+      [
+        408.9,
+        228.2
+      ],
+      [
+        408.5,
+        228.3
+      ],
+      [
+        407.4,
+        229.3
+      ],
+      [
+        407.1,
+        229.6
+      ],
+      [
+        405.3,
+        232.0
+      ],
+      [
+        403.3,
+        234.0
+      ],
+      [
+        402.6,
+        234.7
+      ],
+      [
+        400.7,
+        237.0
+      ],
+      [
+        400.0,
+        237.8
+      ],
+      [
+        398.1,
+        240.0
+      ],
+      [
+        397.3,
+        240.8
+      ]
+    ]
+  },
+  "evidence_files": {
+    "snapshot": "/evidence/EVT_00009_snapshot.jpg",
+    "crop": "/evidence/EVT_00009_crop.jpg"
+  },
+  "operator_status": "NEW",
+  "operator_action_history": [],
+  "metadata": {
+    "tripwire_id": "WIRE_BORDER_FENCE_01",
+    "name": "Outer Perimeter Fence Tripwire"
+  }
+}

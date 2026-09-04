@@ -47,13 +47,16 @@ class ObjectTracker:
         """
         self._ensure_model()
         now = time.time()
-        h, w = frame.shape[:2]
+        # Filter strictly for surveillance classes (person, vehicles, animals, bags)
+        # COCO IDs: 0:person, 1:bicycle, 2:car, 3:motorcycle, 5:bus, 7:truck, 14-23:animals, 24:backpack, 26:handbag, 28:suitcase
+        surveillance_class_ids = [0, 1, 2, 3, 5, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28]
 
-        # Run tracking with persistent IDs
+        # Run tracking with persistent IDs restricted to surveillance classes
         results = self.model.track(
             source=frame,
             persist=True,
             tracker=tracker_type,
+            classes=surveillance_class_ids,
             conf=conf_threshold,
             device=self.device,
             verbose=False,
@@ -72,8 +75,9 @@ class ObjectTracker:
                 conf = float(box.conf[0].item())
                 x1, y1, x2, y2 = map(float, box.xyxy[0].tolist())
 
+                # Ground contact center point (bottom center of bbox)
                 cx = (x1 + x2) / 2.0
-                cy = (y1 + y2) / 2.0
+                cy = y2 - 10.0  # ground contact point rather than face center
 
                 if track_id is not None:
                     if track_id not in self.tracks:

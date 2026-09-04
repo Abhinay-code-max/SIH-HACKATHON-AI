@@ -60,9 +60,11 @@ class CameraStreamWorker:
                 cv2.circle(annotated, p2, 4, (0, 165, 255), -1)
                 cv2.putText(annotated, f"[TRIPWIRE] {wire['name']}", (p1[0], p1[1] - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 165, 255), 2)
 
-        # 3. HUD Overlay
-        hud = f"{self.camera_id} | {self.name} | FPS: {self.fps:.1f} | Active Tracks: {self.active_tracks_count}"
-        cv2.putText(annotated, hud, (20, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+        # 3. Bottom HUD Overlay Bar
+        cv2.rectangle(annotated, (10, h - 36), (w - 10, h - 8), (10, 15, 25), -1)
+        cv2.rectangle(annotated, (10, h - 36), (w - 10, h - 8), (40, 55, 80), 1)
+        hud = f"{self.camera_id} // {self.name} | FPS: {self.fps:.1f} | TRACKED TARGETS: {self.active_tracks_count}"
+        cv2.putText(annotated, hud, (20, h - 17), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (0, 255, 255), 1)
         return annotated
 
 
@@ -112,8 +114,8 @@ class MultiCameraManager:
                         continue
                     break
 
-                # 1. Update Object Tracking
-                tracks, tracked_frame = worker.tracker.update(frame, conf_threshold=0.35)
+                # 1. Update Object Tracking (confidence raised to 0.48 to reject false alarms)
+                tracks, tracked_frame = worker.tracker.update(frame, conf_threshold=0.48)
                 worker.active_tracks_count = len(tracks)
 
                 # 2. Evaluate Intelligence Rules (Geofences, Tripwires, Loitering)
