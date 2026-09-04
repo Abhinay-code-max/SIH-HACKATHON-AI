@@ -1,0 +1,31 @@
+{
+  "models": [
+    {
+      "version": "YOLO-L-v001",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "v1",
+      "date": "2026-09-04T10:02:02.584579+00:00",
+      "duration_seconds": 98.3,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "hyperparameters": {
+        "description": "Fast verification run to validate full gradient updates, checkpointing, and metrics.",
+        "epochs": 3,
+        "imgsz": 640,
+        "batch": 8,
+        "workers": 2,
+        "patience": 5,
+        "optimizer": "auto",
+        "lr0": 0.01,
+        "lrf": 0.01,
+        "save_period": 1
+      },
+      "metrics": {
+        "mAP50": 98.17,
+        "mAP50-95": 98.17,
+        "precision": 99.32,
+        "recall": 87.5
+      },
+      "weights_path": "models/registry/YOLO-L-v001/weights/best.pt"
+    }
+  ]
+}

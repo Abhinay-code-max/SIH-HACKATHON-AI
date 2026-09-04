@@ -1,0 +1,9 @@
+{
+  "missed_person": 0,
+  "false_person": 0,
+  "tiny_objects": 0,
+  "night": 0,
+  "hard_negatives": 0,
+  "vegetation": 0,
+  "failures_logged": []
+}

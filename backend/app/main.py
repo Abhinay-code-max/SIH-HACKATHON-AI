@@ -1,6 +1,6 @@
 """
 Main FastAPI Application Entrypoint.
-Serves both the Local API and the 100% Offline Frontend Dashboard.
+Serves Local APIs, Offline Surveillance Dashboard, and Human Annotation Studio.
 Complies with Rule 2: Absolute Offline Operation (Zero internet, strictly localhost).
 """
 
@@ -17,14 +17,15 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from backend.app.api.routes import router as api_router
+from backend.app.api.annotation_routes import router as annotation_router
 
 app = FastAPI(
     title="Offline Security & Surveillance Grid",
-    description="Local edge system API and UI for AI detections, offline maps, and surveillance streams.",
-    version="0.1.0",
+    description="Local edge system API, dashboard, and dataset annotation studio.",
+    version="0.2.0",
 )
 
-# Enable CORS for localhost frontend access
+# Enable CORS for localhost access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,9 +35,16 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+app.include_router(annotation_router)
+
+# Mount extracted frames for local annotation studio image loading
+EXTRACTED_FRAMES_DIR = ROOT_DIR / "dataset" / "extracted_frames"
+if EXTRACTED_FRAMES_DIR.is_dir():
+    app.mount("/dataset/extracted_frames", StaticFiles(directory=str(EXTRACTED_FRAMES_DIR)), name="extracted_frames")
 
 FRONTEND_DIR = ROOT_DIR / "frontend"
 INDEX_FILE = FRONTEND_DIR / "index.html"
+ANNOTATE_FILE = FRONTEND_DIR / "annotate.html"
 
 
 @app.get("/")
@@ -44,30 +52,32 @@ def serve_dashboard():
     """Serves the self-contained offline surveillance dashboard."""
     if INDEX_FILE.is_file():
         return FileResponse(INDEX_FILE)
-    return JSONResponse({
-        "system": "Offline Surveillance & Security Prototype",
-        "status": "ONLINE_LOCAL",
-        "message": "Frontend index.html not found.",
-        "api_docs": "/docs"
-    })
+    return JSONResponse({"system": "Offline Surveillance Grid", "status": "ONLINE_LOCAL"})
+
+
+@app.get("/annotate")
+def serve_annotation_studio():
+    """Serves the local human-in-the-loop annotation and verification studio."""
+    if ANNOTATE_FILE.is_file():
+        return FileResponse(ANNOTATE_FILE)
+    return JSONResponse({"error": "annotate.html not found"})
 
 
 @app.get("/api/info")
 def get_system_info():
     """Returns local system overview."""
     return {
-        "system": "Offline Surveillance & Security Prototype",
-        "version": "0.1.0",
-        "status": "ONLINE_LOCAL",
-        "network_mode": "100% AIR-GAPPED OFFLINE (ZERO REMOTE APIS/CDNS)",
+        "system": "Offline Surveillance & Defense Prototype",
+        "version": "0.2.0",
+        "network_mode": "100% AIR-GAPPED OFFLINE",
         "endpoints": {
-            "dashboard": "/",
+            "surveillance_dashboard": "/",
+            "annotation_studio": "/annotate",
             "health": "/api/health",
             "cameras": "/api/cameras",
             "events": "/api/events",
             "map_data": "/api/map",
-            "stream_cam01": "/api/stream/CAM_01",
-            "docs": "/docs",
+            "annotation_items": "/api/annotation/items",
         },
     }
 

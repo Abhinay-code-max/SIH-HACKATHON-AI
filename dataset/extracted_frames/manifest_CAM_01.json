@@ -1,0 +1,658 @@
+{
+  "camera_id": "CAM_01",
+  "source_video": "annotated_surveillance.mp4",
+  "total_extracted": 50,
+  "discarded_redundant": 0,
+  "frames": [
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000015.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000015.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 15,
+      "timestamp_sec": 0.5,
+      "motion_score": 100.0,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000030.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000030.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 30,
+      "timestamp_sec": 1.0,
+      "motion_score": 5.71,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000045.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000045.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 45,
+      "timestamp_sec": 1.5,
+      "motion_score": 25.03,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000060.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000060.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 60,
+      "timestamp_sec": 2.0,
+      "motion_score": 25.31,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000075.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000075.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 75,
+      "timestamp_sec": 2.5,
+      "motion_score": 15.29,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000090.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000090.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 90,
+      "timestamp_sec": 3.0,
+      "motion_score": 11.26,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000105.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000105.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 105,
+      "timestamp_sec": 3.5,
+      "motion_score": 24.54,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000120.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000120.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 120,
+      "timestamp_sec": 4.0,
+      "motion_score": 24.76,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000135.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000135.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 135,
+      "timestamp_sec": 4.5,
+      "motion_score": 19.64,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000150.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000150.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 150,
+      "timestamp_sec": 5.0,
+      "motion_score": 25.68,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000165.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000165.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 165,
+      "timestamp_sec": 5.5,
+      "motion_score": 24.98,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000180.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000180.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 180,
+      "timestamp_sec": 6.0,
+      "motion_score": 25.55,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000195.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000195.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 195,
+      "timestamp_sec": 6.5,
+      "motion_score": 14.78,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000210.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000210.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 210,
+      "timestamp_sec": 7.0,
+      "motion_score": 17.11,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000225.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000225.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 225,
+      "timestamp_sec": 7.5,
+      "motion_score": 19.51,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000240.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000240.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 240,
+      "timestamp_sec": 8.0,
+      "motion_score": 22.34,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000255.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000255.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 255,
+      "timestamp_sec": 8.5,
+      "motion_score": 14.28,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000270.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000270.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 270,
+      "timestamp_sec": 9.0,
+      "motion_score": 14.07,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000285.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000285.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 285,
+      "timestamp_sec": 9.5,
+      "motion_score": 8.18,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000300.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000300.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 300,
+      "timestamp_sec": 10.0,
+      "motion_score": 10.54,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000315.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000315.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 315,
+      "timestamp_sec": 10.5,
+      "motion_score": 6.91,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000330.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000330.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 330,
+      "timestamp_sec": 11.0,
+      "motion_score": 10.01,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000345.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000345.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 345,
+      "timestamp_sec": 11.5,
+      "motion_score": 14.08,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000360.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000360.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 360,
+      "timestamp_sec": 12.0,
+      "motion_score": 10.3,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000375.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000375.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 375,
+      "timestamp_sec": 12.5,
+      "motion_score": 8.99,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000390.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000390.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 390,
+      "timestamp_sec": 13.0,
+      "motion_score": 10.16,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000405.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000405.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 405,
+      "timestamp_sec": 13.5,
+      "motion_score": 12.76,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000420.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000420.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 420,
+      "timestamp_sec": 14.0,
+      "motion_score": 9.52,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000435.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000435.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 435,
+      "timestamp_sec": 14.5,
+      "motion_score": 11.11,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000450.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000450.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 450,
+      "timestamp_sec": 15.0,
+      "motion_score": 8.6,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000465.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000465.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 465,
+      "timestamp_sec": 15.5,
+      "motion_score": 13.84,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000480.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000480.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 480,
+      "timestamp_sec": 16.0,
+      "motion_score": 15.13,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000495.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000495.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 495,
+      "timestamp_sec": 16.5,
+      "motion_score": 12.27,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000510.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000510.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 510,
+      "timestamp_sec": 17.0,
+      "motion_score": 10.06,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000525.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000525.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 525,
+      "timestamp_sec": 17.5,
+      "motion_score": 6.93,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000540.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000540.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 540,
+      "timestamp_sec": 18.0,
+      "motion_score": 10.97,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000555.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000555.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 555,
+      "timestamp_sec": 18.5,
+      "motion_score": 16.67,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000570.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000570.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 570,
+      "timestamp_sec": 19.0,
+      "motion_score": 7.5,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000585.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000585.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 585,
+      "timestamp_sec": 19.5,
+      "motion_score": 13.31,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000600.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000600.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 600,
+      "timestamp_sec": 20.0,
+      "motion_score": 18.06,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000615.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000615.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 615,
+      "timestamp_sec": 20.5,
+      "motion_score": 22.28,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000630.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000630.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 630,
+      "timestamp_sec": 21.0,
+      "motion_score": 18.29,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000645.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000645.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 645,
+      "timestamp_sec": 21.5,
+      "motion_score": 16.97,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000660.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000660.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 660,
+      "timestamp_sec": 22.0,
+      "motion_score": 23.32,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000675.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000675.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 675,
+      "timestamp_sec": 22.5,
+      "motion_score": 21.11,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000690.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000690.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 690,
+      "timestamp_sec": 23.0,
+      "motion_score": 24.02,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000705.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000705.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 705,
+      "timestamp_sec": 23.5,
+      "motion_score": 26.06,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000720.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000720.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 720,
+      "timestamp_sec": 24.0,
+      "motion_score": 32.39,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000735.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000735.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 735,
+      "timestamp_sec": 24.5,
+      "motion_score": 38.71,
+      "resolution": [
+        640,
+        480
+      ]
+    },
+    {
+      "filename": "CAM_01_annotated_surveillance_frame_000750.jpg",
+      "path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000750.jpg",
+      "camera_id": "CAM_01",
+      "source_video": "annotated_surveillance.mp4",
+      "frame_index": 750,
+      "timestamp_sec": 25.0,
+      "motion_score": 43.31,
+      "resolution": [
+        640,
+        480
+      ]
+    }
+  ]
+}

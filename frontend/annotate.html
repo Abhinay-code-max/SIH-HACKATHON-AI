@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annotation & Human Verification Studio — 100% Offline</title>
+    <style>
+        :root {
+            --bg-base: #090D16;
+            --bg-surface: #111827;
+            --bg-card: #1F2937;
+            --border: #374151;
+            --text: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --blue: #3B82F6;
+            --green: #10B981;
+            --red: #EF4444;
+            --yellow: #F59E0B;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-title {
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { background: #374151; }
+        .btn-green { background: var(--green); border-color: var(--green); color: #fff; }
+        .btn-green:hover { background: #059669; }
+        .btn-blue { background: var(--blue); border-color: var(--blue); color: #fff; }
+        .btn-blue:hover { background: #2563EB; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            flex: 1;
+            height: calc(100vh - 53px);
+            overflow: hidden;
+        }
+
+        /* Sidebar: Frame List */
+        .sidebar {
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .frame-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .frame-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 8px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .frame-item:hover { background: #283548; }
+        .frame-item.active { border-color: var(--blue); background: #1E293B; }
+
+        .badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-uncertain { background: var(--yellow); color: #000; }
+        .badge-verified { background: var(--green); color: #fff; }
+        .badge-predicted { background: #4B5563; color: #fff; }
+
+        /* Canvas Stage */
+        .canvas-container {
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #editor-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+
+        /* Tools Sidebar */
+        .tools-panel {
+            background-color: var(--bg-surface);
+            border-left: 1px solid var(--border);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+        }
+
+        .tools-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .box-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .box-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .box-item.selected { border-color: var(--blue); }
+
+        select, input {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand-title">
+            <span>HUMAN-IN-THE-LOOP VERIFICATION STUDIO</span>
+            <span style="color: var(--text-muted); font-weight: normal; font-size: 12px;">| Milestone v0.2</span>
+        </div>
+        <div class="header-actions">
+            <a href="/" class="btn">Back to Surveillance Grid</a>
+            <button class="btn btn-blue" onclick="batchApproveAll()">Batch-Approve Pre-Labels</button>
+            <button class="btn btn-green" onclick="saveCurrentVerification()">Save & Verify Frame</button>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- Sidebar: Frame Navigator -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span>EXTRACTED FRAMES</span>
+                <span id="frame-counter" style="color: var(--text-muted);">0 / 0</span>
+            </div>
+            <div class="frame-list" id="frame-items-container">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- Center: Interactive Canvas Editor -->
+        <div class="canvas-container">
+            <canvas id="editor-canvas"></canvas>
+        </div>
+
+        <!-- Right: Object Inspector -->
+        <div class="tools-panel">
+            <div class="tools-title">Active Label</div>
+            <label style="font-size: 11px; color: var(--text-muted);">Target Master Class:</label>
+            <select id="class-selector">
+                <option value="0">0: person</option>
+                <option value="1">1: car</option>
+                <option value="2">2: truck</option>
+                <option value="3">3: bus</option>
+                <option value="4">4: motorcycle</option>
+                <option value="5">5: bicycle</option>
+                <option value="6">6: animal</option>
+                <option value="7">7: backpack</option>
+                <option value="8">8: bag</option>
+            </select>
+
+            <div class="tools-title" style="margin-top: 10px;">Detected Objects</div>
+            <div class="box-list" id="boxes-container">
+                <!-- Populated per image -->
+            </div>
+
+            <button class="btn" style="color: var(--red); border-color: var(--red);" onclick="deleteSelectedBox()">
+                Delete Selected Box
+            </button>
+            <button class="btn" onclick="clearAllBoxes()">
+                Mark as Hard Negative (0 Objects)
+            </button>
+
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: auto; padding: 10px; background: var(--bg-card); border-radius: 4px;">
+                <strong>Shortcuts & Tips:</strong><br>
+                * Click & drag on canvas to add missing box<br>
+                * Boxes in yellow: Uncertain (35-65% conf)<br>
+                * Click "Save & Verify Frame" to lock ground truth
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allItems = [];
+        let currentItem = null;
+        let currentBoxes = [];
+        let selectedBoxIndex = -1;
+        let currentImage = new Image();
+        let isDrawing = false;
+        let startX = 0, startY = 0;
+
+        const canvas = document.getElementById('editor-canvas');
+        const ctx = canvas.getContext('2d');
+        const classNames = {
+            0: 'person', 1: 'car', 2: 'truck', 3: 'bus',
+            4: 'motorcycle', 5: 'bicycle', 6: 'animal', 7: 'backpack', 8: 'bag'
+        };
+
+        async function loadItems() {
+            try {
+                const res = await fetch('/api/annotation/items?camera_id=CAM_01');
+                allItems = await res.json();
+                document.getElementById('frame-counter').innerText = `${allItems.length} frames`;
+                renderSidebar();
+                if (allItems.length > 0) {
+                    selectFrame(0);
+                }
+            } catch (err) {
+                console.error("Failed to load items:", err);
+            }
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('frame-items-container');
+            container.innerHTML = allItems.map((item, idx) => {
+                const badgeClass = item.status === 'VERIFIED' ? 'badge-verified' : (item.has_uncertain ? 'badge-uncertain' : 'badge-predicted');
+                const badgeText = item.status === 'VERIFIED' ? 'VERIFIED' : (item.has_uncertain ? 'REVIEW' : `${item.total_objects} OBJS`);
+                return `
+                    <div class="frame-item ${currentItem && currentItem.stem === item.stem ? 'active' : ''}" onclick="selectFrame(${idx})">
+                        <span style="font-family:monospace;">${item.image_filename.slice(-16)}</span>
+                        <span class="badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function selectFrame(index) {
+            currentItem = allItems[index];
+            renderSidebar();
+
+            const res = await fetch(`/api/annotation/item/${currentItem.camera_id}/${currentItem.stem}`);
+            const data = await res.json();
+
+            currentBoxes = data.annotations.map(a => ({
+                class_id: a.class_id,
+                class_name: a.class_name,
+                bbox: a.bbox_xyxy,
+                conf: a.confidence || 1.0,
+                flag: a.flag
+            }));
+            selectedBoxIndex = -1;
+
+            currentImage.src = data.image_url;
+            currentImage.onload = () => {
+                canvas.width = currentImage.naturalWidth;
+                canvas.height = currentImage.naturalHeight;
+                drawCanvas();
+                renderBoxesList();
+            };
+        }
+
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(currentImage, 0, 0);
+
+            currentBoxes.forEach((b, idx) => {
+                const [x1, y1, x2, y2] = b.bbox;
+                const isSelected = idx === selectedBoxIndex;
+                const isUncertain = b.flag === 'NEEDS_HUMAN_REVIEW';
+
+                ctx.strokeStyle = isSelected ? '#3B82F6' : (isUncertain ? '#F59E0B' : '#10B981');
+                ctx.lineWidth = isSelected ? 3 : 2;
+                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+                ctx.fillStyle = ctx.strokeStyle;
+                ctx.font = 'bold 12px monospace';
+                const label = `${b.class_name} ${b.conf ? (b.conf * 100).toFixed(0) + '%' : ''}`;
+                ctx.fillText(label, x1, Math.max(15, y1 - 5));
+            });
+        }
+
+        function renderBoxesList() {
+            const container = document.getElementById('boxes-container');
+            if (currentBoxes.length === 0) {
+                container.innerHTML = '<div style="color:var(--text-muted); font-size:11px;">No objects (Hard Negative).</div>';
+                return;
+            }
+            container.innerHTML = currentBoxes.map((b, idx) => `
+                <div class="box-item ${idx === selectedBoxIndex ? 'selected' : ''}" onclick="selectBox(${idx})">
+                    <span>${b.class_name}</span>
+                    <span style="color:var(--text-muted); font-family:monospace;">[${b.bbox.map(n => Math.round(n)).join(', ')}]</span>
+                </div>
+            `).join('');
+        }
+
+        function selectBox(idx) {
+            selectedBoxIndex = idx;
+            document.getElementById('class-selector').value = currentBoxes[idx].class_id;
+            drawCanvas();
+            renderBoxesList();
+        }
+
+        function deleteSelectedBox() {
+            if (selectedBoxIndex >= 0) {
+                currentBoxes.splice(selectedBoxIndex, 1);
+                selectedBoxIndex = -1;
+                drawCanvas();
+                renderBoxesList();
+            }
+        }
+
+        function clearAllBoxes() {
+            currentBoxes = [];
+            selectedBoxIndex = -1;
+            drawCanvas();
+            renderBoxesList();
+        }
+
+        // Canvas Click & Drag to Add Missing Bounding Box
+        canvas.onmousedown = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            startX = (e.clientX - rect.left) * scaleX;
+            startY = (e.clientY - rect.top) * scaleY;
+            isDrawing = true;
+        };
+
+        canvas.onmousemove = (e) => {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const curX = (e.clientX - rect.left) * scaleX;
+            const curY = (e.clientY - rect.top) * scaleY;
+
+            drawCanvas();
+            ctx.strokeStyle = '#38BDF8';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+            ctx.strokeRect(startX, startY, curX - startX, curY - startY);
+            ctx.setLineDash([]);
+        };
+
+        canvas.onmouseup = (e) => {
+            if (!isDrawing) return;
+            isDrawing = false;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const endX = (e.clientX - rect.left) * scaleX;
+            const endY = (e.clientY - rect.top) * scaleY;
+
+            const x1 = Math.min(startX, endX);
+            const y1 = Math.min(startY, endY);
+            const x2 = Math.max(startX, endX);
+            const y2 = Math.max(startY, endY);
+
+            if ((x2 - x1) > 15 && (y2 - y1) > 15) {
+                const clsId = parseInt(document.getElementById('class-selector').value);
+                currentBoxes.push({
+                    class_id: clsId,
+                    class_name: classNames[clsId],
+                    bbox: [x1, y1, x2, y2],
+                    conf: 1.0,
+                    flag: 'HUMAN_ADDED'
+                });
+                selectedBoxIndex = currentBoxes.length - 1;
+                drawCanvas();
+                renderBoxesList();
+            }
+        };
+
+        async function saveCurrentVerification() {
+            if (!currentItem) return;
+            const payload = {
+                image_filename: currentItem.image_filename,
+                camera_id: currentItem.camera_id,
+                status: currentBoxes.length === 0 ? 'HARD_NEGATIVE' : 'VERIFIED',
+                annotations: currentBoxes.map(b => ({
+                    class_id: b.class_id,
+                    class_name: b.class_name,
+                    confidence: b.conf || 1.0,
+                    bbox_xyxy: b.bbox,
+                    human_verified: true
+                }))
+            };
+
+            const res = await fetch('/api/annotation/item/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                currentItem.status = 'VERIFIED';
+                renderSidebar();
+                alert(`Ground truth verified & saved for ${currentItem.image_filename}!`);
+            }
+        }
+
+        async function batchApproveAll() {
+            if (!confirm("Batch-approve all pre-annotated frames into verified ground truth?")) return;
+            const res = await fetch('/api/annotation/batch_approve?camera_id=CAM_01', { method: 'POST' });
+            if (res.ok) {
+                const data = await res.json();
+                alert(`Successfully approved and verified ${data.verified_count} frames!`);
+                loadItems();
+            }
+        }
+
+        loadItems();
+    </script>
+</body>
+</html>

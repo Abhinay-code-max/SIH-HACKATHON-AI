@@ -1,0 +1,39 @@
+# =====================================================================
+# MASTER DETECTION CLASS SPECIFICATION — PROTOTYPE v0.2
+# Operational surveillance & defense classes.
+# Avoids unnecessary distinctions; focuses on actionable targets.
+# =====================================================================
+
+version: "0.2.0"
+description: "Master class schema for local CCTV dataset curation and YOLO training."
+
+# Core operational classes
+classes:
+  0: person
+  1: car
+  2: truck
+  3: bus
+  4: motorcycle
+  5: bicycle
+  6: animal
+  7: backpack
+  8: bag
+
+# Target environments & scenarios for test reporting
+scenarios:
+  - DAY_CLEAR
+  - DAY_OVERCAST
+  - NIGHT_LOW_LIGHT
+  - NIGHT_IR
+  - DISTANT_TARGETS       # < 30px bounding box
+  - HEAVY_VEGETATION      # False positive rejection
+  - RAIN_OR_FOG
+  - CROWD_OVERLAP
+
+# Negative sample categories (hard negatives with zero target objects)
+negative_categories:
+  - vegetation_sway
+  - shadows_and_reflections
+  - empty_road
+  - fence_posts_and_poles
+  - rocks_and_terrain

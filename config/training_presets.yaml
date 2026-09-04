@@ -1,0 +1,44 @@
+# =====================================================================
+# YOLO TRAINING PRESETS & HYPERPARAMETER CONFIGURATIONS
+# =====================================================================
+
+presets:
+  prototype_verification:
+    description: "Fast verification run to validate full gradient updates, checkpointing, and metrics."
+    epochs: 3
+    imgsz: 640
+    batch: 8
+    workers: 2
+    patience: 5
+    optimizer: "auto"
+    lr0: 0.01
+    lrf: 0.01
+    save_period: 1
+
+  full_training_v1:
+    description: "Production training for Dataset v1 with standard CCTV augmentation."
+    epochs: 50
+    imgsz: 640
+    batch: 8
+    workers: 4
+    patience: 10
+    optimizer: "SGD"
+    lr0: 0.01
+    lrf: 0.01
+    mosaic: 0.8
+    mixup: 0.1
+    copy_paste: 0.1
+    degrees: 5.0
+    translate: 0.1
+    scale: 0.5
+    fliplr: 0.5
+
+  high_resolution_distant:
+    description: "High-resolution preset designed for distant and tiny targets."
+    epochs: 75
+    imgsz: 1024
+    batch: 4
+    workers: 4
+    patience: 15
+    lr0: 0.005
+    scale: 0.7

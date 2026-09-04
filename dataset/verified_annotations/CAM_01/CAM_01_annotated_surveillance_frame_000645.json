@@ -1,0 +1,33 @@
+{
+  "image_filename": "CAM_01_annotated_surveillance_frame_000645.jpg",
+  "image_path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000645.jpg",
+  "camera_id": "CAM_01",
+  "resolution": [
+    640,
+    480
+  ],
+  "total_objects": 1,
+  "status": "VERIFIED_GROUND_TRUTH",
+  "annotations": [
+    {
+      "class_id": 0,
+      "class_name": "person",
+      "confidence": 0.895,
+      "bbox_xyxy": [
+        41.3,
+        108.8,
+        467.6,
+        472.9
+      ],
+      "bbox_yolo_normalized": [
+        0.397578,
+        0.605937,
+        0.666094,
+        0.758542
+      ],
+      "flag": "PREDICTED_OK",
+      "human_verified": false
+    }
+  ],
+  "human_verified": true
+}

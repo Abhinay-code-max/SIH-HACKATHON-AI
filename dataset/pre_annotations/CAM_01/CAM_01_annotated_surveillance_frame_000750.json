@@ -1,0 +1,12 @@
+{
+  "image_filename": "CAM_01_annotated_surveillance_frame_000750.jpg",
+  "image_path": "dataset\\extracted_frames\\CAM_01\\CAM_01_annotated_surveillance_frame_000750.jpg",
+  "camera_id": "CAM_01",
+  "resolution": [
+    640,
+    480
+  ],
+  "total_objects": 0,
+  "status": "CANDIDATE_HARD_NEGATIVE",
+  "annotations": []
+}

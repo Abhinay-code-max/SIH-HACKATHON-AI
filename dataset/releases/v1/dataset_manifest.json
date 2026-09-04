@@ -1,0 +1,46 @@
+{
+  "dataset_version": "v1",
+  "release_path": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\dataset\\releases\\v1",
+  "data_yaml": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\dataset\\releases\\v1\\data.yaml",
+  "splits": {
+    "train_images": 35,
+    "val_images": 7,
+    "test_images": 8
+  },
+  "class_distribution": {
+    "train": {
+      "0": 37,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0
+    },
+    "val": {
+      "0": 8,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0
+    },
+    "test": {
+      "0": 7,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0
+    }
+  },
+  "leakage_protection": "CONTINUOUS_TEMPORAL_BLOCK_SPLIT (NO INTERLEAVED SHUFFLE)"
+}

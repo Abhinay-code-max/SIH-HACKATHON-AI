@@ -1,0 +1,49 @@
+{
+  "model_version": "YOLO-L-v001",
+  "dataset_version": "v1",
+  "date": "2026-09-04T10:02:27.873868+00:00",
+  "avg_latency_ms": 405.87,
+  "fps_throughput": 2.5,
+  "operational_metrics": {
+    "false_positives_per_hour": 2700.0,
+    "operational_rating": "ACCEPTABLE"
+  },
+  "scenarios": {
+    "OVERALL": {
+      "precision": 70.0,
+      "recall": 100.0,
+      "f1": 82.4,
+      "fp_count": 3
+    },
+    "DAY": {
+      "precision": 70.0,
+      "recall": 100.0,
+      "f1": 82.4,
+      "fp_count": 3
+    },
+    "NIGHT_LOW_LIGHT": {
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "fp_count": 0
+    },
+    "DISTANT_OBJECTS": {
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "fp_count": 0
+    }
+  },
+  "classes": {
+    "0": {
+      "name": "person",
+      "precision": 100.0,
+      "recall": 100.0
+    },
+    "8": {
+      "name": "bag",
+      "precision": 0.0,
+      "recall": 100.0
+    }
+  }
+}
