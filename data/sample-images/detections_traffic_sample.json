@@ -1,0 +1,105 @@
+{
+  "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg",
+  "resolution": {
+    "width": 810,
+    "height": 1080
+  },
+  "model_used": "yolov8l.pt",
+  "device": "cuda",
+  "inference_latency_ms": 2323.89,
+  "fps_equivalent": 0.4,
+  "total_detections": 6,
+  "detections": [
+    {
+      "detection_id": "det_001",
+      "class": "bus",
+      "confidence": 0.9549,
+      "bbox": [
+        2.13,
+        230.65,
+        804.59,
+        738.54
+      ],
+      "normalized_center": [
+        0.498,
+        0.4487
+      ]
+    },
+    {
+      "detection_id": "det_002",
+      "class": "person",
+      "confidence": 0.9184,
+      "bbox": [
+        668.18,
+        391.41,
+        809.52,
+        880.92
+      ],
+      "normalized_center": [
+        0.9122,
+        0.589
+      ]
+    },
+    {
+      "detection_id": "det_003",
+      "class": "person",
+      "confidence": 0.9064,
+      "bbox": [
+        49.03,
+        399.24,
+        247.55,
+        904.42
+      ],
+      "normalized_center": [
+        0.1831,
+        0.6035
+      ]
+    },
+    {
+      "detection_id": "det_004",
+      "class": "person",
+      "confidence": 0.8805,
+      "bbox": [
+        222.46,
+        406.75,
+        344.57,
+        859.4
+      ],
+      "normalized_center": [
+        0.35,
+        0.5862
+      ]
+    },
+    {
+      "detection_id": "det_005",
+      "class": "person",
+      "confidence": 0.6746,
+      "bbox": [
+        0.08,
+        543.26,
+        78.26,
+        876.13
+      ],
+      "normalized_center": [
+        0.0484,
+        0.6571
+      ]
+    },
+    {
+      "detection_id": "det_006",
+      "class": "bicycle",
+      "confidence": 0.4105,
+      "bbox": [
+        665.97,
+        16.74,
+        757.04,
+        89.53
+      ],
+      "normalized_center": [
+        0.8784,
+        0.0492
+      ]
+    }
+  ],
+  "annotated_image_path": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\annotated_traffic_sample.jpg"
+}

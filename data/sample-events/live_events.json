@@ -1,0 +1,53 @@
+[
+  {
+    "event_id": "evt_0001",
+    "timestamp": "2026-09-04T09:37:14.589401+00:00",
+    "source_id": "CAM_01",
+    "event_type": "crowd_density",
+    "class_name": "person_group",
+    "confidence": 0.92,
+    "bbox": [
+      0.0,
+      0.0,
+      640.0,
+      480.0
+    ],
+    "severity": "medium",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Pedestrian Zone Alpha"
+    },
+    "metadata": {
+      "rule": "CROWD_DENSITY_EXCEEDED",
+      "detected_count": 4,
+      "threshold": 3,
+      "frame_index": 101
+    }
+  },
+  {
+    "event_id": "evt_0002",
+    "timestamp": "2026-09-04T09:37:14.589401+00:00",
+    "source_id": "CAM_01",
+    "event_type": "unauthorized_vehicle",
+    "class_name": "bus",
+    "confidence": 0.9549,
+    "bbox": [
+      2.13,
+      230.65,
+      804.59,
+      738.54
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Pedestrian Zone Alpha"
+    },
+    "metadata": {
+      "rule": "VEHICLE_SECURITY_EVENT",
+      "vehicle_type": "bus",
+      "frame_index": 101
+    }
+  }
+]

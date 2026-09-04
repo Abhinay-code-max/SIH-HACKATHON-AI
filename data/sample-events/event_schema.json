@@ -1,0 +1,280 @@
+{
+  "SecurityEvent": {
+    "$defs": {
+      "EventType": {
+        "enum": [
+          "object_detected",
+          "crowd_density",
+          "unauthorized_vehicle",
+          "zone_intrusion",
+          "loitering"
+        ],
+        "title": "EventType",
+        "type": "string"
+      },
+      "GeoLocation": {
+        "properties": {
+          "lat": {
+            "description": "Latitude coordinate",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "description": "Longitude coordinate",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "zone_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "Demonstration Zone",
+            "description": "Local region identifier",
+            "title": "Zone Name"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "title": "GeoLocation",
+        "type": "object"
+      },
+      "SeverityLevel": {
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ],
+        "title": "SeverityLevel",
+        "type": "string"
+      }
+    },
+    "properties": {
+      "event_id": {
+        "description": "Unique event ID, e.g. 'evt_20260904_001'",
+        "title": "Event Id",
+        "type": "string"
+      },
+      "timestamp": {
+        "description": "ISO 8601 UTC timestamp",
+        "title": "Timestamp",
+        "type": "string"
+      },
+      "source_id": {
+        "description": "Camera or sensor ID, e.g. 'CAM_01'",
+        "title": "Source Id",
+        "type": "string"
+      },
+      "event_type": {
+        "$ref": "#/$defs/EventType",
+        "default": "object_detected"
+      },
+      "class_name": {
+        "description": "Detected object class (e.g. person, car, bus)",
+        "title": "Class Name",
+        "type": "string"
+      },
+      "confidence": {
+        "maximum": 1.0,
+        "minimum": 0.0,
+        "title": "Confidence",
+        "type": "number"
+      },
+      "bbox": {
+        "description": "[x1, y1, x2, y2] coordinates",
+        "items": {
+          "type": "number"
+        },
+        "title": "Bbox",
+        "type": "array"
+      },
+      "severity": {
+        "$ref": "#/$defs/SeverityLevel",
+        "default": "low"
+      },
+      "location": {
+        "$ref": "#/$defs/GeoLocation",
+        "description": "Associated geographic coordinate"
+      },
+      "metadata": {
+        "additionalProperties": true,
+        "description": "Custom local metadata",
+        "title": "Metadata",
+        "type": "object"
+      }
+    },
+    "required": [
+      "event_id",
+      "source_id",
+      "class_name",
+      "confidence",
+      "bbox",
+      "location"
+    ],
+    "title": "SecurityEvent",
+    "type": "object"
+  },
+  "CameraAsset": {
+    "$defs": {
+      "CameraStatus": {
+        "enum": [
+          "ONLINE",
+          "OFFLINE",
+          "DEGRADED"
+        ],
+        "title": "CameraStatus",
+        "type": "string"
+      },
+      "GeoLocation": {
+        "properties": {
+          "lat": {
+            "description": "Latitude coordinate",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Lat",
+            "type": "number"
+          },
+          "lon": {
+            "description": "Longitude coordinate",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Lon",
+            "type": "number"
+          },
+          "zone_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "Demonstration Zone",
+            "description": "Local region identifier",
+            "title": "Zone Name"
+          }
+        },
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "title": "GeoLocation",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "camera_id": {
+        "description": "Unique camera identifier, e.g. 'CAM_01'",
+        "title": "Camera Id",
+        "type": "string"
+      },
+      "name": {
+        "description": "Descriptive camera name, e.g. 'Gate 1 Entrance'",
+        "title": "Name",
+        "type": "string"
+      },
+      "stream_source": {
+        "description": "Local source: webcam index ('0') or local MP4 path",
+        "title": "Stream Source",
+        "type": "string"
+      },
+      "status": {
+        "$ref": "#/$defs/CameraStatus",
+        "default": "ONLINE"
+      },
+      "location": {
+        "$ref": "#/$defs/GeoLocation",
+        "description": "Coordinates on local offline map"
+      },
+      "resolution": {
+        "default": "640x480",
+        "title": "Resolution",
+        "type": "string"
+      },
+      "target_fps": {
+        "default": 30,
+        "title": "Target Fps",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "camera_id",
+      "name",
+      "stream_source",
+      "location"
+    ],
+    "title": "CameraAsset",
+    "type": "object"
+  },
+  "SystemHealth": {
+    "properties": {
+      "status": {
+        "default": "healthy",
+        "description": "'healthy' | 'degraded' | 'error'",
+        "title": "Status",
+        "type": "string"
+      },
+      "offline_mode": {
+        "default": true,
+        "description": "Strictly True for zero-cloud architecture",
+        "title": "Offline Mode",
+        "type": "boolean"
+      },
+      "device": {
+        "description": "'cuda' or 'cpu'",
+        "title": "Device",
+        "type": "string"
+      },
+      "device_name": {
+        "description": "GPU model name or CPU",
+        "title": "Device Name",
+        "type": "string"
+      },
+      "active_model": {
+        "description": "Loaded weights file name, e.g. 'yolov8l.pt'",
+        "title": "Active Model",
+        "type": "string"
+      },
+      "vram_allocated_mb": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Vram Allocated Mb"
+      },
+      "cameras_active": {
+        "default": 1,
+        "title": "Cameras Active",
+        "type": "integer"
+      },
+      "timestamp": {
+        "title": "Timestamp",
+        "type": "string"
+      }
+    },
+    "required": [
+      "device",
+      "device_name",
+      "active_model"
+    ],
+    "title": "SystemHealth",
+    "type": "object"
+  }
+}

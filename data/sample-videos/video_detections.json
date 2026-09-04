@@ -1,0 +1,886 @@
+{
+  "source": "0",
+  "resolution": "640x480",
+  "total_frames": 1829,
+  "processed_frames": 1829,
+  "skipped_frames": 0,
+  "model": "yolov8l.pt",
+  "device": "cuda",
+  "avg_inference_latency_ms": 24.02,
+  "avg_inference_fps": 41.6,
+  "overall_throughput_fps": 20.8,
+  "total_event_frames": 1670,
+  "events": [
+    {
+      "frame_index": 1,
+      "timestamp_sec": 0.033,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.849,
+          "bbox": [
+            28.0,
+            150.1,
+            595.9,
+            479.7
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 2,
+      "timestamp_sec": 0.067,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            27.1,
+            129.7,
+            617.5,
+            479.5
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 3,
+      "timestamp_sec": 0.1,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            27.6,
+            129.7,
+            617.1,
+            479.5
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 4,
+      "timestamp_sec": 0.133,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.952,
+          "bbox": [
+            27.6,
+            130.6,
+            616.1,
+            479.5
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 5,
+      "timestamp_sec": 0.167,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.951,
+          "bbox": [
+            28.0,
+            131.4,
+            616.1,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 6,
+      "timestamp_sec": 0.2,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            29.2,
+            131.7,
+            615.8,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 7,
+      "timestamp_sec": 0.233,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.954,
+          "bbox": [
+            27.9,
+            132.0,
+            615.9,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 8,
+      "timestamp_sec": 0.267,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.952,
+          "bbox": [
+            28.0,
+            132.4,
+            615.3,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 9,
+      "timestamp_sec": 0.3,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.953,
+          "bbox": [
+            28.1,
+            132.2,
+            614.3,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 10,
+      "timestamp_sec": 0.333,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.953,
+          "bbox": [
+            27.2,
+            132.6,
+            615.1,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 11,
+      "timestamp_sec": 0.367,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.952,
+          "bbox": [
+            26.6,
+            132.6,
+            614.9,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 12,
+      "timestamp_sec": 0.4,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.951,
+          "bbox": [
+            26.0,
+            132.8,
+            616.4,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 13,
+      "timestamp_sec": 0.433,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.955,
+          "bbox": [
+            26.8,
+            132.7,
+            615.0,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 14,
+      "timestamp_sec": 0.467,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.953,
+          "bbox": [
+            26.8,
+            132.9,
+            614.9,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 15,
+      "timestamp_sec": 0.5,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            26.7,
+            133.2,
+            615.5,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 16,
+      "timestamp_sec": 0.533,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.953,
+          "bbox": [
+            25.8,
+            133.4,
+            614.9,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 17,
+      "timestamp_sec": 0.567,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.952,
+          "bbox": [
+            27.3,
+            133.6,
+            615.7,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 18,
+      "timestamp_sec": 0.6,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.954,
+          "bbox": [
+            27.6,
+            133.0,
+            617.2,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 19,
+      "timestamp_sec": 0.633,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.955,
+          "bbox": [
+            27.0,
+            133.1,
+            615.2,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 20,
+      "timestamp_sec": 0.667,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.951,
+          "bbox": [
+            26.9,
+            133.1,
+            615.1,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 21,
+      "timestamp_sec": 0.7,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            26.6,
+            132.7,
+            615.4,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 22,
+      "timestamp_sec": 0.733,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.951,
+          "bbox": [
+            27.3,
+            132.8,
+            615.1,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 23,
+      "timestamp_sec": 0.767,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            27.6,
+            132.8,
+            616.0,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 24,
+      "timestamp_sec": 0.8,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            28.9,
+            132.7,
+            615.9,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 25,
+      "timestamp_sec": 0.833,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.952,
+          "bbox": [
+            26.0,
+            133.1,
+            615.5,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 26,
+      "timestamp_sec": 0.867,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.946,
+          "bbox": [
+            28.8,
+            133.2,
+            614.5,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 27,
+      "timestamp_sec": 0.9,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            27.1,
+            133.2,
+            614.8,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 28,
+      "timestamp_sec": 0.933,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            25.0,
+            133.4,
+            615.1,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 29,
+      "timestamp_sec": 0.967,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.948,
+          "bbox": [
+            27.4,
+            133.3,
+            614.8,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 30,
+      "timestamp_sec": 1.0,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            25.9,
+            133.4,
+            614.7,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 31,
+      "timestamp_sec": 1.033,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            28.8,
+            133.2,
+            614.7,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 32,
+      "timestamp_sec": 1.067,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            27.8,
+            133.3,
+            614.5,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 33,
+      "timestamp_sec": 1.1,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.949,
+          "bbox": [
+            28.4,
+            133.7,
+            615.6,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 34,
+      "timestamp_sec": 1.133,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.948,
+          "bbox": [
+            25.9,
+            133.6,
+            610.3,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 35,
+      "timestamp_sec": 1.167,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.948,
+          "bbox": [
+            25.0,
+            133.0,
+            603.3,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 36,
+      "timestamp_sec": 1.2,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.922,
+          "bbox": [
+            23.2,
+            132.9,
+            594.8,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 37,
+      "timestamp_sec": 1.233,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.95,
+          "bbox": [
+            22.3,
+            132.7,
+            597.4,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 38,
+      "timestamp_sec": 1.267,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.941,
+          "bbox": [
+            19.3,
+            132.7,
+            595.1,
+            479.3
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 39,
+      "timestamp_sec": 1.3,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.944,
+          "bbox": [
+            4.8,
+            132.3,
+            593.5,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 40,
+      "timestamp_sec": 1.333,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.944,
+          "bbox": [
+            0.4,
+            132.4,
+            596.4,
+            479.4
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 41,
+      "timestamp_sec": 1.367,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.933,
+          "bbox": [
+            18.7,
+            131.7,
+            626.3,
+            479.6
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 42,
+      "timestamp_sec": 1.4,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.895,
+          "bbox": [
+            18.9,
+            130.4,
+            636.8,
+            479.6
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 43,
+      "timestamp_sec": 1.433,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.907,
+          "bbox": [
+            8.8,
+            129.1,
+            607.1,
+            479.6
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 44,
+      "timestamp_sec": 1.467,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.895,
+          "bbox": [
+            1.9,
+            129.3,
+            600.2,
+            479.7
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 45,
+      "timestamp_sec": 1.5,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.907,
+          "bbox": [
+            4.7,
+            128.2,
+            618.3,
+            479.7
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 46,
+      "timestamp_sec": 1.533,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.908,
+          "bbox": [
+            2.7,
+            129.5,
+            599.4,
+            479.6
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 47,
+      "timestamp_sec": 1.567,
+      "detections_count": 2,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.917,
+          "bbox": [
+            0.5,
+            128.8,
+            593.3,
+            479.5
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.471,
+          "bbox": [
+            408.0,
+            149.2,
+            639.5,
+            475.9
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 48,
+      "timestamp_sec": 1.6,
+      "detections_count": 2,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.93,
+          "bbox": [
+            0.0,
+            127.7,
+            584.1,
+            479.5
+          ]
+        },
+        {
+          "class": "person",
+          "confidence": 0.452,
+          "bbox": [
+            409.8,
+            147.4,
+            639.6,
+            458.5
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 49,
+      "timestamp_sec": 1.633,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.922,
+          "bbox": [
+            11.4,
+            128.1,
+            638.5,
+            479.7
+          ]
+        }
+      ]
+    },
+    {
+      "frame_index": 50,
+      "timestamp_sec": 1.667,
+      "detections_count": 1,
+      "detections": [
+        {
+          "class": "person",
+          "confidence": 0.911,
+          "bbox": [
+            4.9,
+            124.0,
+            639.9,
+            479.4
+          ]
+        }
+      ]
+    }
+  ],
+  "annotated_video_path": "data/sample-videos/annotated_surveillance.mp4"
+}

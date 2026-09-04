@@ -1,0 +1,69 @@
+{
+  "type": "FeatureCollection",
+  "name": "CameraAssetRegistry",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "CAM_01",
+      "properties": {
+        "camera_id": "CAM_01",
+        "name": "Live Webcam / Main Demonstration Feed",
+        "zone_id": "ZONE_01",
+        "zone_name": "Pedestrian Concourse & Public Plaza",
+        "status": "ONLINE",
+        "source": "0",
+        "resolution": "640x480",
+        "fps": 30,
+        "heading_degrees": 90
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.3765, 17.4435]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAM_02",
+      "properties": {
+        "camera_id": "CAM_02",
+        "name": "Gate 1 Vehicle Entry CCTV",
+        "zone_id": "ZONE_02",
+        "zone_name": "Gate 1 Access & Vehicle Checkpoint",
+        "status": "ONLINE",
+        "source": "data/sample-videos/sample_surveillance.mp4",
+        "resolution": "1920x1080",
+        "fps": 30,
+        "heading_degrees": 180
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.3795, 17.4435]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAM_03",
+      "properties": {
+        "camera_id": "CAM_03",
+        "name": "Perimeter Command CCTV",
+        "zone_id": "ZONE_03",
+        "zone_name": "Critical Infrastructure & Command Perimeter",
+        "status": "ONLINE",
+        "source": "data/sample-images/traffic_sample.jpg",
+        "resolution": "1920x1080",
+        "fps": 15,
+        "heading_degrees": 270
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.3780, 17.4465]
+      }
+    }
+  ]
+}

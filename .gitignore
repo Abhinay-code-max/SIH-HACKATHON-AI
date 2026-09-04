@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pt
+*.onnx
+*.weights
+
+# Environment & OS
+.env
+.DS_Store
+Thumbs.db
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+
+# Media & Large test files
+data/sample-videos/*.mp4
+data/sample-videos/*.avi

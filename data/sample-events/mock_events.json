@@ -1,0 +1,140 @@
+[
+  {
+    "event_id": "evt_demo_001",
+    "timestamp": "2026-09-04T09:26:15.121358+00:00",
+    "source_id": "CAM_01",
+    "event_type": "object_detected",
+    "class_name": "bus",
+    "confidence": 0.9549,
+    "bbox": [
+      2.13,
+      230.65,
+      804.59,
+      738.54
+    ],
+    "severity": "medium",
+    "location": {
+      "lat": 17.385,
+      "lon": 78.4867,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg"
+    }
+  },
+  {
+    "event_id": "evt_demo_002",
+    "timestamp": "2026-09-04T09:26:15.121358+00:00",
+    "source_id": "CAM_01",
+    "event_type": "object_detected",
+    "class_name": "person",
+    "confidence": 0.9184,
+    "bbox": [
+      668.18,
+      391.41,
+      809.52,
+      880.92
+    ],
+    "severity": "low",
+    "location": {
+      "lat": 17.3852,
+      "lon": 78.4869,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg"
+    }
+  },
+  {
+    "event_id": "evt_demo_003",
+    "timestamp": "2026-09-04T09:26:15.121358+00:00",
+    "source_id": "CAM_01",
+    "event_type": "object_detected",
+    "class_name": "person",
+    "confidence": 0.9064,
+    "bbox": [
+      49.03,
+      399.24,
+      247.55,
+      904.42
+    ],
+    "severity": "low",
+    "location": {
+      "lat": 17.3854,
+      "lon": 78.4871,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg"
+    }
+  },
+  {
+    "event_id": "evt_demo_004",
+    "timestamp": "2026-09-04T09:26:15.121358+00:00",
+    "source_id": "CAM_01",
+    "event_type": "object_detected",
+    "class_name": "person",
+    "confidence": 0.8805,
+    "bbox": [
+      222.46,
+      406.75,
+      344.57,
+      859.4
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.3856,
+      "lon": 78.4873,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg"
+    }
+  },
+  {
+    "event_id": "evt_demo_005",
+    "timestamp": "2026-09-04T09:26:15.121358+00:00",
+    "source_id": "CAM_01",
+    "event_type": "object_detected",
+    "class_name": "person",
+    "confidence": 0.6746,
+    "bbox": [
+      0.08,
+      543.26,
+      78.26,
+      876.13
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.385800000000003,
+      "lon": 78.4875,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg"
+    }
+  },
+  {
+    "event_id": "evt_demo_006",
+    "timestamp": "2026-09-04T09:26:15.121358+00:00",
+    "source_id": "CAM_01",
+    "event_type": "object_detected",
+    "class_name": "bicycle",
+    "confidence": 0.4105,
+    "bbox": [
+      665.97,
+      16.74,
+      757.04,
+      89.53
+    ],
+    "severity": "low",
+    "location": {
+      "lat": 17.386000000000003,
+      "lon": 78.4877,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "source_image": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\data\\sample-images\\traffic_sample.jpg"
+    }
+  }
+]
