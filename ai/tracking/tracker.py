@@ -22,7 +22,7 @@ from ai.inference.loader import get_device, load_local_model
 
 
 class ObjectTracker:
-    def __init__(self, model_name: str = "yolov8l.pt", max_history_points: int = 30):
+    def __init__(self, model_name: str = "auto", max_history_points: int = 30):
         self.model_name = model_name
         self.model = None
         self.device = get_device()
@@ -30,14 +30,36 @@ class ObjectTracker:
         # track_id -> {class_name, history: deque([(x, y)]), first_seen: float, last_seen: float, conf: float}
         self.tracks: Dict[int, Dict[str, Any]] = {}
 
+    def _resolve_model_path(self) -> str:
+        """Resolves latest registered model if available, else defaults to yolov8l.pt."""
+        if self.model_name != "auto":
+            return self.model_name
+
+        index_file = ROOT_DIR / "models" / "registry" / "registry_index.json"
+        if index_file.is_file():
+            try:
+                import json
+                with open(index_file, "r", encoding="utf-8") as f:
+                    idx = json.load(f)
+                runs = idx.get("models", [])
+                if runs:
+                    latest = runs[-1]
+                    weights = ROOT_DIR / latest.get("weights_path", "")
+                    if weights.is_file():
+                        return str(weights)
+            except Exception:
+                pass
+        return "yolov8l.pt"
+
     def _ensure_model(self):
         if self.model is None:
-            self.model = load_local_model(self.model_name)
+            resolved = self._resolve_model_path()
+            self.model = load_local_model(resolved)
 
     def update(
         self,
         frame: np.ndarray,
-        conf_threshold: float = 0.35,
+        conf_threshold: float = 0.45,
         tracker_type: str = "bytetrack.yaml",
     ) -> Tuple[List[Dict[str, Any]], np.ndarray]:
         """
@@ -47,16 +69,25 @@ class ObjectTracker:
         """
         self._ensure_model()
         now = time.time()
-        # Filter strictly for surveillance classes (person, vehicles, animals, bags)
-        # COCO IDs: 0:person, 1:bicycle, 2:car, 3:motorcycle, 5:bus, 7:truck, 14-23:animals, 24:backpack, 26:handbag, 28:suitcase
-        surveillance_class_ids = [0, 1, 2, 3, 5, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28]
+        h, w = frame.shape[:2]
 
-        # Run tracking with persistent IDs restricted to surveillance classes
+        # Dynamic class filtering based on loaded model schema
+        num_classes = len(self.model.names)
+        if num_classes <= 15:
+            # Custom fine-tuned surveillance model (e.g. 9 master classes)
+            allowed_classes = list(range(num_classes))
+        else:
+            # Pretrained 80-class COCO model: surveillance targets + chair for room validation
+            # 0: person, 1: bicycle, 2: car, 3: motorcycle, 5: bus, 7: truck,
+            # 14-23: animals, 24: backpack, 26: handbag, 28: suitcase, 56: chair
+            allowed_classes = [0, 1, 2, 3, 5, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 56]
+
+        # Run ByteTrack tracking with persistent IDs
         results = self.model.track(
             source=frame,
             persist=True,
             tracker=tracker_type,
-            classes=surveillance_class_ids,
+            classes=allowed_classes,
             conf=conf_threshold,
             device=self.device,
             verbose=False,
@@ -66,18 +97,56 @@ class ObjectTracker:
         annotated = frame.copy()
 
         res = results[0]
+        raw_boxes = []
+
         if res.boxes is not None and len(res.boxes) > 0:
             for box in res.boxes:
-                # Track ID can be None if unassigned
                 track_id = int(box.id[0].item()) if box.id is not None else None
                 cls_id = int(box.cls[0].item())
                 cls_name = self.model.names[cls_id]
                 conf = float(box.conf[0].item())
                 x1, y1, x2, y2 = map(float, box.xyxy[0].tolist())
 
+                # Filter out tiny noise specks (< 20px)
+                if (x2 - x1) < 20 or (y2 - y1) < 20:
+                    continue
+
+                raw_boxes.append({
+                    "track_id": track_id,
+                    "cls_id": cls_id,
+                    "cls_name": cls_name,
+                    "conf": conf,
+                    "bbox": [x1, y1, x2, y2],
+                })
+
+            # Overlap & Containment Suppression:
+            # If a chair detection is substantially contained inside or overlapping with a person's upper body,
+            # suppress the chair box so it doesn't clutter the person's face/chest.
+            person_boxes = [b["bbox"] for b in raw_boxes if b["cls_name"] == "person"]
+            filtered_boxes = []
+
+            for b in raw_boxes:
+                if b["cls_name"] == "chair" and person_boxes:
+                    bx1, by1, bx2, by2 = b["bbox"]
+                    chair_cx, chair_cy = (bx1 + bx2) / 2.0, (by1 + by2) / 2.0
+                    # Check if chair center lies within any person box
+                    is_contained = any(
+                        px1 <= chair_cx <= px2 and py1 <= chair_cy <= py2
+                        for px1, py1, px2, py2 in person_boxes
+                    )
+                    if is_contained:
+                        continue
+                filtered_boxes.append(b)
+
+            for b in filtered_boxes:
+                track_id = b["track_id"]
+                cls_name = b["cls_name"]
+                conf = b["conf"]
+                x1, y1, x2, y2 = b["bbox"]
+
                 # Ground contact center point (bottom center of bbox)
                 cx = (x1 + x2) / 2.0
-                cy = y2 - 10.0  # ground contact point rather than face center
+                cy = y2 - 10.0
 
                 if track_id is not None:
                     if track_id not in self.tracks:

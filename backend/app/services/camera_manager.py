@@ -26,7 +26,7 @@ class CameraStreamWorker:
         self.camera_id = camera_id
         self.source = source
         self.name = name
-        self.tracker = ObjectTracker(model_name="yolov8l.pt")
+        self.tracker = ObjectTracker(model_name="auto")
         self.status = "ONLINE"
         self.fps = 0.0
         self.active_tracks_count = 0

@@ -1,0 +1,59 @@
+{
+  "model_version": "YOLO-L-v002",
+  "dataset_version": "v2",
+  "date": "2026-09-05T08:54:29.990754+00:00",
+  "avg_latency_ms": 389.96,
+  "fps_throughput": 2.6,
+  "operational_metrics": {
+    "false_positives_per_hour": 2215.4,
+    "operational_rating": "ACCEPTABLE"
+  },
+  "scenarios": {
+    "OVERALL": {
+      "precision": 81.0,
+      "recall": 100.0,
+      "f1": 89.5,
+      "fp_count": 4
+    },
+    "DAY": {
+      "precision": 81.0,
+      "recall": 100.0,
+      "f1": 89.5,
+      "fp_count": 4
+    },
+    "NIGHT_LOW_LIGHT": {
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "fp_count": 0
+    },
+    "DISTANT_OBJECTS": {
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "fp_count": 0
+    }
+  },
+  "classes": {
+    "0": {
+      "name": "person",
+      "precision": 100.0,
+      "recall": 100.0
+    },
+    "3": {
+      "name": "bus",
+      "precision": 100.0,
+      "recall": 100.0
+    },
+    "5": {
+      "name": "bicycle",
+      "precision": 0.0,
+      "recall": 100.0
+    },
+    "8": {
+      "name": "bag",
+      "precision": 0.0,
+      "recall": 100.0
+    }
+  }
+}

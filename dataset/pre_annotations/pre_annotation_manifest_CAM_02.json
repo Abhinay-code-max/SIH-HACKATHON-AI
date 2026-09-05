@@ -1,0 +1,9 @@
+{
+  "camera_id": "CAM_02",
+  "total_images": 10,
+  "total_boxes_generated": 50,
+  "uncertain_boxes_flagged": 4,
+  "empty_negative_frames": 0,
+  "avg_time_per_frame_ms": 479.25,
+  "output_directory": "C:\\Users\\Abhinay Kandrika\\OneDrive\\Desktop\\sih hackathon\\dataset\\pre_annotations\\CAM_02"
+}

@@ -23,6 +23,11 @@ def find_local_model(model_name_or_path: str = "yolov8s.pt") -> Path:
     """Resolve model path inside ai/models/ strictly without network access."""
     base_models_dir = Path(__file__).resolve().parent.parent / "models"
 
+    root_dir = Path(__file__).resolve().parent.parent.parent
+    candidate_in_root = root_dir / model_name_or_path
+    if candidate_in_root.is_file():
+        return candidate_in_root.resolve()
+
     candidate = Path(model_name_or_path)
     if candidate.is_file():
         return candidate.resolve()

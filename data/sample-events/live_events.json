@@ -1249,5 +1249,221 @@
       "dwell_seconds": 10.5,
       "track_id": 27
     }
+  },
+  {
+    "event_id": "EVT_00001",
+    "timestamp": "2026-09-04T10:25:17.863187+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_RESTRICTED_ALPHA",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00002",
+    "timestamp": "2026-09-04T10:25:17.920778+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "tripwire_id": "WIRE_BORDER_FENCE_01",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00003",
+    "timestamp": "2026-09-04T10:25:17.940298+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 10.5,
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00001",
+    "timestamp": "2026-09-05T08:51:41.896241+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_RESTRICTED_ALPHA",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00002",
+    "timestamp": "2026-09-05T08:51:41.927395+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "tripwire_id": "WIRE_BORDER_FENCE_01",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00003",
+    "timestamp": "2026-09-05T08:51:41.946457+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 10.5,
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00001",
+    "timestamp": "2026-09-05T08:55:10.541793+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_RESTRICTED_ALPHA",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00002",
+    "timestamp": "2026-09-05T08:55:10.661969+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "tripwire_id": "WIRE_BORDER_FENCE_01",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00003",
+    "timestamp": "2026-09-05T08:55:10.684017+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 10.5,
+      "track_id": 27
+    }
   }
 ]

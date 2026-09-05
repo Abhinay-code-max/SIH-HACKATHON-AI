@@ -1,0 +1,12 @@
+{
+  "image_filename": "CAM_NEG_frame_0012.jpg",
+  "camera_id": "CAM_NEG",
+  "resolution": [
+    640,
+    480
+  ],
+  "status": "HARD_NEGATIVE",
+  "human_verified": true,
+  "total_objects": 0,
+  "annotations": []
+}

@@ -1,0 +1,138 @@
+{
+  "camera_id": "CAM_02",
+  "source_video": "sample_surveillance.mp4",
+  "total_extracted": 10,
+  "discarded_redundant": 0,
+  "frames": [
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000015.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000015.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 15,
+      "timestamp_sec": 0.5,
+      "motion_score": 100.0,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000030.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000030.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 30,
+      "timestamp_sec": 1.0,
+      "motion_score": 23.48,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000045.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000045.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 45,
+      "timestamp_sec": 1.5,
+      "motion_score": 1.6,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000060.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000060.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 60,
+      "timestamp_sec": 2.0,
+      "motion_score": 21.85,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000075.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000075.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 75,
+      "timestamp_sec": 2.5,
+      "motion_score": 27.12,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000090.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000090.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 90,
+      "timestamp_sec": 3.0,
+      "motion_score": 25.8,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000105.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000105.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 105,
+      "timestamp_sec": 3.5,
+      "motion_score": 23.0,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000120.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000120.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 120,
+      "timestamp_sec": 4.0,
+      "motion_score": 1.59,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000135.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000135.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 135,
+      "timestamp_sec": 4.5,
+      "motion_score": 21.57,
+      "resolution": [
+        810,
+        1080
+      ]
+    },
+    {
+      "filename": "CAM_02_sample_surveillance_frame_000150.jpg",
+      "path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000150.jpg",
+      "camera_id": "CAM_02",
+      "source_video": "sample_surveillance.mp4",
+      "frame_index": 150,
+      "timestamp_sec": 5.0,
+      "motion_score": 26.94,
+      "resolution": [
+        810,
+        1080
+      ]
+    }
+  ]
+}

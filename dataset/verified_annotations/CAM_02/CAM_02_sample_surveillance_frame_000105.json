@@ -1,0 +1,109 @@
+{
+  "image_filename": "CAM_02_sample_surveillance_frame_000105.jpg",
+  "image_path": "dataset\\extracted_frames\\CAM_02\\CAM_02_sample_surveillance_frame_000105.jpg",
+  "camera_id": "CAM_02",
+  "resolution": [
+    810,
+    1080
+  ],
+  "total_objects": 5,
+  "status": "VERIFIED_GROUND_TRUTH",
+  "annotations": [
+    {
+      "class_id": 3,
+      "class_name": "bus",
+      "confidence": 0.952,
+      "bbox_xyxy": [
+        4.7,
+        231.0,
+        791.3,
+        738.8
+      ],
+      "bbox_yolo_normalized": [
+        0.491358,
+        0.448981,
+        0.971111,
+        0.470185
+      ],
+      "flag": "PREDICTED_OK",
+      "human_verified": false
+    },
+    {
+      "class_id": 0,
+      "class_name": "person",
+      "confidence": 0.916,
+      "bbox_xyxy": [
+        653.7,
+        393.1,
+        809.6,
+        882.0
+      ],
+      "bbox_yolo_normalized": [
+        0.903272,
+        0.590324,
+        0.192469,
+        0.452685
+      ],
+      "flag": "PREDICTED_OK",
+      "human_verified": false
+    },
+    {
+      "class_id": 0,
+      "class_name": "person",
+      "confidence": 0.914,
+      "bbox_xyxy": [
+        36.3,
+        398.0,
+        231.9,
+        904.3
+      ],
+      "bbox_yolo_normalized": [
+        0.165556,
+        0.602917,
+        0.241481,
+        0.468796
+      ],
+      "flag": "PREDICTED_OK",
+      "human_verified": false
+    },
+    {
+      "class_id": 0,
+      "class_name": "person",
+      "confidence": 0.87,
+      "bbox_xyxy": [
+        208.2,
+        406.7,
+        329.8,
+        858.8
+      ],
+      "bbox_yolo_normalized": [
+        0.332099,
+        0.58588,
+        0.150123,
+        0.418611
+      ],
+      "flag": "PREDICTED_OK",
+      "human_verified": false
+    },
+    {
+      "class_id": 0,
+      "class_name": "person",
+      "confidence": 0.716,
+      "bbox_xyxy": [
+        0.0,
+        575.1,
+        65.3,
+        871.4
+      ],
+      "bbox_yolo_normalized": [
+        0.040309,
+        0.669676,
+        0.080617,
+        0.274352
+      ],
+      "flag": "PREDICTED_OK",
+      "human_verified": false
+    }
+  ],
+  "human_verified": true
+}
