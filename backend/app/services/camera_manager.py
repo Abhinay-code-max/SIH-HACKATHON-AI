@@ -18,6 +18,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from ai.tracking.tracker import ObjectTracker
 from ai.events.intelligence_engine import intelligence_engine
+from ai.reid.manager import global_subject_manager
 from mapping.manager import OfflineMapManager
 
 
@@ -62,10 +63,21 @@ class CameraStreamWorker:
                 cv2.circle(annotated, p2, 4, (0, 165, 255), -1)
                 cv2.putText(annotated, f"[TRIPWIRE] {wire['name']}", (p1[0], p1[1] - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 165, 255), 2)
 
-        # 3. Bottom HUD Overlay Bar
+        # 3. Global Re-ID Persistent Badges
+        for t in tracks:
+            gid = t.get("global_display_name")
+            if gid and "bbox" in t:
+                x1, y1 = int(t["bbox"][0]), int(t["bbox"][1])
+                badge_y = max(35, y1 - 22)
+                badge_w = len(gid) * 8 + 8
+                cv2.rectangle(annotated, (x1, badge_y - 13), (x1 + badge_w, badge_y + 4), (15, 23, 42), -1)
+                cv2.rectangle(annotated, (x1, badge_y - 13), (x1 + badge_w, badge_y + 4), (56, 189, 248), 1)
+                cv2.putText(annotated, gid, (x1 + 4, badge_y), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (56, 189, 248), 1)
+
+        # 4. Bottom HUD Overlay Bar
         cv2.rectangle(annotated, (10, h - 36), (w - 10, h - 8), (10, 15, 25), -1)
         cv2.rectangle(annotated, (10, h - 36), (w - 10, h - 8), (40, 55, 80), 1)
-        hud = f"{self.camera_id} // {self.name} | FPS: {self.fps:.1f} | TRACKED TARGETS: {self.active_tracks_count}"
+        hud = f"{self.camera_id} // {self.name} | FPS: {self.fps:.1f} | LOCAL TRACKS: {self.active_tracks_count} | RE-ID: ACTIVE"
         cv2.putText(annotated, hud, (20, h - 17), cv2.FONT_HERSHEY_SIMPLEX, 0.48, (0, 255, 255), 1)
         return annotated
 
@@ -143,13 +155,32 @@ class MultiCameraManager:
 
                 # 1. Update Object Tracking (confidence raised to 0.48 to reject false alarms)
                 tracks, tracked_frame = worker.tracker.update(frame, conf_threshold=0.48)
+
+                # 2. Cross-Camera Global Subject Association (Re-ID)
+                for t in tracks:
+                    try:
+                        subj = global_subject_manager.process_track(
+                            camera_id=camera_id,
+                            local_track_id=t["track_id"],
+                            class_name=t["class_name"],
+                            bbox=t["bbox"],
+                            frame=frame,
+                            dwell_seconds=t.get("dwell_seconds", 0.0),
+                            confidence=t.get("confidence", 0.8),
+                        )
+                        t["global_subject_id"] = subj["subject_id"]
+                        t["global_display_name"] = subj["display_name"]
+                    except Exception:
+                        t["global_subject_id"] = f"SUBJ_{t['track_id']:04d}"
+                        t["global_display_name"] = f"[GLOBAL: {t['class_name'].upper()}]"
+
                 worker.active_tracks_count = len(tracks)
                 worker.latest_tracks = tracks
 
-                # 2. Evaluate Intelligence Rules (Geofences, Tripwires, Loitering)
+                # 3. Evaluate Intelligence Rules (Geofences, Tripwires, Loitering)
                 intelligence_engine.evaluate_tracks(camera_id, tracks, frame)
 
-                # 3. Draw Virtual Boundaries & HUD
+                # 4. Draw Virtual Boundaries, Re-ID Badges & HUD
                 final_frame = worker.draw_overlays(tracked_frame, tracks)
 
                 # Measure FPS

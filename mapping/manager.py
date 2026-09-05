@@ -83,6 +83,14 @@ class OfflineMapManager:
                     "zone_name": ev.get("location", {}).get("zone_name", "Demonstration Perimeter"),
                 })
 
+        # Load cross-camera transit trails from Re-ID engine
+        transits_list = []
+        try:
+            from ai.reid.manager import global_subject_manager
+            transits_list = global_subject_manager.get_recent_transits(limit=10)
+        except Exception:
+            pass
+
         payload = {
             "center": [17.4445, 78.3780],
             "bounds": [
@@ -93,6 +101,7 @@ class OfflineMapManager:
             "roads": self.roads,
             "cameras": list(camera_dict.values()),
             "event_markers": event_markers,
+            "transits": transits_list,
         }
 
         # Save processed bundle
@@ -170,6 +179,33 @@ class OfflineMapManager:
                 <text x="14" y="-12" font-family="monospace" font-size="11" fill="{sev_color}" font-weight="bold">[{sev.upper()}] {ev['type']} ({ev['class']})</text>
             </g>
             """)
+
+        # SVG Transit Vectors for Cross-Camera Re-ID Hand-offs
+        transits_svg = []
+        cams_coord_map = {cam["camera_id"]: (cam["lon"], cam["lat"]) for cam in payload.get("cameras", [])}
+        for tr in payload.get("transits", []):
+            from_c = tr.get("from_camera")
+            to_c = tr.get("to_camera")
+            if from_c in cams_coord_map and to_c in cams_coord_map and from_c != to_c:
+                x1, y1 = to_svg(*cams_coord_map[from_c])
+                x2, y2 = to_svg(*cams_coord_map[to_c])
+                subj_name = tr.get("display_name", tr.get("subject_id", "TARGET"))
+                dur = tr.get("transit_duration_sec", 0.0)
+                mid_x, mid_y = (x1 + x2) / 2.0, (y1 + y2) / 2.0
+                transits_svg.append(f"""
+                <g>
+                    <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#F59E0B" stroke-width="4" stroke-dasharray="8,6" opacity="0.85">
+                        <animate attributeName="stroke-dashoffset" values="28;0" dur="1.2s" repeatCount="indefinite" />
+                    </line>
+                    <circle cx="{mid_x}" cy="{mid_y}" r="6" fill="#F59E0B">
+                        <animate attributeName="r" values="4;7;4" dur="1.5s" repeatCount="indefinite" />
+                    </circle>
+                    <rect x="{mid_x - 65}" y="{mid_y - 20}" width="130" height="18" rx="3" fill="#0F172A" stroke="#F59E0B" stroke-width="1" />
+                    <text x="{mid_x}" y="{mid_y - 7}" font-family="monospace" font-size="10" fill="#FDE047" font-weight="bold" text-anchor="middle">
+                        {subj_name[:12]} ({dur:.0f}s)
+                    </text>
+                </g>
+                """)
 
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -262,6 +298,9 @@ class OfflineMapManager:
 
             <!-- Live Event Alerts -->
             {"".join(evts_svg)}
+
+            <!-- Cross-Camera Re-ID Transit Trails -->
+            {"".join(transits_svg)}
         </svg>
     </div>
 
@@ -270,6 +309,7 @@ class OfflineMapManager:
         <div class="legend-item"><div class="legend-color" style="background:#F59E0B;"></div> Vehicle Checkpoint</div>
         <div class="legend-item"><div class="legend-color" style="background:#EF4444;"></div> Critical Command Perimeter</div>
         <div class="legend-item"><div class="legend-color" style="background:#38BDF8; border-radius: 50%;"></div> Cameras (CAM_01..03)</div>
+        <div class="legend-item"><div class="legend-color" style="background:#F59E0B; border: 1px dashed #FFFFFF;"></div> Re-ID Transit Trail</div>
         <div class="legend-item"><div class="legend-color" style="background:#EF4444; border-radius: 50%;"></div> Critical Alert</div>
     </div>
 </body>

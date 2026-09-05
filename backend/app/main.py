@@ -20,6 +20,7 @@ from backend.app.api.routes import router as api_router
 from backend.app.api.annotation_routes import router as annotation_router
 from backend.app.api.evidence_routes import router as evidence_router
 from backend.app.api.external_ui_routes import router as external_ui_router
+from backend.app.api.reid_routes import router as reid_router
 
 app = FastAPI(
     title="BORDER SENTINEL — Autonomous Defense & Intelligence Grid",
@@ -40,11 +41,16 @@ app.include_router(api_router)
 app.include_router(annotation_router)
 app.include_router(evidence_router)
 app.include_router(external_ui_router)
+app.include_router(reid_router)
 
 # Mount evidence snapshots for operator review
 EVIDENCE_DIR = ROOT_DIR / "data" / "evidence"
 EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/evidence", StaticFiles(directory=str(EVIDENCE_DIR)), name="evidence")
+
+REID_CROPS_DIR = EVIDENCE_DIR / "reid_crops"
+REID_CROPS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/reid_crops", StaticFiles(directory=str(REID_CROPS_DIR)), name="reid_crops")
 
 # Mount extracted frames for local annotation studio
 EXTRACTED_FRAMES_DIR = ROOT_DIR / "dataset" / "extracted_frames"

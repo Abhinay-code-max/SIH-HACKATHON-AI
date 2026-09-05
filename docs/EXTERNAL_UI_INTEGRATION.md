@@ -80,10 +80,31 @@ High-frequency (10 Hz) continuous broadcast for external UI overlays, radar disp
         "center": [300.25, 460.2],
         "dwell_seconds": 32.4,
         "velocity_vector": [0.0, 0.0],
-        "trajectory": [[300.2, 460.0], [300.1, 460.1]]
+        "trajectory": [[300.2, 460.0], [300.1, 460.1]],
+        "global_subject_id": "SUBJ_0001",
+        "global_display_name": "[GLOBAL #01: PERSON]"
       }
     ]
-  }
+  },
+  "global_subjects": [
+    {
+      "subject_id": "SUBJ_0001",
+      "display_name": "[GLOBAL #01: PERSON]",
+      "class_name": "person",
+      "last_camera_id": "CAM_01",
+      "is_active": true,
+      "representative_crop": "/reid_crops/SUBJ_0001_init_1788599100.jpg"
+    }
+  ],
+  "recent_transits": [
+    {
+      "transit_id": "TR_0001",
+      "subject_id": "SUBJ_0001",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 14.2
+    }
+  ]
 }
 ```
 
@@ -162,6 +183,39 @@ socket.onmessage = (event) => {
     "version": "models/registry/YOLO-L-v002/weights/best.pt"
   }
   ```
+
+### 4.5 Cross-Camera Re-ID & Multi-Camera Subject Journey Tracking
+- **`GET /api/reid/subjects`**: List all global subjects tracked across cameras (`?active_only=true&class_name=person`).
+- **`GET /api/reid/subjects/{subject_id}`**: Full chronological journey dossier across cameras with sighting crops, bboxes, dwell times, and transit records.
+- **`GET /api/reid/transits`**: Real-time log of subjects transitioning between different camera sectors (`?limit=25`).
+- **`POST /api/reid/search`**: Upload an arbitrary target crop to perform visual similarity matching across all historical CCTV sightings (returns ranked matches with cosine similarity scores).
+- **`POST /api/reid/reset`**: Reset Re-ID state and journey history for test demonstrations.
+
+#### Global Subject Schema:
+```json
+{
+  "subject_id": "SUBJ_0001",
+  "display_name": "[GLOBAL #01: PERSON]",
+  "class_name": "person",
+  "first_seen": 1788599100.12,
+  "last_seen": 1788599145.80,
+  "first_camera_id": "CAM_01",
+  "last_camera_id": "CAM_02",
+  "is_active": true,
+  "sightings_count": 28,
+  "representative_crop": "/reid_crops/SUBJ_0001_init_1788599100.jpg",
+  "transits": [
+    {
+      "transit_id": "TR_0001",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 14.2,
+      "similarity_score": 0.842,
+      "verdict": "VALID_CORRIDOR: Concourse to Gate 1 Corridor"
+    }
+  ]
+}
+```
 
 ---
 

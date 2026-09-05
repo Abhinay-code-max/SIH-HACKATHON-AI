@@ -399,20 +399,27 @@
                     <rect width="1000" height="800" fill="url(#grid)" />
                     <g id="map-zones"></g>
                     <g id="map-roads"></g>
+                    <g id="map-transits"></g>
                     <g id="map-cameras"></g>
                     <g id="map-alerts"></g>
                 </svg>
             </div>
         </section>
 
-        <!-- Bottom Right: Real-time Event Timeline -->
+        <!-- Bottom Right: Real-time Event Timeline & Re-ID Intelligence -->
         <section class="panel">
-            <div class="panel-header">
-                <span>SECURITY EVENT TIMELINE</span>
-                <span style="color: var(--text-muted); font-family: monospace;">LIVE AUDIT</span>
+            <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; gap:6px;">
+                    <button class="btn" id="btn-tab-timeline" onclick="showPanelTab('timeline')" style="padding:2px 8px; font-size:10px; background:var(--cyan); color:#000;">AUDIT TIMELINE</button>
+                    <button class="btn" id="btn-tab-reid" onclick="showPanelTab('reid')" style="padding:2px 8px; font-size:10px; background:#1E293B;">CROSS-CAM RE-ID</button>
+                </div>
+                <span id="reid-status-badge" style="color: var(--cyan); font-family: monospace; font-size: 10px;">RE-ID ACTIVE</span>
             </div>
             <div class="timeline-panel-body" id="timeline-container">
                 <!-- Timeline logs -->
+            </div>
+            <div class="timeline-panel-body" id="reid-container" style="display: none;">
+                <!-- Re-ID Global Subjects and Transits -->
             </div>
         </section>
     </main>
@@ -570,6 +577,27 @@
                     `;
                 }).join('');
 
+                // Cross-Camera Transits
+                const tG = document.getElementById('map-transits');
+                if (tG) {
+                    const camsMap = {};
+                    (data.cameras || []).forEach(c => camsMap[c.camera_id] = [c.lon, c.lat]);
+                    tG.innerHTML = (data.transits || []).map(tr => {
+                        if (!camsMap[tr.from_camera] || !camsMap[tr.to_camera] || tr.from_camera === tr.to_camera) return '';
+                        const [x1, y1] = toSvg(...camsMap[tr.from_camera]);
+                        const [x2, y2] = toSvg(...camsMap[tr.to_camera]);
+                        const midX = ((parseFloat(x1) + parseFloat(x2)) / 2).toFixed(1);
+                        const midY = ((parseFloat(y1) + parseFloat(y2)) / 2).toFixed(1);
+                        return `
+                            <g>
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#F59E0B" stroke-width="3" stroke-dasharray="6,4" opacity="0.85"/>
+                                <circle cx="${midX}" cy="${midY}" r="4" fill="#F59E0B"/>
+                                <text x="${midX}" y="${midY - 5}" font-family="monospace" font-size="9" fill="#FDE047" text-anchor="middle">${tr.subject_id}</text>
+                            </g>
+                        `;
+                    }).join('');
+                }
+
             } catch (err) {}
         }
 
@@ -611,14 +639,75 @@
             }
         }
 
+        function showPanelTab(tabName) {
+            const timeTab = document.getElementById('timeline-container');
+            const reidTab = document.getElementById('reid-container');
+            const btnTime = document.getElementById('btn-tab-timeline');
+            const btnReid = document.getElementById('btn-tab-reid');
+
+            if (tabName === 'timeline') {
+                timeTab.style.display = 'flex';
+                reidTab.style.display = 'none';
+                btnTime.style.background = 'var(--cyan)';
+                btnTime.style.color = '#000';
+                btnReid.style.background = '#1E293B';
+                btnReid.style.color = 'var(--text)';
+            } else {
+                timeTab.style.display = 'none';
+                reidTab.style.display = 'flex';
+                btnReid.style.background = 'var(--cyan)';
+                btnReid.style.color = '#000';
+                btnTime.style.background = '#1E293B';
+                btnTime.style.color = 'var(--text)';
+                fetchReIdSubjects();
+            }
+        }
+
+        async function fetchReIdSubjects() {
+            try {
+                const res = await fetch('/api/reid/subjects');
+                if (!res.ok) return;
+                const subjects = await res.json();
+                const container = document.getElementById('reid-container');
+                if (!container) return;
+                if (!subjects.length) {
+                    container.innerHTML = '<div style="color:var(--text-muted); padding:10px;">No global subjects tracked yet. Feeds analyzing...</div>';
+                    return;
+                }
+                container.innerHTML = subjects.map(s => {
+                    const statusColor = s.is_active ? 'var(--green)' : 'var(--text-muted)';
+                    const statusText = s.is_active ? 'ONLINE' : 'OFFLINE';
+                    const cropImg = s.representative_crop ? `<img src="${s.representative_crop}" style="width:34px; height:44px; object-fit:cover; border-radius:3px; border:1px solid var(--border);" onerror="this.style.display='none'"/>` : '';
+                    return `
+                        <div class="timeline-row" style="align-items:center; justify-content:space-between; padding:5px 4px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${cropImg}
+                                <div>
+                                    <div style="font-weight:bold; color:var(--cyan); font-size:11px;">${s.display_name}</div>
+                                    <div style="font-size:10px; color:var(--text-muted);">
+                                        Cam: ${s.last_camera_id} | Sightings: ${s.sightings_count} | Transits: ${(s.transits || []).length}
+                                    </div>
+                                </div>
+                            </div>
+                            <span style="font-size:9px; padding:2px 6px; border-radius:3px; background:#1E293B; color:${statusColor}; font-weight:bold;">
+                                ${statusText}
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) {}
+        }
+
         // Initialize polling
         fetchTelemetry();
         fetchEvidenceAndAlerts();
         fetchTacticalMap();
+        fetchReIdSubjects();
 
         setInterval(fetchTelemetry, 3000);
         setInterval(fetchEvidenceAndAlerts, 3000);
         setInterval(fetchTacticalMap, 5000);
+        setInterval(fetchReIdSubjects, 4000);
     </script>
 </body>
 </html>

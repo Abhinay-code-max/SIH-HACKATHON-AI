@@ -3,7 +3,7 @@
   "event_type": "LOITERING_DETECTED",
   "camera_id": "CAM_01",
   "severity": "HIGH",
-  "timestamp": "2026-09-05T09:06:00.908739+00:00",
+  "timestamp": "2026-09-05T11:16:49.568579+00:00",
   "target": {
     "class": "person",
     "confidence": 0.94,

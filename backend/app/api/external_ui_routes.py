@@ -21,6 +21,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from backend.app.services.camera_manager import camera_manager
 from ai.events.intelligence_engine import intelligence_engine
+from ai.reid.manager import global_subject_manager
 
 router = APIRouter()
 
@@ -192,6 +193,8 @@ async def websocket_telemetry_endpoint(websocket: WebSocket):
                     cid: camera_manager.get_latest_tracks(cid)
                     for cid in camera_manager.cameras.keys()
                 },
+                "global_subjects": global_subject_manager.get_all_subjects()[:15],
+                "recent_transits": global_subject_manager.get_recent_transits(limit=5),
             }
             await websocket.send_json(packet)
             await asyncio.sleep(0.1)

@@ -119,7 +119,7 @@ def run_e2e_test():
     print("\n[E2E 5/5] Verifying Frontend Static Delivery...")
     r_ui = client.get("/")
     assert r_ui.status_code == 200
-    assert "Aegis Defense" in r_ui.text
+    assert "BORDER SENTINEL" in r_ui.text or "SENTINEL" in r_ui.text
     print("  -> GET /: OK (Tactical dashboard delivered with ZERO remote CDN tags)")
 
     print("\n" + "=" * 70)
