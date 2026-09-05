@@ -20,3 +20,9 @@ build/
 # Media & Large test files
 data/sample-videos/*.mp4
 data/sample-videos/*.avi
+
+# Evidence & Transient Artifacts
+data/evidence/*
+!data/evidence/.gitkeep
+data/evidence/reid_crops/*
+!data/evidence/reid_crops/.gitkeep

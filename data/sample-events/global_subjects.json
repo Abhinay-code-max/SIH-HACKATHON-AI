@@ -5,14 +5,14 @@
       "subject_id": "SUBJ_0001",
       "display_name": "[GLOBAL #01: CAR]",
       "class_name": "car",
-      "first_seen": 1788607383.9451153,
-      "last_seen": 1788607383.9451153,
+      "first_seen": 1788607996.944214,
+      "last_seen": 1788607996.944214,
       "first_camera_id": "CAM_01",
       "last_camera_id": "CAM_01",
       "last_local_track_id": 7,
       "is_active": true,
       "sightings_count": 1,
-      "representative_crop": "/reid_crops/SUBJ_0001_init_1788607383.jpg",
+      "representative_crop": "/reid_crops/SUBJ_0001_init_1788607996.jpg",
       "signature": [
         -0.010434783063828945,
         0.015857892110943794,
@@ -675,8 +675,8 @@
         {
           "camera_id": "CAM_01",
           "local_track_id": 7,
-          "timestamp": 1788607383.9451153,
-          "iso_time": "2026-09-05T11:23:03.945115+00:00",
+          "timestamp": 1788607996.944214,
+          "iso_time": "2026-09-05T11:33:16.944213+00:00",
           "bbox": [
             50.0,
             50.0,
@@ -684,7 +684,7 @@
             150.0
           ],
           "confidence": 0.85,
-          "crop_url": "/reid_crops/SUBJ_0001_init_1788607383.jpg"
+          "crop_url": "/reid_crops/SUBJ_0001_init_1788607996.jpg"
         }
       ],
       "transits": []

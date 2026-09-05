@@ -6,7 +6,7 @@
   },
   "model_used": "yolov8l.pt",
   "device": "cuda",
-  "inference_latency_ms": 4086.21,
+  "inference_latency_ms": 4708.65,
   "fps_equivalent": 0.2,
   "total_detections": 6,
   "detections": [

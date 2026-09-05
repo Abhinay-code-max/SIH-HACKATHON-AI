@@ -1,5 +1,5 @@
 {
-  "next_incident_idx": 2,
+  "next_incident_idx": 3,
   "incidents": [
     {
       "incident_id": "INC_0001",
@@ -17,9 +17,9 @@
       ],
       "global_subject_id": "SUBJ_0001",
       "status": "ACTIVE",
-      "created_at": 1788607369.1089494,
-      "updated_at": 1788607369.1089494,
-      "created_iso": "2026-09-05T11:22:49.108949+00:00",
+      "created_at": 1788607984.1606889,
+      "updated_at": 1788607984.1606889,
+      "created_iso": "2026-09-05T11:33:04.160688+00:00",
       "events_count": 1,
       "events_log": [
         {
@@ -31,6 +31,159 @@
         }
       ],
       "crops": [],
+      "operator_audit": []
+    },
+    {
+      "incident_id": "INC_0002",
+      "title": "Restricted Zone Intrusion (CAM_01)",
+      "threat_score": 100,
+      "defcon": {
+        "level": "DEFCON_1",
+        "status": "CRITICAL",
+        "color": "#EF4444",
+        "description": "Immediate Tactical Threat / Armed Escalation Required"
+      },
+      "primary_camera_id": "CAM_01",
+      "involved_cameras": [
+        "CAM_01"
+      ],
+      "global_subject_id": null,
+      "status": "ACTIVE",
+      "created_at": 1788608022.855844,
+      "updated_at": 1788608022.855844,
+      "created_iso": "2026-09-05T11:33:42.855844+00:00",
+      "events_count": 3,
+      "events_log": [
+        {
+          "event_id": "EVT_00001",
+          "event_type": "RESTRICTED_ZONE_INTRUSION",
+          "camera_id": "CAM_01",
+          "severity": "CRITICAL",
+          "timestamp": "2026-09-05T11:33:42.720655+00:00",
+          "target": {
+            "class": "person",
+            "confidence": 0.94,
+            "track_id": 27,
+            "bbox": [
+              50,
+              80,
+              150,
+              220
+            ],
+            "trajectory_trail": [
+              [
+                150.0,
+                200.0
+              ],
+              [
+                180.0,
+                200.0
+              ],
+              [
+                230.0,
+                200.0
+              ]
+            ]
+          },
+          "evidence_files": {
+            "snapshot": "/evidence/EVT_00001_snapshot.jpg",
+            "crop": "/evidence/EVT_00001_crop.jpg"
+          },
+          "operator_status": "NEW",
+          "operator_action_history": [],
+          "metadata": {
+            "zone_id": "ZONE_RESTRICTED_ALPHA",
+            "zone_name": "Perimeter Sector Alpha (Doorway Access)"
+          }
+        },
+        {
+          "event_id": "EVT_00002",
+          "event_type": "BOUNDARY_TRIPWIRE_BREACH",
+          "camera_id": "CAM_01",
+          "severity": "HIGH",
+          "timestamp": "2026-09-05T11:33:42.820167+00:00",
+          "target": {
+            "class": "person",
+            "confidence": 0.94,
+            "track_id": 27,
+            "bbox": [
+              50,
+              80,
+              150,
+              220
+            ],
+            "trajectory_trail": [
+              [
+                150.0,
+                200.0
+              ],
+              [
+                180.0,
+                200.0
+              ],
+              [
+                230.0,
+                200.0
+              ]
+            ]
+          },
+          "evidence_files": {
+            "snapshot": "/evidence/EVT_00002_snapshot.jpg",
+            "crop": "/evidence/EVT_00002_crop.jpg"
+          },
+          "operator_status": "NEW",
+          "operator_action_history": [],
+          "metadata": {
+            "tripwire_id": "WIRE_BORDER_FENCE_01",
+            "name": "Threshold Virtual Fence"
+          }
+        },
+        {
+          "event_id": "EVT_00003",
+          "event_type": "LOITERING_DETECTED",
+          "camera_id": "CAM_01",
+          "severity": "HIGH",
+          "timestamp": "2026-09-05T11:33:42.840041+00:00",
+          "target": {
+            "class": "person",
+            "confidence": 0.94,
+            "track_id": 27,
+            "bbox": [
+              50,
+              80,
+              150,
+              220
+            ],
+            "trajectory_trail": [
+              [
+                150.0,
+                200.0
+              ],
+              [
+                180.0,
+                200.0
+              ],
+              [
+                230.0,
+                200.0
+              ]
+            ]
+          },
+          "evidence_files": {
+            "snapshot": "/evidence/EVT_00003_snapshot.jpg",
+            "crop": "/evidence/EVT_00003_crop.jpg"
+          },
+          "operator_status": "NEW",
+          "operator_action_history": [],
+          "metadata": {
+            "dwell_seconds": 10.5,
+            "threshold": 8.0
+          }
+        }
+      ],
+      "crops": [
+        "/evidence/EVT_00001_crop.jpg"
+      ],
       "operator_audit": []
     }
   ],

@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-09-05T11:31:37.440947+00:00",
+  "hardware": {
+    "device": "cuda",
+    "gpu_model": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "total_vram_gb": 8.0,
+    "allocated_vram_mb": 340.6,
+    "reserved_vram_mb": 410.0,
+    "cuda_available": true
+  },
+  "benchmarks": {
+    "model_cold_start_sec": 0.67,
+    "yolo_detection_mean_ms": 29.46,
+    "yolo_detection_p95_ms": 38.13,
+    "yolo_detection_fps": 33.9,
+    "reid_extractor_mean_ms": 47.77,
+    "reid_extractor_throughput_crops_sec": 20.9,
+    "cross_camera_association_ms": 0.29
+  },
+  "verdict": "REAL_TIME_EDGE_CERTIFIED"
+}
