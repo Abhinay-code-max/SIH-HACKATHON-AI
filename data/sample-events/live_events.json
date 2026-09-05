@@ -1465,5 +1465,629 @@
       "dwell_seconds": 10.5,
       "track_id": 27
     }
+  },
+  {
+    "event_id": "EVT_00001",
+    "timestamp": "2026-09-05T08:58:17.163633+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.949,
+    "bbox": [
+      4.9,
+      229.5,
+      805.4,
+      739.2
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00002",
+    "timestamp": "2026-09-05T08:58:20.993755+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.941,
+    "bbox": [
+      679.0,
+      394.6,
+      809.4,
+      880.3
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 8.0,
+      "track_id": 2
+    }
+  },
+  {
+    "event_id": "EVT_00003",
+    "timestamp": "2026-09-05T08:58:21.012808+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.928,
+    "bbox": [
+      61.8,
+      399.5,
+      258.1,
+      904.8
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 8.0,
+      "track_id": 3
+    }
+  },
+  {
+    "event_id": "EVT_00004",
+    "timestamp": "2026-09-05T08:58:21.042860+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.894,
+    "bbox": [
+      235.4,
+      406.8,
+      356.7,
+      859.1
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 8.0,
+      "track_id": 4
+    }
+  },
+  {
+    "event_id": "EVT_00005",
+    "timestamp": "2026-09-05T08:58:22.232267+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.95,
+    "bbox": [
+      16.3,
+      230.3,
+      806.4,
+      740.4
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00006",
+    "timestamp": "2026-09-05T08:58:22.637694+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.961,
+    "bbox": [
+      15.5,
+      100.4,
+      637.7,
+      479.1
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 8.1,
+      "track_id": 6
+    }
+  },
+  {
+    "event_id": "EVT_00007",
+    "timestamp": "2026-09-05T08:58:27.257629+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.949,
+    "bbox": [
+      8.7,
+      230.2,
+      800.8,
+      738.9
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00008",
+    "timestamp": "2026-09-05T08:58:32.286337+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.946,
+    "bbox": [
+      20.0,
+      230.4,
+      807.2,
+      739.8
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00009",
+    "timestamp": "2026-09-05T08:58:36.007503+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.921,
+    "bbox": [
+      654.1,
+      392.8,
+      809.1,
+      880.5
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 23.0,
+      "track_id": 2
+    }
+  },
+  {
+    "event_id": "EVT_00010",
+    "timestamp": "2026-09-05T08:58:36.032687+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.915,
+    "bbox": [
+      36.2,
+      399.2,
+      233.1,
+      904.6
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 23.0,
+      "track_id": 3
+    }
+  },
+  {
+    "event_id": "EVT_00011",
+    "timestamp": "2026-09-05T08:58:36.065400+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.882,
+    "bbox": [
+      207.4,
+      406.7,
+      329.4,
+      859.1
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 23.0,
+      "track_id": 4
+    }
+  },
+  {
+    "event_id": "EVT_00012",
+    "timestamp": "2026-09-05T08:58:37.289354+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.95,
+    "bbox": [
+      7.0,
+      230.3,
+      796.6,
+      739.0
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00013",
+    "timestamp": "2026-09-05T08:58:37.665958+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.951,
+    "bbox": [
+      5.9,
+      106.8,
+      633.8,
+      479.4
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 23.1,
+      "track_id": 6
+    }
+  },
+  {
+    "event_id": "EVT_00014",
+    "timestamp": "2026-09-05T08:58:42.321536+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.944,
+    "bbox": [
+      25.0,
+      230.2,
+      808.8,
+      738.3
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00015",
+    "timestamp": "2026-09-05T08:58:47.345492+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.953,
+    "bbox": [
+      6.1,
+      230.2,
+      798.2,
+      739.1
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00016",
+    "timestamp": "2026-09-05T09:00:35.919186+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.949,
+    "bbox": [
+      17.4,
+      229.8,
+      801.8,
+      739.1
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00017",
+    "timestamp": "2026-09-05T09:00:35.935378+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.914,
+    "bbox": [
+      675.9,
+      394.2,
+      806.9,
+      879.3
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 142.8,
+      "track_id": 2
+    }
+  },
+  {
+    "event_id": "EVT_00018",
+    "timestamp": "2026-09-05T09:00:35.964904+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.91,
+    "bbox": [
+      53.3,
+      398.8,
+      249.8,
+      904.5
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 142.8,
+      "track_id": 3
+    }
+  },
+  {
+    "event_id": "EVT_00019",
+    "timestamp": "2026-09-05T09:00:35.997444+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.896,
+    "bbox": [
+      227.8,
+      407.1,
+      349.0,
+      859.9
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 142.8,
+      "track_id": 4
+    }
+  },
+  {
+    "event_id": "EVT_00020",
+    "timestamp": "2026-09-05T09:00:36.032108+00:00",
+    "source_id": "CAM_02",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.666,
+    "bbox": [
+      0.0,
+      540.2,
+      80.2,
+      874.4
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 113.3,
+      "track_id": 14
+    }
+  },
+  {
+    "event_id": "EVT_00021",
+    "timestamp": "2026-09-05T09:00:36.706828+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.963,
+    "bbox": [
+      24.9,
+      83.6,
+      619.6,
+      479.4
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 142.0,
+      "track_id": 6
+    }
+  },
+  {
+    "event_id": "EVT_00022",
+    "timestamp": "2026-09-05T09:00:40.941483+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.948,
+    "bbox": [
+      12.7,
+      230.3,
+      804.0,
+      740.0
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00023",
+    "timestamp": "2026-09-05T09:00:45.955620+00:00",
+    "source_id": "CAM_02",
+    "event_type": "zone_intrusion",
+    "class_name": "bus",
+    "confidence": 0.949,
+    "bbox": [
+      8.7,
+      230.2,
+      800.8,
+      738.9
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_VEHICLE_GATE",
+      "track_id": 1
+    }
+  },
+  {
+    "event_id": "EVT_00001",
+    "timestamp": "2026-09-05T09:06:00.771305+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "zone_id": "ZONE_RESTRICTED_ALPHA",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00002",
+    "timestamp": "2026-09-05T09:06:00.885034+00:00",
+    "source_id": "CAM_01",
+    "event_type": "zone_intrusion",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "critical",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "tripwire_id": "WIRE_BORDER_FENCE_01",
+      "track_id": 27
+    }
+  },
+  {
+    "event_id": "EVT_00003",
+    "timestamp": "2026-09-05T09:06:00.909736+00:00",
+    "source_id": "CAM_01",
+    "event_type": "loitering",
+    "class_name": "person",
+    "confidence": 0.94,
+    "bbox": [
+      50.0,
+      80.0,
+      150.0,
+      220.0
+    ],
+    "severity": "high",
+    "location": {
+      "lat": 17.4435,
+      "lon": 78.3765,
+      "zone_name": "Sector Alpha"
+    },
+    "metadata": {
+      "dwell_seconds": 10.5,
+      "track_id": 27
+    }
   }
 ]

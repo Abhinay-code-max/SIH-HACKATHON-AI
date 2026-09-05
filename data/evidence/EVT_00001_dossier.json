@@ -3,7 +3,7 @@
   "event_type": "RESTRICTED_ZONE_INTRUSION",
   "camera_id": "CAM_01",
   "severity": "CRITICAL",
-  "timestamp": "2026-09-05T08:55:10.540790+00:00",
+  "timestamp": "2026-09-05T09:06:00.769301+00:00",
   "target": {
     "class": "person",
     "confidence": 0.94,
@@ -36,7 +36,7 @@
   "operator_status": "ACKNOWLEDGE",
   "operator_action_history": [
     {
-      "timestamp": "2026-09-05T08:55:10.820674+00:00",
+      "timestamp": "2026-09-05T09:06:01.079484+00:00",
       "action": "ACKNOWLEDGE",
       "operator": "Commander-Alpha",
       "notes": "Perimeter guard dispatched."

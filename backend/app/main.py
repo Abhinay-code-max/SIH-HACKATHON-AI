@@ -19,10 +19,11 @@ if str(ROOT_DIR) not in sys.path:
 from backend.app.api.routes import router as api_router
 from backend.app.api.annotation_routes import router as annotation_router
 from backend.app.api.evidence_routes import router as evidence_router
+from backend.app.api.external_ui_routes import router as external_ui_router
 
 app = FastAPI(
     title="BORDER SENTINEL — Autonomous Defense & Intelligence Grid",
-    description="Local edge system for multi-camera AI tracking, geofence tripwires, and evidence collection.",
+    description="Local edge system for multi-camera AI tracking, geofence tripwires, evidence collection, and external UI integration.",
     version="1.0.0",
 )
 
@@ -38,6 +39,7 @@ app.add_middleware(
 app.include_router(api_router)
 app.include_router(annotation_router)
 app.include_router(evidence_router)
+app.include_router(external_ui_router)
 
 # Mount evidence snapshots for operator review
 EVIDENCE_DIR = ROOT_DIR / "data" / "evidence"

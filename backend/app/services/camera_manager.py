@@ -31,6 +31,8 @@ class CameraStreamWorker:
         self.fps = 0.0
         self.active_tracks_count = 0
         self.last_frame = None
+        self.latest_tracks: List[dict] = []
+        self.last_jpeg: Optional[bytes] = None
 
     def draw_overlays(self, frame: np.ndarray, tracks: List[dict]) -> np.ndarray:
         """Draws virtual zone polygons, tripwires, and camera HUD."""
@@ -114,9 +116,14 @@ class MultiCameraManager:
                         continue
                     break
 
+                # Standardize frame resolution to 640x480 landscape for aligned multi-cam grid
+                if frame.shape[0] != 480 or frame.shape[1] != 640:
+                    frame = cv2.resize(frame, (640, 480))
+
                 # 1. Update Object Tracking (confidence raised to 0.48 to reject false alarms)
                 tracks, tracked_frame = worker.tracker.update(frame, conf_threshold=0.48)
                 worker.active_tracks_count = len(tracks)
+                worker.latest_tracks = tracks
 
                 # 2. Evaluate Intelligence Rules (Geofences, Tripwires, Loitering)
                 intelligence_engine.evaluate_tracks(camera_id, tracks, frame)
@@ -130,10 +137,11 @@ class MultiCameraManager:
 
                 # Encode JPEG
                 _, jpeg_bytes = cv2.imencode(".jpg", final_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+                worker.last_jpeg = jpeg_bytes.tobytes()
 
                 yield (
                     b"--frame\r\n"
-                    b"Content-Type: image/jpeg\r\n\r\n" + jpeg_bytes.tobytes() + b"\r\n"
+                    b"Content-Type: image/jpeg\r\n\r\n" + worker.last_jpeg + b"\r\n"
                 )
 
                 sleep_time = max(0.0, frame_interval - elapsed)
@@ -142,6 +150,35 @@ class MultiCameraManager:
 
         finally:
             cap.release()
+
+    def get_latest_tracks(self, camera_id: str) -> List[dict]:
+        if camera_id in self.cameras:
+            return self.cameras[camera_id].latest_tracks
+        return []
+
+    def get_latest_snapshot_bytes(self, camera_id: str) -> Optional[bytes]:
+        if camera_id in self.cameras:
+            return self.cameras[camera_id].last_jpeg
+        return None
+
+    def get_full_camera_info(self, camera_id: str) -> Optional[dict]:
+        if camera_id not in self.cameras:
+            return None
+        w = self.cameras[camera_id]
+        rules = intelligence_engine.rules
+        return {
+            "camera_id": w.camera_id,
+            "name": w.name,
+            "status": w.status,
+            "fps": round(w.fps, 1),
+            "active_tracks_count": w.active_tracks_count,
+            "stream_url": f"/api/cameras/stream/{w.camera_id}",
+            "snapshot_url": f"/api/cameras/{w.camera_id}/snapshot",
+            "resolution": [640, 480],
+            "active_model": getattr(w.tracker, "model_name", "YOLO-L-v002"),
+            "zones": [z for z in rules.get("zones", []) if z.get("camera_id") == w.camera_id],
+            "tripwires": [t for t in rules.get("tripwires", []) if t.get("camera_id") == w.camera_id],
+        }
 
 
 camera_manager = MultiCameraManager()

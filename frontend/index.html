@@ -121,6 +121,8 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            min-height: 0;
+            min-width: 0;
         }
 
         .panel-header {
@@ -134,6 +136,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
         /* Top Left: Dual Camera Feed Grid */
@@ -144,6 +147,10 @@
             flex: 1;
             padding: 8px;
             background-color: #030508;
+            min-height: 0;
+            min-width: 0;
+            overflow: hidden;
+            align-items: center;
         }
 
         .cam-box {
@@ -155,9 +162,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100%;
+            max-height: 100%;
+            width: 100%;
+            min-height: 0;
+            min-width: 0;
         }
 
         .cam-box img {
+            max-width: 100%;
+            max-height: 100%;
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -324,13 +338,17 @@
         </div>
 
         <div class="header-actions">
+            <div class="status-pill" style="border-color: var(--cyan); color: var(--cyan);">
+                <span>TEST HARNESS // API READY</span>
+            </div>
             <div class="status-pill">
                 <div class="dot"></div>
-                <span id="hw-status">RTX 4060 GPU | BYTE-TRACK ACTIVE</span>
+                <span id="hw-status">RTX 4060 GPU | YOLO-L-v002</span>
             </div>
             <div class="status-pill" style="color: var(--green);">
                 AIR-GAPPED 100% OFFLINE
             </div>
+            <a href="/docs" target="_blank" class="btn" style="border-color: var(--blue); color: var(--blue);">API Explorer (/docs)</a>
             <a href="/annotate" class="btn btn-cyan">AI Dataset Studio</a>
         </div>
     </header>

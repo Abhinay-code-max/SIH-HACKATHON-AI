@@ -3,7 +3,7 @@
   "event_type": "BOUNDARY_TRIPWIRE_BREACH",
   "camera_id": "CAM_01",
   "severity": "HIGH",
-  "timestamp": "2026-09-05T08:55:10.660961+00:00",
+  "timestamp": "2026-09-05T09:06:00.884033+00:00",
   "target": {
     "class": "person",
     "confidence": 0.94,

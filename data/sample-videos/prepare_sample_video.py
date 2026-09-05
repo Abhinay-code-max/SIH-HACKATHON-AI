@@ -24,9 +24,11 @@ def generate_sample_surveillance_video(
     # Use existing traffic_sample.jpg if available as realistic background
     sample_img_path = Path(__file__).resolve().parent.parent / "sample-images" / "traffic_sample.jpg"
     if sample_img_path.is_file():
-        base_frame = cv2.imread(str(sample_img_path))
+        raw_frame = cv2.imread(str(sample_img_path))
+        # Standardize to 640x480 landscape CCTV resolution
+        base_frame = cv2.resize(raw_frame, (640, 480))
     else:
-        base_frame = np.zeros((720, 1280, 3), dtype=np.uint8)
+        base_frame = np.zeros((480, 640, 3), dtype=np.uint8)
         base_frame[:] = (120, 120, 120)
 
     h, w = base_frame.shape[:2]
