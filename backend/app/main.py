@@ -21,6 +21,7 @@ from backend.app.api.annotation_routes import router as annotation_router
 from backend.app.api.evidence_routes import router as evidence_router
 from backend.app.api.external_ui_routes import router as external_ui_router
 from backend.app.api.reid_routes import router as reid_router
+from backend.app.api.incident_routes import router as incident_router
 
 app = FastAPI(
     title="BORDER SENTINEL — Autonomous Defense & Intelligence Grid",
@@ -42,6 +43,7 @@ app.include_router(annotation_router)
 app.include_router(evidence_router)
 app.include_router(external_ui_router)
 app.include_router(reid_router)
+app.include_router(incident_router)
 
 # Mount evidence snapshots for operator review
 EVIDENCE_DIR = ROOT_DIR / "data" / "evidence"

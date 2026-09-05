@@ -3,37 +3,53 @@
   "event_type": "LOITERING_DETECTED",
   "camera_id": "CAM_02",
   "severity": "HIGH",
-  "timestamp": "2026-09-05T11:06:19.645210+00:00",
+  "timestamp": "2026-09-05T11:18:32.947274+00:00",
   "target": {
     "class": "person",
-    "confidence": 0.898,
-    "track_id": 3,
+    "confidence": 0.557,
+    "track_id": 5,
     "bbox": [
-      528,
-      174,
-      640,
-      390
+      5,
+      245,
+      70,
+      385
     ],
     "trajectory_trail": [
       [
-        583.7,
-        380.0
+        31.0,
+        379.7
       ],
       [
-        583.8,
-        380.8
+        30.9,
+        377.9
       ],
       [
-        584.2,
-        380.9
+        31.5,
+        376.7
       ],
       [
-        584.3,
-        380.9
+        31.7,
+        376.7
       ],
       [
-        584.1,
-        380.2
+        31.9,
+        377.7
+      ],
+      [
+        32.2,
+        377.7
+      ],
+      [
+        32.3,
+        377.7
+      ],
+      [
+        37.8,
+        375.8
+      ],
+      [
+        37.9,
+        375.8
       ]
     ]
   },
@@ -44,7 +60,7 @@
   "operator_status": "NEW",
   "operator_action_history": [],
   "metadata": {
-    "dwell_seconds": 67.0,
+    "dwell_seconds": 8.0,
     "threshold": 8.0
   }
 }

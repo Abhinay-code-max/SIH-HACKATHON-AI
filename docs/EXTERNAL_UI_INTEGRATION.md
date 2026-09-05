@@ -217,6 +217,38 @@ socket.onmessage = (event) => {
 }
 ```
 
+### 4.6 Tactical Incident Management & Behavioral Anomaly Detection
+- **`GET /api/incidents`**: List all compound incidents with DEFCON threat indexes (`?status=ACTIVE`).
+- **`GET /api/incidents/defcon`**: Real-time grid-wide defense readiness status (`DEFCON_1 / CRITICAL`, `DEFCON_2 / ELEVATED`, `DEFCON_3 / NORMAL`).
+- **`GET /api/incidents/{incident_id}`**: Full incident dossier with associated behavioral anomalies and crop evidence.
+- **`GET /api/incidents/{incident_id}/report`**: Self-contained, printable forensic HTML report.
+- **`POST /api/incidents/{incident_id}/status`**: Update incident state (`ACKNOWLEDGED`, `INVESTIGATING`, `RESOLVED`, `ESCALATED`) with operator dispatch notes.
+- **`GET /api/incidents/anomalies/config`**: Query active behavioral thresholds (sprint velocity, baggage timeout, tailgating window).
+- **`POST /api/incidents/anomalies/config`**: Dynamically tune behavioral parameters.
+- **`POST /api/incidents/webhooks/register`**: Register external dispatch webhook URL for automated alert notifications.
+
+#### Incident Schema:
+```json
+{
+  "incident_id": "INC_0001",
+  "title": "Restricted Zone Intrusion & Sprinting (CAM_01)",
+  "threat_score": 85,
+  "defcon": {
+    "level": "DEFCON_1",
+    "status": "CRITICAL",
+    "color": "#EF4444",
+    "description": "Immediate Tactical Threat / Armed Escalation Required"
+  },
+  "primary_camera_id": "CAM_01",
+  "involved_cameras": ["CAM_01"],
+  "global_subject_id": "SUBJ_0001",
+  "status": "ACTIVE",
+  "created_iso": "2026-09-05T11:22:15.120Z",
+  "events_count": 3,
+  "crops": ["/reid_crops/SUBJ_0001_init_1788607100.jpg"]
+}
+```
+
 ---
 
 ## 5. Offline & Security Guarantees

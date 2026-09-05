@@ -1,31 +1,23 @@
 {
   "event_id": "EVT_00001",
   "event_type": "RESTRICTED_ZONE_INTRUSION",
-  "camera_id": "CAM_01",
-  "severity": "CRITICAL",
-  "timestamp": "2026-09-05T11:16:49.442339+00:00",
+  "camera_id": "CAM_02",
+  "severity": "HIGH",
+  "timestamp": "2026-09-05T11:18:30.528699+00:00",
   "target": {
-    "class": "person",
-    "confidence": 0.94,
-    "track_id": 27,
+    "class": "bus",
+    "confidence": 0.876,
+    "track_id": 4,
     "bbox": [
-      50,
-      80,
-      150,
-      220
+      13,
+      100,
+      637,
+      332
     ],
     "trajectory_trail": [
       [
-        150.0,
-        200.0
-      ],
-      [
-        180.0,
-        200.0
-      ],
-      [
-        230.0,
-        200.0
+        325.4,
+        322.9
       ]
     ]
   },
@@ -33,17 +25,10 @@
     "snapshot": "/evidence/EVT_00001_snapshot.jpg",
     "crop": "/evidence/EVT_00001_crop.jpg"
   },
-  "operator_status": "ACKNOWLEDGE",
-  "operator_action_history": [
-    {
-      "timestamp": "2026-09-05T11:16:49.745447+00:00",
-      "action": "ACKNOWLEDGE",
-      "operator": "Commander-Alpha",
-      "notes": "Perimeter guard dispatched."
-    }
-  ],
+  "operator_status": "NEW",
+  "operator_action_history": [],
   "metadata": {
-    "zone_id": "ZONE_RESTRICTED_ALPHA",
-    "zone_name": "Perimeter Sector Alpha (Doorway Access)"
+    "zone_id": "ZONE_VEHICLE_GATE",
+    "zone_name": "Gate 1 Vehicle Checkpoint"
   }
 }

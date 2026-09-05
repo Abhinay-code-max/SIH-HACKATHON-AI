@@ -338,9 +338,10 @@
         </div>
 
         <div class="header-actions">
-            <div class="status-pill" style="border-color: var(--cyan); color: var(--cyan);">
-                <span>TEST HARNESS // API READY</span>
+            <div class="status-pill" id="defcon-pill" style="background:#10B981; color:#000; font-weight:bold;">
+                <span id="defcon-text">DEFCON 3 // NORMAL</span>
             </div>
+            <button class="btn" id="audio-toggle-btn" onclick="toggleAudioAlerts()" style="font-size:11px; padding:3px 8px; border-color:var(--border); color:var(--text-muted);">🔇 AUDIO: OFF</button>
             <div class="status-pill">
                 <div class="dot"></div>
                 <span id="hw-status">RTX 4060 GPU | YOLO-L-v002</span>
@@ -455,6 +456,61 @@
             setTimeout(() => {
                 imgElem.src = url + '?t=' + Date.now();
             }, 1200);
+        }
+
+        let audioEnabled = false;
+        let audioCtx = null;
+        let lastDefconLevel = "DEFCON_3";
+
+        function toggleAudioAlerts() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('audio-toggle-btn');
+            if (audioEnabled) {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                btn.innerText = '🔊 AUDIO: ON';
+                btn.style.borderColor = 'var(--cyan)';
+                btn.style.color = 'var(--cyan)';
+                playTone(880, 0.12);
+            } else {
+                btn.innerText = '🔇 AUDIO: OFF';
+                btn.style.borderColor = 'var(--border)';
+                btn.style.color = 'var(--text-muted)';
+            }
+        }
+
+        function playTone(freq, dur) {
+            if (!audioEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
+                osc.start();
+                osc.stop(audioCtx.currentTime + dur);
+            } catch(e) {}
+        }
+
+        async function fetchDefconStatus() {
+            try {
+                const res = await fetch('/api/incidents/defcon');
+                if (!res.ok) return;
+                const data = await res.json();
+                const pill = document.getElementById('defcon-pill');
+                const text = document.getElementById('defcon-text');
+                const def = data.defcon || {};
+                
+                text.innerText = `${def.level ? def.level.replace('_', ' ') : 'DEFCON 3'} // ${def.status || 'NORMAL'} (SCORE: ${data.threat_score || 0})`;
+                pill.style.background = def.color || '#10B981';
+                pill.style.color = def.level === 'DEFCON_1' ? '#FFFFFF' : '#000000';
+
+                if (def.level === 'DEFCON_1' && lastDefconLevel !== 'DEFCON_1') {
+                    playTone(520, 0.35);
+                }
+                lastDefconLevel = def.level;
+            } catch (err) {}
         }
 
         async function fetchTelemetry() {
@@ -699,11 +755,13 @@
         }
 
         // Initialize polling
+        fetchDefconStatus();
         fetchTelemetry();
         fetchEvidenceAndAlerts();
         fetchTacticalMap();
         fetchReIdSubjects();
 
+        setInterval(fetchDefconStatus, 2500);
         setInterval(fetchTelemetry, 3000);
         setInterval(fetchEvidenceAndAlerts, 3000);
         setInterval(fetchTacticalMap, 5000);

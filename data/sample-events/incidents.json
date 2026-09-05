@@ -1,0 +1,40 @@
+{
+  "next_incident_idx": 2,
+  "incidents": [
+    {
+      "incident_id": "INC_0001",
+      "title": "Restricted Zone Intrusion (CAM_01)",
+      "threat_score": 75,
+      "defcon": {
+        "level": "DEFCON_1",
+        "status": "CRITICAL",
+        "color": "#EF4444",
+        "description": "Immediate Tactical Threat / Armed Escalation Required"
+      },
+      "primary_camera_id": "CAM_01",
+      "involved_cameras": [
+        "CAM_01"
+      ],
+      "global_subject_id": "SUBJ_0001",
+      "status": "ACTIVE",
+      "created_at": 1788607369.1089494,
+      "updated_at": 1788607369.1089494,
+      "created_iso": "2026-09-05T11:22:49.108949+00:00",
+      "events_count": 1,
+      "events_log": [
+        {
+          "event_type": "RESTRICTED_ZONE_INTRUSION",
+          "severity": "CRITICAL",
+          "class_name": "person",
+          "track_id": 5,
+          "description": "Perimeter breach"
+        }
+      ],
+      "crops": [],
+      "operator_audit": []
+    }
+  ],
+  "webhooks": [
+    "http://127.0.0.1:9999/dispatch"
+  ]
+}

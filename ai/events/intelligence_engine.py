@@ -27,6 +27,8 @@ if str(ROOT_DIR) not in sys.path:
 from backend.app.services.evidence_engine import evidence_engine
 from backend.app.services.event_service import event_service
 from backend.app.models.contracts import GeoLocation, SecurityEvent, SeverityLevel, EventType
+from ai.events.behavioral_engine import behavioral_anomaly_engine
+from ai.events.incident_manager import incident_manager
 
 
 def line_intersection(p1, p2, p3, p4) -> bool:
@@ -185,6 +187,26 @@ class IntelligenceEngine:
                         event_service.add_event(sec_evt)
                         triggered_events.append(dossier)
 
+                    # Tailgating / Anti-Piggybacking check
+                    tailgate_anom = behavioral_anomaly_engine.record_tripwire_crossing(camera_id, w_id, t["track_id"])
+                    if tailgate_anom:
+                        self.event_counter += 1
+                        tg_id = f"EVT_{self.event_counter:05d}"
+                        tg_dossier = evidence_engine.capture_evidence(
+                            event_id=tg_id,
+                            event_type="TAILGATING_BREACH",
+                            camera_id=camera_id,
+                            class_name=t["class_name"],
+                            confidence=t["confidence"],
+                            track_id=t["track_id"],
+                            bbox=t["bbox"],
+                            frame=frame,
+                            trajectory=history,
+                            severity="CRITICAL",
+                            metadata=tailgate_anom,
+                        )
+                        triggered_events.append(tg_dossier)
+
         # -------------------------------------------------------------
         # 3. LOITERING DETECTION (DWELL TIME)
         # -------------------------------------------------------------
@@ -224,6 +246,47 @@ class IntelligenceEngine:
                     )
                     event_service.add_event(sec_evt)
                     triggered_events.append(dossier)
+
+        # -------------------------------------------------------------
+        # 4. BEHAVIORAL MOTION ANOMALIES (Sprinting, Baggage, Crowd)
+        # -------------------------------------------------------------
+        anomalies = behavioral_anomaly_engine.evaluate_motion_anomalies(camera_id, tracks, (h, w))
+        for anom in anomalies:
+            self.event_counter += 1
+            anom_id = f"EVT_{self.event_counter:05d}"
+            anom_type = anom["anomaly_type"]
+            sev = anom["severity"]
+            dossier = evidence_engine.capture_evidence(
+                event_id=anom_id,
+                event_type=anom_type,
+                camera_id=camera_id,
+                class_name=anom.get("class_name", "unknown"),
+                confidence=anom.get("confidence", 0.9),
+                track_id=anom.get("track_id", 0),
+                bbox=anom.get("bbox", [0, 0, 10, 10]),
+                frame=frame,
+                trajectory=anom.get("trajectory", []),
+                severity=sev,
+                metadata=anom,
+            )
+            triggered_events.append(dossier)
+
+        # -------------------------------------------------------------
+        # 5. REGISTER OR ESCALATE COMPOUND SECURITY INCIDENT
+        # -------------------------------------------------------------
+        if triggered_events:
+            global_subj_id = None
+            for t in tracks:
+                if t.get("global_subject_id"):
+                    global_subj_id = t["global_subject_id"]
+                    break
+            crop_url = triggered_events[0].get("evidence_files", {}).get("crop")
+            incident_manager.register_or_update_incident(
+                camera_id=camera_id,
+                events=triggered_events,
+                global_subject_id=global_subj_id,
+                crop_url=crop_url,
+            )
 
         return triggered_events
 

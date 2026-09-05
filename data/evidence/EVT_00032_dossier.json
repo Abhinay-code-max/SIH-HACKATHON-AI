@@ -3,11 +3,11 @@
   "event_type": "LOITERING_DETECTED",
   "camera_id": "CAM_02",
   "severity": "HIGH",
-  "timestamp": "2026-09-05T11:07:06.854467+00:00",
+  "timestamp": "2026-09-05T11:19:23.784567+00:00",
   "target": {
     "class": "person",
     "confidence": 0.56,
-    "track_id": 28,
+    "track_id": 29,
     "bbox": [
       6,
       245,
@@ -144,7 +144,7 @@
   "operator_status": "NEW",
   "operator_action_history": [],
   "metadata": {
-    "dwell_seconds": 8.0,
+    "dwell_seconds": 8.9,
     "threshold": 8.0
   }
 }
