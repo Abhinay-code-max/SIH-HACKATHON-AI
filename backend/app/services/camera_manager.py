@@ -98,13 +98,26 @@ class MultiCameraManager:
         worker = self.cameras[camera_id]
         src = worker.source
 
-        cap = cv2.VideoCapture(src)
-        if not cap.isOpened() and src == 0:
-            # Fallback to sample video if webcam unavailable
-            cap = cv2.VideoCapture(str(ROOT_DIR / "data" / "sample-videos" / "sample_surveillance.mp4"))
+        if src == 0:
+            # Use DirectShow on Windows for instant, reliable hardware access without MSMF lockups
+            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            is_valid = False
+            if cap.isOpened():
+                ret_probe, frame_probe = cap.read()
+                if ret_probe and frame_probe is not None:
+                    is_valid = True
+            if not is_valid:
+                cap.release()
+                fallback_video = ROOT_DIR / "data" / "sample-videos" / "annotated_surveillance.mp4"
+                if not fallback_video.is_file():
+                    fallback_video = ROOT_DIR / "data" / "sample-videos" / "sample_surveillance.mp4"
+                cap = cv2.VideoCapture(str(fallback_video))
+        else:
+            cap = cv2.VideoCapture(src)
 
         target_fps = 25
         frame_interval = 1.0 / target_fps
+        drop_count = 0
 
         try:
             while cap.isOpened():
@@ -114,7 +127,15 @@ class MultiCameraManager:
                     if not isinstance(src, int):
                         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                         continue
-                    break
+                    drop_count += 1
+                    if drop_count < 15:
+                        time.sleep(0.04)
+                        continue
+                    # Switch to fallback if webcam drops permanently
+                    cap.release()
+                    cap = cv2.VideoCapture(str(ROOT_DIR / "data" / "sample-videos" / "annotated_surveillance.mp4"))
+                    continue
+                drop_count = 0
 
                 # Standardize frame resolution to 640x480 landscape for aligned multi-cam grid
                 if frame.shape[0] != 480 or frame.shape[1] != 640:

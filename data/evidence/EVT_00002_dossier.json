@@ -1,31 +1,23 @@
 {
   "event_id": "EVT_00002",
-  "event_type": "BOUNDARY_TRIPWIRE_BREACH",
-  "camera_id": "CAM_01",
+  "event_type": "RESTRICTED_ZONE_INTRUSION",
+  "camera_id": "CAM_02",
   "severity": "HIGH",
-  "timestamp": "2026-09-05T09:06:00.884033+00:00",
+  "timestamp": "2026-09-05T11:03:59.438214+00:00",
   "target": {
-    "class": "person",
-    "confidence": 0.94,
-    "track_id": 27,
+    "class": "bus",
+    "confidence": 0.876,
+    "track_id": 4,
     "bbox": [
-      50,
-      80,
-      150,
-      220
+      13,
+      100,
+      637,
+      332
     ],
     "trajectory_trail": [
       [
-        150.0,
-        200.0
-      ],
-      [
-        180.0,
-        200.0
-      ],
-      [
-        230.0,
-        200.0
+        325.4,
+        322.9
       ]
     ]
   },
@@ -36,7 +28,7 @@
   "operator_status": "NEW",
   "operator_action_history": [],
   "metadata": {
-    "tripwire_id": "WIRE_BORDER_FENCE_01",
-    "name": "Threshold Virtual Fence"
+    "zone_id": "ZONE_VEHICLE_GATE",
+    "zone_name": "Gate 1 Vehicle Checkpoint"
   }
 }

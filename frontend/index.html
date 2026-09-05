@@ -362,11 +362,11 @@
             </div>
             <div class="dual-cam-grid">
                 <div class="cam-box">
-                    <img src="/api/stream/CAM_01" alt="CAM 01 Live Stream" />
+                    <img id="stream-cam01" src="/api/stream/CAM_01" alt="CAM 01 Live Stream" onerror="retryStream(this, '/api/stream/CAM_01')" />
                     <div class="cam-hud-tag">CAM_01: WEBCAM / DEMO FEED</div>
                 </div>
                 <div class="cam-box">
-                    <img src="/api/stream/CAM_02" alt="CAM 02 Live Stream" />
+                    <img id="stream-cam02" src="/api/stream/CAM_02" alt="CAM 02 Live Stream" onerror="retryStream(this, '/api/stream/CAM_02')" />
                     <div class="cam-hud-tag">CAM_02: GATE 1 CHECKPOINT</div>
                 </div>
             </div>
@@ -443,6 +443,12 @@
     <script>
         let currentEvidenceList = [];
         let activeEventId = null;
+
+        function retryStream(imgElem, url) {
+            setTimeout(() => {
+                imgElem.src = url + '?t=' + Date.now();
+            }, 1200);
+        }
 
         async function fetchTelemetry() {
             try {
