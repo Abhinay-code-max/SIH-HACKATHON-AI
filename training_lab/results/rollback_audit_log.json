@@ -1,0 +1,74 @@
+[
+  {
+    "rollback_id": "RB_EDC7CB6C",
+    "from_model": "model_v002",
+    "to_model": "model_v001",
+    "operator_id": "Commander_Alpha",
+    "reason": "Night vision false alarm surge detected in sector 4",
+    "timestamp": "2026-09-06T06:39:36.391203+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_95FAB277",
+    "from_model": "model_v001",
+    "to_model": "model_v001",
+    "operator_id": "API_Admin",
+    "reason": "REST API automated validation rollback",
+    "timestamp": "2026-09-06T06:39:36.738498+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_983C311F",
+    "from_model": "model_v002",
+    "to_model": "model_v001",
+    "operator_id": "Commander_Alpha",
+    "reason": "Night vision false alarm surge detected in sector 4",
+    "timestamp": "2026-09-06T06:40:47.235633+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_812F31CA",
+    "from_model": "UNKNOWN_CANDIDATE",
+    "to_model": "model_v001",
+    "operator_id": "API_Admin",
+    "reason": "REST API automated validation rollback",
+    "timestamp": "2026-09-06T06:41:27.070245+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_DFB5FACA",
+    "from_model": "model_v002",
+    "to_model": "model_v001",
+    "operator_id": "Commander_Alpha",
+    "reason": "Night vision false alarm surge detected in sector 4",
+    "timestamp": "2026-09-06T06:42:07.988226+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_8601B81F",
+    "from_model": "UNKNOWN_CANDIDATE",
+    "to_model": "model_v001",
+    "operator_id": "API_Admin",
+    "reason": "REST API automated validation rollback",
+    "timestamp": "2026-09-06T06:42:47.734451+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_9350E124",
+    "from_model": "model_v002",
+    "to_model": "model_v001",
+    "operator_id": "Commander_Alpha",
+    "reason": "Night vision false alarm surge detected in sector 4",
+    "timestamp": "2026-09-06T06:43:50.436074+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  },
+  {
+    "rollback_id": "RB_805A667B",
+    "from_model": "UNKNOWN_CANDIDATE",
+    "to_model": "model_v001",
+    "operator_id": "API_Admin",
+    "reason": "REST API automated validation rollback",
+    "timestamp": "2026-09-06T06:44:28.436799+00:00",
+    "status": "ROLLBACK_SUCCESSFUL"
+  }
+]

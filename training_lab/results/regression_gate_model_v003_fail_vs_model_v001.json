@@ -1,0 +1,31 @@
+{
+  "candidate_model": "model_v003_fail",
+  "baseline_model": "model_v001",
+  "evaluated_at": "2026-09-06T06:43:49.732452+00:00",
+  "verdict": "REGRESSION_GATE_FAILED",
+  "passed": false,
+  "deltas": {
+    "delta_mAP50": -0.06,
+    "delta_fp": 12,
+    "delta_fn": 7
+  },
+  "candidate_summary": {
+    "mAP50": 0.76,
+    "fp": 22,
+    "fn": 15
+  },
+  "baseline_summary": {
+    "mAP50": 0.82,
+    "fp": 10,
+    "fn": 8
+  },
+  "failures_count": 5,
+  "failures": [
+    "Overall mAP50 regressed by -0.0600 (Candidate: 0.7600, Baseline: 0.8200)",
+    "False positive alarms increased by +12 (Candidate: 22, Baseline: 10)",
+    "False negative missed breaches increased by +7 (Candidate: 15, Baseline: 8)",
+    "Camera 'CAM_02' failed minimum mAP threshold: 0.400 < 0.500",
+    "Critical security scenario 'SCN_01' regressed: missed detections increased from 1 to 3"
+  ],
+  "policy_rule": "Model cannot be deployed or approved when verdict is REGRESSION_GATE_FAILED"
+}

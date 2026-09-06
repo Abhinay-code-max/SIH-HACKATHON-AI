@@ -124,5 +124,23 @@
     "operator": "Sector Commander Col. Verma",
     "timestamp": "2026-09-06T06:27:05.491919+00:00",
     "is_active": true
+  },
+  {
+    "override_id": "ovr_0fdb4c1e",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:43:09.771712+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_abc9979c",
+    "automatic_level": "CRITICAL",
+    "override_level": "MEDIUM",
+    "reason": "Test API Override",
+    "operator": "API Tester",
+    "timestamp": "2026-09-06T06:43:10.852040+00:00",
+    "is_active": true
   }
 ]

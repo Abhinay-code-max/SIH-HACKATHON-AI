@@ -231,6 +231,26 @@ class TrainingManager:
         print(f"[TrainingManager] Model {version_tag} trained in {duration_sec:.1f}s and registered successfully.")
         return model_record
 
+    def start_training_run(
+        self,
+        dataset_version: str,
+        base_model: str = "yolov8l.pt",
+        epochs: int = 1,
+        batch_size: int = 4,
+        imgsz: int = 640,
+        device: Optional[str] = None,
+        model_version: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Alias for train_model with flexible argument names."""
+        return self.train_model(
+            dataset_version=dataset_version,
+            base_model=base_model,
+            epochs=epochs,
+            batch=batch_size,
+            imgsz=imgsz,
+            device=device,
+        )
+
 
 training_manager = TrainingManager()
 

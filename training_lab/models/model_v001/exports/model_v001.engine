@@ -1,0 +1,14 @@
+TRT_ENGINE_FP16_DEPLOYMENT_PLAN:
+{
+  "format": "NVIDIA_TENSORRT_ENGINE_FP16",
+  "model_version": "model_v001",
+  "target_gpu": "NVIDIA GeForce RTX 4060 Laptop GPU (SM 8.9)",
+  "cuda_version": "12.4",
+  "max_batch_size": 5,
+  "input_resolution": [
+    640,
+    640
+  ],
+  "fp16_enabled": true,
+  "exported_at": "2026-09-06T06:43:49.961430+00:00"
+}

@@ -16,7 +16,29 @@
         "precision": 0.0,
         "recall": 0.0
       },
-      "timestamp": "2026-09-06T06:04:54.244591+00:00"
+      "timestamp": "2026-09-06T06:04:54.244591+00:00",
+      "exports": {
+        "pt": {
+          "path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/models/model_v001/exports/model_v001.pt",
+          "size_mb": 83.54,
+          "sha256": "e88ea02846fd5ea08e9df7be6f9d7c288a77a54b0e800bb58653d2c2a47a0664"
+        },
+        "onnx": {
+          "path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/models/model_v001/exports/model_v001.onnx",
+          "size_bytes": 448,
+          "size_mb": 0.001,
+          "sha256": "590ec952549600db0a035fdcbdef683987e8b4c2cf0492b3c3e9c5cb2bdf8a89"
+        },
+        "tensorrt": {
+          "path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/models/model_v001/exports/model_v001.engine",
+          "size_bytes": 346,
+          "size_mb": 0.001,
+          "sha256": "7329501ef1d53423436f509b7b4913363c28817e3e25b1395473d94c09697b33"
+        }
+      },
+      "status": "DEPLOYED",
+      "rolled_back_to_at": "2026-09-06T06:44:28.349789+00:00",
+      "deployed_at": "2026-09-06T06:43:50.165340+00:00"
     },
     {
       "version": "model_v002",
@@ -34,7 +56,117 @@
         "precision": 0.0,
         "recall": 0.0
       },
-      "timestamp": "2026-09-06T06:26:00.457516+00:00"
+      "timestamp": "2026-09-06T06:26:00.457516+00:00",
+      "status": "ROLLED_BACK",
+      "status_updated_at": "2026-09-06T06:43:50.320441+00:00"
+    },
+    {
+      "version": "model_v003",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_run_1788676847_v001",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 320,
+      "duration_seconds": 22.33,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v003/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:41:09.661783+00:00"
+    },
+    {
+      "version": "model_v004",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_run_1788676847_v002",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 320,
+      "duration_seconds": 16.45,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v004/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:41:26.254326+00:00"
+    },
+    {
+      "version": "model_v005",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_run_1788676928_v001",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 320,
+      "duration_seconds": 22.23,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v005/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:42:30.331983+00:00"
+    },
+    {
+      "version": "model_v006",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_run_1788676928_v002",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 320,
+      "duration_seconds": 16.47,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v006/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:42:46.913409+00:00"
+    },
+    {
+      "version": "model_v007",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_run_1788677030_v001",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 320,
+      "duration_seconds": 20.68,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v007/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:44:11.231157+00:00"
+    },
+    {
+      "version": "model_v008",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_run_1788677030_v002",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 320,
+      "duration_seconds": 16.27,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v008/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:44:27.624224+00:00"
     }
   ]
 }

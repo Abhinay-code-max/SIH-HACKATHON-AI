@@ -241,34 +241,69 @@ class DatasetGenerator:
         if total_samples == 0:
             raise ValueError("No valid candidates passed DataQualityGate auditing.")
 
-        # 2. Split Partitioning: 70% Train / 15% Val / 15% Test
-        # Ensure at least 1 sample in each split if total_samples >= 3
-        if total_samples >= 3:
-            n_test = max(1, int(round(total_samples * 0.15)))
-            n_val = max(1, int(round(total_samples * 0.15)))
-            n_train = total_samples - n_val - n_test
-            # Ensure train has at least 1 sample
-            if n_train < 1:
-                n_train = 1
-                if n_test > 1:
-                    n_test -= 1
-                elif n_val > 1:
-                    n_val -= 1
-        elif total_samples == 2:
-            n_train, n_val, n_test = 1, 0, 1
+        # 2. Split Partitioning: Video / Scenario-Level Segregation (Zero Data Leakage)
+        # Group candidates by unique video_id or scenario_id to prevent frame leakage
+        video_groups: Dict[str, List[Dict[str, Any]]] = {}
+        for c in audited_candidates:
+            v_id = str(c.get("video_id") or c.get("scenario_id") or f"{c.get('scenario_id')}_{c.get('camera_id')}")
+            if v_id not in video_groups:
+                video_groups[v_id] = []
+            video_groups[v_id].append(c)
+
+        unique_videos = sorted(list(video_groups.keys()))
+        splits: Dict[str, List[Dict[str, Any]]] = {"train": [], "val": [], "test": []}
+        videos_per_split: Dict[str, List[str]] = {"train": [], "val": [], "test": []}
+
+        if len(unique_videos) >= 3:
+            split_strategy = "VIDEO_SCENARIO_LEVEL"
+            n_test_v = max(1, int(round(len(unique_videos) * 0.15)))
+            n_val_v = max(1, int(round(len(unique_videos) * 0.15)))
+            n_train_v = len(unique_videos) - n_val_v - n_test_v
+            if n_train_v < 1:
+                n_train_v = 1
+                if n_test_v > 1:
+                    n_test_v -= 1
+                elif n_val_v > 1:
+                    n_val_v -= 1
+
+            videos_per_split["train"] = unique_videos[:n_train_v]
+            videos_per_split["val"] = unique_videos[n_train_v:n_train_v + n_val_v]
+            videos_per_split["test"] = unique_videos[n_train_v + n_val_v:]
+
+            for v in videos_per_split["train"]:
+                splits["train"].extend(video_groups[v])
+            for v in videos_per_split["val"]:
+                splits["val"].extend(video_groups[v])
+            for v in videos_per_split["test"]:
+                splits["test"].extend(video_groups[v])
         else:
-            n_train, n_val, n_test = 1, 0, 0
+            # Fallback for single/dual video datasets: temporal chunking
+            split_strategy = "TEMPORAL_SEQUENCE_LEVEL"
+            if total_samples >= 3:
+                n_test = max(1, int(round(total_samples * 0.15)))
+                n_val = max(1, int(round(total_samples * 0.15)))
+                n_train = total_samples - n_val - n_test
+                if n_train < 1:
+                    n_train = 1
+                    if n_test > 1:
+                        n_test -= 1
+                    elif n_val > 1:
+                        n_val -= 1
+            elif total_samples == 2:
+                n_train, n_val, n_test = 1, 0, 1
+            else:
+                n_train, n_val, n_test = 1, 0, 0
 
-        # Deterministic assignment
-        train_samples = audited_candidates[:n_train]
-        val_samples = audited_candidates[n_train:n_train + n_val]
-        test_samples = audited_candidates[n_train + n_val:]
+            splits["train"] = audited_candidates[:n_train]
+            splits["val"] = audited_candidates[n_train:n_train + n_val]
+            splits["test"] = audited_candidates[n_train + n_val:]
+            videos_per_split["train"] = list({c.get("video_id") or c.get("scenario_id", "V1") for c in splits["train"]})
+            videos_per_split["val"] = list({c.get("video_id") or c.get("scenario_id", "V1") for c in splits["val"]})
+            videos_per_split["test"] = list({c.get("video_id") or c.get("scenario_id", "V1") for c in splits["test"]})
 
-        splits = {
-            "train": train_samples,
-            "val": val_samples,
-            "test": test_samples,
-        }
+        train_samples = splits["train"]
+        val_samples = splits["val"]
+        test_samples = splits["test"]
 
         class_distribution: Dict[str, int] = {}
         source_scenarios: set = set()
@@ -350,6 +385,8 @@ class DatasetGenerator:
             "dataset_version": dataset_version,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "total_samples": total_samples,
+            "split_strategy": split_strategy,
+            "videos_per_split": videos_per_split,
             "splits": {
                 "train": len(train_samples),
                 "val": len(val_samples),

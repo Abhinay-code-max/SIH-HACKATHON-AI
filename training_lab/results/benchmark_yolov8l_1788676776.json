@@ -1,0 +1,56 @@
+{
+  "model_version": "yolov8l",
+  "resolution": 640,
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "timestamp": "2026-09-06T06:39:36.032709+00:00",
+  "latency": {
+    "mean_ms": 36.55,
+    "p50_ms": 35.99,
+    "p95_ms": 39.87,
+    "p99_ms": 42.89
+  },
+  "throughput": {
+    "single_stream_fps": 27.4,
+    "combined_5cam_fps": 137.0,
+    "frames_processed": 25,
+    "frames_dropped": 0
+  },
+  "per_camera": {
+    "CAM_01": {
+      "mean_latency_ms": 34.66,
+      "min_latency_ms": 32.08,
+      "max_latency_ms": 36.31,
+      "fps": 28.8
+    },
+    "CAM_02": {
+      "mean_latency_ms": 38.96,
+      "min_latency_ms": 37.84,
+      "max_latency_ms": 39.9,
+      "fps": 25.7
+    },
+    "CAM_03": {
+      "mean_latency_ms": 37.02,
+      "min_latency_ms": 33.88,
+      "max_latency_ms": 43.83,
+      "fps": 27.0
+    },
+    "CAM_04": {
+      "mean_latency_ms": 36.98,
+      "min_latency_ms": 32.68,
+      "max_latency_ms": 39.73,
+      "fps": 27.0
+    },
+    "CAM_05": {
+      "mean_latency_ms": 35.13,
+      "min_latency_ms": 33.95,
+      "max_latency_ms": 35.99,
+      "fps": 28.5
+    }
+  },
+  "hardware_utilization": {
+    "vram_allocated_mb": 169.56,
+    "vram_reserved_mb": 348.0,
+    "cpu_utilization_pct": 35.2
+  }
+}

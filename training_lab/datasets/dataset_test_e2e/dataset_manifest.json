@@ -1,7 +1,21 @@
 {
   "dataset_version": "dataset_test_e2e",
-  "created_at": "2026-09-06T06:26:47.388575+00:00",
+  "created_at": "2026-09-06T06:43:09.872756+00:00",
   "total_samples": 7,
+  "split_strategy": "VIDEO_SCENARIO_LEVEL",
+  "videos_per_split": {
+    "train": [
+      "SCN_01",
+      "SCN_02",
+      "SCN_03"
+    ],
+    "val": [
+      "SCN_04"
+    ],
+    "test": [
+      "SCN_05"
+    ]
+  },
   "splits": {
     "train": 5,
     "val": 1,

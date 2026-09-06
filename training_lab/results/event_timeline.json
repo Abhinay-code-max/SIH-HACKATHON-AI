@@ -38,5 +38,85 @@
     "description": "Operator Col. Verma downgraded threat to LOW",
     "metadata": {},
     "timestamp": "2026-09-06T06:27:05.547170+00:00"
+  },
+  {
+    "event_id": "tl_a3d1af15",
+    "event_type": "OPERATOR_OVERRIDE",
+    "camera_id": "LAB",
+    "description": "Model rolled back to model_v001 by API_Admin: REST API automated validation rollback",
+    "metadata": {
+      "rollback_id": "RB_95FAB277",
+      "from_model": "model_v001",
+      "to_model": "model_v001",
+      "operator_id": "API_Admin",
+      "reason": "REST API automated validation rollback",
+      "timestamp": "2026-09-06T06:39:36.738498+00:00",
+      "status": "ROLLBACK_SUCCESSFUL"
+    },
+    "timestamp": "2026-09-06T06:39:36.740496+00:00"
+  },
+  {
+    "event_id": "tl_fac1c4cd",
+    "event_type": "OPERATOR_OVERRIDE",
+    "camera_id": "LAB",
+    "description": "Model rolled back to model_v001 by API_Admin: REST API automated validation rollback",
+    "metadata": {
+      "rollback_id": "RB_812F31CA",
+      "from_model": "UNKNOWN_CANDIDATE",
+      "to_model": "model_v001",
+      "operator_id": "API_Admin",
+      "reason": "REST API automated validation rollback",
+      "timestamp": "2026-09-06T06:41:27.070245+00:00",
+      "status": "ROLLBACK_SUCCESSFUL"
+    },
+    "timestamp": "2026-09-06T06:41:27.072238+00:00"
+  },
+  {
+    "event_id": "tl_b5a4d5da",
+    "event_type": "OPERATOR_OVERRIDE",
+    "camera_id": "LAB",
+    "description": "Model rolled back to model_v001 by API_Admin: REST API automated validation rollback",
+    "metadata": {
+      "rollback_id": "RB_8601B81F",
+      "from_model": "UNKNOWN_CANDIDATE",
+      "to_model": "model_v001",
+      "operator_id": "API_Admin",
+      "reason": "REST API automated validation rollback",
+      "timestamp": "2026-09-06T06:42:47.734451+00:00",
+      "status": "ROLLBACK_SUCCESSFUL"
+    },
+    "timestamp": "2026-09-06T06:42:47.736447+00:00"
+  },
+  {
+    "event_id": "tl_13a1eba2",
+    "event_type": "OPERATOR_OVERRIDE",
+    "camera_id": "ALL",
+    "description": "Operator API Tester changed threat level to MEDIUM: Test API Override",
+    "metadata": {
+      "override_id": "ovr_abc9979c",
+      "automatic_level": "CRITICAL",
+      "override_level": "MEDIUM",
+      "reason": "Test API Override",
+      "operator": "API Tester",
+      "timestamp": "2026-09-06T06:43:10.852040+00:00",
+      "is_active": true
+    },
+    "timestamp": "2026-09-06T06:43:10.866264+00:00"
+  },
+  {
+    "event_id": "tl_a1f326e1",
+    "event_type": "OPERATOR_OVERRIDE",
+    "camera_id": "LAB",
+    "description": "Model rolled back to model_v001 by API_Admin: REST API automated validation rollback",
+    "metadata": {
+      "rollback_id": "RB_805A667B",
+      "from_model": "UNKNOWN_CANDIDATE",
+      "to_model": "model_v001",
+      "operator_id": "API_Admin",
+      "reason": "REST API automated validation rollback",
+      "timestamp": "2026-09-06T06:44:28.436799+00:00",
+      "status": "ROLLBACK_SUCCESSFUL"
+    },
+    "timestamp": "2026-09-06T06:44:28.438796+00:00"
   }
 ]

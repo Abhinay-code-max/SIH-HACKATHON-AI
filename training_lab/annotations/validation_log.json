@@ -193,5 +193,27 @@
     "validator_notes": "Threat score under-weighted",
     "crop_path": null,
     "validated_at": "2026-09-06T06:27:27.237168+00:00"
+  },
+  {
+    "record_id": "VAL_00010",
+    "scenario_id": "SCN_01",
+    "camera_id": "CAM_02",
+    "frame_idx": 12,
+    "timestamp": 0.4,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "MANUAL_ADDITION",
+    "human_verified_class": "person",
+    "human_bbox": [
+      120.0,
+      140.0,
+      180.0,
+      220.0
+    ],
+    "error_category": "FALSE_NEGATIVE",
+    "is_training_candidate": true,
+    "validator_notes": "Human validator manual addition (missed detection)",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:43:09.806050+00:00"
   }
 ]

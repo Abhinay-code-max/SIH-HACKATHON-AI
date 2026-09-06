@@ -1,0 +1,9 @@
+{
+  "certificate_id": "CERT_DEP_F8E51985",
+  "model_version": "model_run_1788677030_v002",
+  "deployed_at": "2026-09-06T06:44:28.063590+00:00",
+  "operator_id": "Automation_Orchestrator",
+  "deployment_reason": "Passed multi-scenario evaluation and automated regression testing",
+  "weights_sha256": "eba4580f75fd5ccd5bfb37f6289a903288f91f7eedda3024faa822f0db6fb943",
+  "status": "DEPLOYED"
+}

@@ -1,0 +1,25 @@
+{
+  "candidate_model": "model_run_1788676928_v002",
+  "baseline_model": "model_run_1788676928_v001",
+  "evaluated_at": "2026-09-06T06:42:46.919052+00:00",
+  "verdict": "REGRESSION_GATE_PASSED",
+  "passed": true,
+  "deltas": {
+    "delta_mAP50": 0.055,
+    "delta_fp": -6,
+    "delta_fn": -6
+  },
+  "candidate_summary": {
+    "mAP50": 0.875,
+    "fp": 6,
+    "fn": 4
+  },
+  "baseline_summary": {
+    "mAP50": 0.82,
+    "fp": 12,
+    "fn": 10
+  },
+  "failures_count": 0,
+  "failures": [],
+  "policy_rule": "Model cannot be deployed or approved when verdict is REGRESSION_GATE_FAILED"
+}

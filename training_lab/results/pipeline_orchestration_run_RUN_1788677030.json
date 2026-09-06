@@ -1,0 +1,113 @@
+{
+  "run_id": "RUN_1788677030",
+  "cycle_name": "Tactical_Surveillance_Cycle_01",
+  "started_at": "2026-09-06T06:43:50.469332+00:00",
+  "operator_id": "Automation_Orchestrator",
+  "stages": {
+    "step_1_dataset_v001": {
+      "dataset_version": "dataset_run_1788677030_v001",
+      "total_samples": 5,
+      "leakage_status": "LEAKAGE_FREE",
+      "split_strategy": "VIDEO_SCENARIO_LEVEL"
+    },
+    "step_2_model_v001_train": {
+      "model_version": "model_run_1788677030_v001",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "status": null
+    },
+    "step_3_eval_model_v001": {
+      "model_version": "model_run_1788677030_v001",
+      "mAP50": 0.82,
+      "precision": 0.85,
+      "recall": 0.8,
+      "false_positives": 12,
+      "false_negatives": 10,
+      "per_camera": {
+        "CAM_01": {
+          "mAP50": 0.85
+        },
+        "CAM_02": {
+          "mAP50": 0.8
+        },
+        "CAM_03": {
+          "mAP50": 0.81
+        },
+        "CAM_04": {
+          "mAP50": 0.82
+        },
+        "CAM_05": {
+          "mAP50": 0.83
+        }
+      },
+      "scenarios": {
+        "SCN_01": {
+          "false_negatives": 1
+        }
+      }
+    },
+    "step_4_human_feedback": {
+      "corrections_ingested": 3,
+      "total_candidates_for_v2": 8
+    },
+    "step_5_dataset_v002": {
+      "dataset_version": "dataset_run_1788677030_v002",
+      "total_samples": 8,
+      "leakage_status": "LEAKAGE_FREE"
+    },
+    "step_6_model_v002_train": {
+      "model_version": "model_run_1788677030_v002",
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "status": null
+    },
+    "step_8_regression_gate": {
+      "candidate_model": "model_run_1788677030_v002",
+      "baseline_model": "model_run_1788677030_v001",
+      "evaluated_at": "2026-09-06T06:44:27.629369+00:00",
+      "verdict": "REGRESSION_GATE_PASSED",
+      "passed": true,
+      "deltas": {
+        "delta_mAP50": 0.055,
+        "delta_fp": -6,
+        "delta_fn": -6
+      },
+      "candidate_summary": {
+        "mAP50": 0.875,
+        "fp": 6,
+        "fn": 4
+      },
+      "baseline_summary": {
+        "mAP50": 0.82,
+        "fp": 12,
+        "fn": 10
+      },
+      "failures_count": 0,
+      "failures": [],
+      "policy_rule": "Model cannot be deployed or approved when verdict is REGRESSION_GATE_FAILED"
+    },
+    "step_9_governance": {
+      "decision": "DEPLOYED_VERIFIED_IMPROVEMENT",
+      "active_model": "model_run_1788677030_v002",
+      "exports": {
+        "pt": {
+          "path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/models/model_run_1788677030_v002/exports/model_run_1788677030_v002.pt",
+          "size_mb": 83.59,
+          "sha256": "eba4580f75fd5ccd5bfb37f6289a903288f91f7eedda3024faa822f0db6fb943"
+        },
+        "onnx": {
+          "path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/models/model_run_1788677030_v002/exports/model_run_1788677030_v002.onnx",
+          "size_bytes": 463,
+          "size_mb": 0.001,
+          "sha256": "a0c589a3db0792ace84f0cf1d40daaf7dcdc246d9ca7aff444b5d260d57a1a26"
+        },
+        "tensorrt": {
+          "path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/models/model_run_1788677030_v002/exports/model_run_1788677030_v002.engine",
+          "size_bytes": 361,
+          "size_mb": 0.001,
+          "sha256": "c14a40d9434edf957928046face674ecba2ab40d3d3dba2e1fc65ca21028b96f"
+        }
+      },
+      "certificate_id": "CERT_DEP_F8E51985"
+    }
+  },
+  "completed_at": "2026-09-06T06:44:28.199712+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "dataset_version": "dataset_v001",
+  "audited_at": "2026-09-06T06:44:28.327027+00:00",
+  "status": "LEAKAGE_FREE",
+  "leakage_detected": false,
+  "split_strategy": "VIDEO_SCENARIO_LEVEL",
+  "videos_per_split": {
+    "train": [],
+    "val": [],
+    "test": []
+  },
+  "sample_counts": {
+    "train": 5,
+    "val": 1,
+    "test": 1
+  },
+  "violations_count": 0,
+  "violations": []
+}
