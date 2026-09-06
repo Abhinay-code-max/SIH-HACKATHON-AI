@@ -1,0 +1,75 @@
+# =====================================================================
+# BORDER SENTINEL — DETECTION MODULE CONFIGURATION
+# 100% Offline Tactical Object Detection Settings
+# =====================================================================
+
+version: "1.0.0"
+
+# Model Profiles
+profiles:
+  active_profile: "command_center"
+  command_center:
+    model_name: "yolov8l.pt"
+    description: "High-accuracy command center profile (YOLOv8 Large / fine-tuned checkpoints)"
+  edge:
+    model_name: "yolov8s.pt"
+    description: "Lightweight edge / embedded profile for high-FPS multi-stream inference"
+
+# Inference Thresholds
+thresholds:
+  confidence: 0.35      # Matches existing inference pipeline default
+  iou: 0.70             # Standard Ultralytics NMS IoU threshold
+
+# Multi-frame Confidence Confirmation (False Positive Reduction)
+confirmation:
+  enabled: true
+  consecutive_frames: 3  # Consecutive frames required to confirm detection
+  min_confidence: 0.35
+  max_history_age_sec: 5.0
+
+# Target Classes Configuration
+# Baseline classes initialized from config/classes.yaml
+# Future border surveillance classes marked pending training data
+classes:
+  # Active baseline classes (from config/classes.yaml)
+  person:
+    enabled: true
+    min_confidence: 0.35
+  car:
+    enabled: true
+    min_confidence: 0.35
+  truck:
+    enabled: true
+    min_confidence: 0.35
+  bus:
+    enabled: true
+    min_confidence: 0.35
+  motorcycle:
+    enabled: true
+    min_confidence: 0.35
+  bicycle:
+    enabled: true
+    min_confidence: 0.35
+  animal:
+    enabled: true
+    min_confidence: 0.35
+  backpack:
+    enabled: true
+    min_confidence: 0.35
+  bag:
+    enabled: true
+    min_confidence: 0.35
+
+  # Future Border Surveillance Target Classes (Pending Dataset v3)
+  weapon:
+    enabled: false
+    pending_training_data: true
+    min_confidence: 0.40
+  drone:
+    enabled: false
+    pending_training_data: true
+    min_confidence: 0.40
+  fire-smoke:
+    enabled: false
+    pending_training_data: true
+    min_confidence: 0.40

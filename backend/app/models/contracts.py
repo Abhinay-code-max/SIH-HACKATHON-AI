@@ -5,7 +5,7 @@ These contracts define the stable API between AI Engine, Backend, and Offline Fr
 
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -57,6 +57,9 @@ class RawDetection(BaseModel):
     confidence: float = Field(..., ge=0.0, le=1.0)
     bbox: List[float] = Field(..., description="[x1, y1, x2, y2] bounding box coordinates")
     normalized_center: Optional[List[float]] = None
+    object_id: Optional[Union[int, str]] = Field(default=None, description="Assigned tracker ID or None before tracking")
+    camera_id: Optional[str] = Field(default=None, description="Source camera identifier")
+    timestamp: Optional[str] = Field(default=None, description="ISO 8601 UTC timestamp of detection")
 
 
 class SecurityEvent(BaseModel):
