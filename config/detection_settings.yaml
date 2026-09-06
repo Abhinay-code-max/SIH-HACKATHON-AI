@@ -62,6 +62,7 @@ classes:
     min_confidence: 0.35
 
   # Future Border Surveillance Target Classes (Pending Dataset v3)
+  # Taxonomy matches merge_config.yaml: weapon (ID 9), drone (ID 10), fire (ID 11), smoke (ID 12)
   weapon:
     enabled: false
     pending_training_data: true
@@ -70,7 +71,12 @@ classes:
     enabled: false
     pending_training_data: true
     min_confidence: 0.40
-  fire-smoke:
+  fire:
     enabled: false
     pending_training_data: true
     min_confidence: 0.40
+  smoke:
+    enabled: false
+    pending_training_data: true
+    min_confidence: 0.40
+

@@ -219,7 +219,7 @@ def test_detection_settings_loading():
         assert classes[c]["enabled"] is True, f"Baseline class {c} should be enabled"
 
     # Verify future border surveillance targets
-    for fc in ["weapon", "drone", "fire-smoke"]:
+    for fc in ["weapon", "drone", "fire", "smoke"]:
         assert fc in classes, f"Future target {fc} missing from detection settings"
         assert classes[fc]["enabled"] is False, f"Future target {fc} must be disabled pending training"
         assert classes[fc].get("pending_training_data") is True
