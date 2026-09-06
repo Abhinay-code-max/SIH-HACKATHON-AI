@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "report_title": "Border Sentinel AI Evaluation & Benchmark Report",
+    "generated_at": "2026-09-06T06:55:10.759503+00:00",
+    "device": "NVIDIA GeForce RTX 2050",
+    "cuda_available": true,
+    "target_dataset": "dataset/releases/v2",
+    "author_role": "AI & Object Detection Lead"
+  },
+  "summary": {
+    "dataset_version": "v2",
+    "evaluation_split": "test",
+    "baseline_model": {
+      "version": "yolov8l.pt (COCO-pretrained)",
+      "classes_evaluated": 7,
+      "classes_total": 80,
+      "mAP50": null,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "false_positives_count": 0,
+      "false_positives_per_hour": 0.0,
+      "mean_latency_ms": 51.99,
+      "fps_throughput": 19.2,
+      "peak_vram_mb": 255.38,
+      "provenance": "live_inference",
+      "measured_at": "2026-09-06T06:55:10.759503+00:00",
+      "device": "NVIDIA GeForce RTX 2050",
+      "test_split_path": "dataset/releases/v2/images/test",
+      "total_test_images": 13,
+      "provenance_note": "Direct live inference executed on this host machine GPU across 13 frames in dataset/releases/v2/images/test."
+    },
+    "custom_model": {
+      "version": "YOLO-L-v002",
+      "classes_evaluated": 9,
+      "classes_total": 9,
+      "mAP50": 99.5,
+      "mAP50-95": 98.63,
+      "precision": 95.89,
+      "recall": 95.88,
+      "false_positives_count": 4,
+      "false_positives_per_hour": 2215.4,
+      "mean_latency_ms": 389.96,
+      "fps_throughput": 2.6,
+      "peak_vram_mb": null,
+      "provenance": "historical_reported",
+      "source_files": [
+        "models/registry/evaluation_report_YOLO-L-v002.json",
+        "models/registry/registry_index.json"
+      ],
+      "reported_by": "Teammate Abhinay (recorded 2026-09-05)",
+      "reported_device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_status": "Missing locally \u2014 models/registry/YOLO-L-v002/weights/best.pt not present on this machine",
+      "provenance_caveat": "Historical figures read from pre-existing committed JSON records. The original test set, hardware environment, and scenario evaluation methodology used to produce these numbers are not confirmed to match the baseline live run. Do not treat as a controlled apples-to-apples comparison."
+    }
+  },
+  "latency_and_throughput_benchmark": {
+    "baseline_yolov8l": {
+      "warmup_passes": 5,
+      "timed_passes": 50,
+      "min_latency_ms": 48.9,
+      "mean_latency_ms": 51.99,
+      "p95_latency_ms": 54.97,
+      "max_latency_ms": 57.09,
+      "fps_throughput": 19.2,
+      "peak_vram_mb": 255.38
+    },
+    "custom_yolo_l_v002_certified": {
+      "device_certified_on": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "mean_latency_ms": 389.96,
+      "fps_throughput": 2.6
+    },
+    "current_hardware_benchmark": {
+      "warmup_passes": 5,
+      "timed_passes": 50,
+      "min_latency_ms": 48.9,
+      "mean_latency_ms": 51.99,
+      "p95_latency_ms": 54.97,
+      "max_latency_ms": 57.09,
+      "fps_throughput": 19.2,
+      "peak_vram_mb": 255.38
+    }
+  },
+  "per_class_comparison": {
+    "person": {
+      "custom_class_id": 0,
+      "baseline_yolov8l": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "tp": 15,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 0
+      },
+      "custom_yolo_l_v002": {
+        "precision": 100.0,
+        "recall": 100.0
+      }
+    },
+    "car": {
+      "custom_class_id": 1,
+      "baseline_yolov8l": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)",
+        "f1": "N/A (unseen in test split)",
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 2,
+        "note": "Class was not present in the release test evaluation split."
+      },
+      "custom_yolo_l_v002": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)"
+      }
+    },
+    "truck": {
+      "custom_class_id": 2,
+      "baseline_yolov8l": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)",
+        "f1": "N/A (unseen in test split)",
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 7,
+        "note": "Class was not present in the release test evaluation split."
+      },
+      "custom_yolo_l_v002": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)"
+      }
+    },
+    "bus": {
+      "custom_class_id": 3,
+      "baseline_yolov8l": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 5
+      },
+      "custom_yolo_l_v002": {
+        "precision": 100.0,
+        "recall": 100.0
+      }
+    },
+    "motorcycle": {
+      "custom_class_id": 4,
+      "baseline_yolov8l": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)",
+        "f1": "N/A (unseen in test split)",
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 3,
+        "note": "Class was not present in the release test evaluation split."
+      },
+      "custom_yolo_l_v002": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)"
+      }
+    },
+    "bicycle": {
+      "custom_class_id": 5,
+      "baseline_yolov8l": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)",
+        "f1": "N/A (unseen in test split)",
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 1,
+        "note": "Class was not present in the release test evaluation split."
+      },
+      "custom_yolo_l_v002": {
+        "precision": 0.0,
+        "recall": 100.0
+      }
+    },
+    "animal": {
+      "custom_class_id": 6,
+      "baseline_yolov8l": {
+        "precision": "N/A \u2014 no equivalent COCO class",
+        "recall": "N/A \u2014 no equivalent COCO class",
+        "f1": "N/A \u2014 no equivalent COCO class",
+        "tp": "N/A",
+        "fp": "N/A",
+        "fn": "N/A",
+        "note": "Class 'animal' is specialized for tactical surveillance and has no unified equivalent in COCO 80."
+      },
+      "custom_yolo_l_v002": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)"
+      }
+    },
+    "backpack": {
+      "custom_class_id": 7,
+      "baseline_yolov8l": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)",
+        "f1": "N/A (unseen in test split)",
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "mapped_coco_id": 24,
+        "note": "Class was not present in the release test evaluation split."
+      },
+      "custom_yolo_l_v002": {
+        "precision": "N/A (unseen in test split)",
+        "recall": "N/A (unseen in test split)"
+      }
+    },
+    "bag": {
+      "custom_class_id": 8,
+      "baseline_yolov8l": {
+        "precision": "N/A \u2014 no equivalent COCO class",
+        "recall": "N/A \u2014 no equivalent COCO class",
+        "f1": "N/A \u2014 no equivalent COCO class",
+        "tp": "N/A",
+        "fp": "N/A",
+        "fn": "N/A",
+        "note": "Class 'bag' is specialized for tactical surveillance and has no unified equivalent in COCO 80."
+      },
+      "custom_yolo_l_v002": {
+        "precision": 0.0,
+        "recall": 100.0
+      }
+    }
+  },
+  "scenario_breakdown": {
+    "OVERALL": {
+      "baseline_yolov8l": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "false_positives": 0
+      },
+      "custom_yolo_l_v002": {
+        "precision": 81.0,
+        "recall": 100.0,
+        "f1": 89.5,
+        "false_positives": 4
+      }
+    },
+    "DAY": {
+      "baseline_yolov8l": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "false_positives": 0
+      },
+      "custom_yolo_l_v002": {
+        "precision": 81.0,
+        "recall": 100.0,
+        "f1": 89.5,
+        "false_positives": 4
+      }
+    },
+    "NIGHT_LOW_LIGHT": {
+      "baseline_yolov8l": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "false_positives": 0
+      },
+      "custom_yolo_l_v002": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "false_positives": 0
+      }
+    },
+    "DISTANT_OBJECTS": {
+      "baseline_yolov8l": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "false_positives": 0
+      },
+      "custom_yolo_l_v002": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0,
+        "false_positives": 0
+      }
+    }
+  },
+  "hard_negative_rejection": {
+    "description": "Evaluation on CAM_NEG hard-negative background frames with zero legitimate targets.",
+    "baseline_yolov8l": {
+      "total_negative_frames": 3,
+      "false_positive_frames": 0,
+      "total_false_detections": 0
+    },
+    "significance": "Hard-negative background suppression is essential for zero false alarms in border zones."
+  },
+  "methodology_and_notes": {
+    "remapping_strategy": "COCO contains 80 classes. Exactly 7 classes map directly to the Border Sentinel surveillance taxonomy: person (COCO 0 -> 0), bicycle (COCO 1 -> 5), car (COCO 2 -> 1), motorcycle (COCO 3 -> 4), bus (COCO 5 -> 3), truck (COCO 7 -> 2), backpack (COCO 24 -> 7).",
+    "custom_only_classes": "Classes 'animal' (ID 6) and 'bag' (ID 8) are unique custom classes tailored to perimeter detection. COCO lacks a singular generic 'animal' class (dividing across multiple species) and lacks an umbrella 'bag' class. These are labeled as N/A for baseline.",
+    "offline_compliance": "Evaluation adheres strictly to PROJECT_RULES.md Rule 2: 100% offline, local inference, no external API or CDN calls."
+  },
+  "comparison_validity": "NOT_DIRECTLY_COMPARABLE \u2014 baseline is live-measured on this machine; custom model figures are historical values reported by another team member on different hardware/test data. Do not present as an apples-to-apples benchmark until both sides are re-measured under identical conditions.",
+  "sample_size_caveat": "The baseline test set consists of 13 images (CAM_01: 8 frames, CAM_02: 2 frames, CAM_NEG: 3 hard-negative background frames). Per-class precision/recall values of 0% or 100% on classes with only one or two test instances (e.g. bicycle with 1 over-detection, bus with 2 ground-truth instances) carry high statistical uncertainty and should not be quoted as reliable standalone figures without cross-validation on larger datasets."
+}
