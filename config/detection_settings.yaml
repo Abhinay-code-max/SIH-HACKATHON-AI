@@ -26,6 +26,7 @@ confirmation:
   consecutive_frames: 3  # Consecutive frames required to confirm detection
   min_confidence: 0.35
   max_history_age_sec: 5.0
+  filter_unconfirmed: false  # If true, detect() filters out unconfirmed provisional detections
 
 # Target Classes Configuration
 # Baseline classes initialized from config/classes.yaml

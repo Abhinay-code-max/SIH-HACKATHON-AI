@@ -13,7 +13,7 @@ Uses synthetic data only; does NOT require external model weights.
 from datetime import datetime, timezone
 from pathlib import Path
 import sys
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 import numpy as np
 
 # Ensure project root is in sys.path
@@ -24,6 +24,7 @@ if str(ROOT_DIR) not in sys.path:
 from ai.detection.confidence_tracker import ConfidenceTracker
 from ai.detection.detector import (
     BaseDetector,
+    YoloDetector,
     load_detection_config,
     resolve_registered_model,
 )
@@ -61,6 +62,54 @@ class MockDetector(BaseDetector):
                 )
             )
         return results
+
+
+class MockTensorValue:
+    """Mock single-value tensor wrapper (.item())."""
+
+    def __init__(self, val: Any):
+        self._val = val
+
+    def item(self) -> Any:
+        return self._val
+
+
+class MockTensorList:
+    """Mock tensor wrapper for list conversion (.tolist())."""
+
+    def __init__(self, val: Any):
+        self._val = val
+
+    def tolist(self) -> Any:
+        return self._val
+
+
+class MockYoloBox:
+    """Mock YOLO prediction bounding box container."""
+
+    def __init__(self, cls_id: int, conf: float, xyxy: List[float]):
+        self.cls = [MockTensorValue(cls_id)]
+        self.conf = [MockTensorValue(conf)]
+        self.xyxy = [MockTensorList(xyxy)]
+
+
+class MockYoloResult:
+    """Mock YOLO Result container with boxes attribute."""
+
+    def __init__(self, boxes: List[MockYoloBox]):
+        self.boxes = boxes
+
+
+class MockYoloModel:
+    """Mock YOLO model returning configurable MockYoloBoxes."""
+
+    def __init__(self, names: Optional[Dict[int, str]] = None):
+        self.names = names or {0: "person", 1: "car", 2: "truck"}
+        self.boxes: List[MockYoloBox] = []
+
+    def predict(self, source: Any, **kwargs: Any) -> List[MockYoloResult]:
+        return [MockYoloResult(self.boxes)]
+
 
 
 def test_confidence_tracker_confirmation_flow():
@@ -200,7 +249,7 @@ def test_base_detector_interface():
 
 def test_raw_detection_backward_compatibility():
     """Verify RawDetection supports both legacy and extended fields."""
-    # Legacy instantiation (without object_id, camera_id, timestamp)
+    # Legacy instantiation (without object_id, camera_id, timestamp, confirmed)
     legacy_det = RawDetection(
         detection_id="det_001",
         class_name="person",
@@ -210,6 +259,7 @@ def test_raw_detection_backward_compatibility():
     assert legacy_det.object_id is None
     assert legacy_det.camera_id is None
     assert legacy_det.timestamp is None
+    assert legacy_det.confirmed is None
 
     # Extended instantiation
     ext_det = RawDetection(
@@ -221,10 +271,12 @@ def test_raw_detection_backward_compatibility():
         object_id=42,
         camera_id="CAM_01",
         timestamp="2026-09-06T11:00:00Z",
+        confirmed=True,
     )
     assert ext_det.object_id == 42
     assert ext_det.camera_id == "CAM_01"
     assert ext_det.timestamp == "2026-09-06T11:00:00Z"
+    assert ext_det.confirmed is True
 
 
 def test_model_resolution_fallback():
@@ -234,38 +286,172 @@ def test_model_resolution_fallback():
     assert resolved == "yolov8l.pt" or resolved.endswith(".pt")
 
 
+def test_detector_rising_confidence_confirmation():
+    """Verify YoloDetector confirms target only after consecutive frames threshold."""
+    detector = YoloDetector(
+        consecutive_frames=3,
+        confirmation_enabled=True,
+        filter_unconfirmed=False,
+    )
+    mock_model = MockYoloModel()
+    detector.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # Frame 1: person at [100, 100, 200, 200], conf 0.40 -> Not confirmed
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.40, xyxy=[100.0, 100.0, 200.0, 200.0])]
+    dets_f1 = detector.detect(dummy_frame, camera_id="CAM_01")
+    assert len(dets_f1) == 1
+    assert dets_f1[0].confirmed is False
+    assert dets_f1[0].object_id is None, "Detector should not fabricate tracking object_id"
+
+    # Frame 2: person slightly shifted [102, 101, 201, 202], conf 0.45 -> Not confirmed
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.45, xyxy=[102.0, 101.0, 201.0, 202.0])]
+    dets_f2 = detector.detect(dummy_frame, camera_id="CAM_01")
+    assert len(dets_f2) == 1
+    assert dets_f2[0].confirmed is False
+
+    # Frame 3: person at [105, 103, 203, 204], conf 0.50 -> Confirmed!
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.50, xyxy=[105.0, 103.0, 203.0, 204.0])]
+    dets_f3 = detector.detect(dummy_frame, camera_id="CAM_01")
+    assert len(dets_f3) == 1
+    assert dets_f3[0].confirmed is True
+
+    # Frame 4: subsequent hit remains confirmed
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.55, xyxy=[107.0, 104.0, 204.0, 205.0])]
+    dets_f4 = detector.detect(dummy_frame, camera_id="CAM_01")
+    assert len(dets_f4) == 1
+    assert dets_f4[0].confirmed is True
+
+
+def test_detector_transient_spike_non_confirmation():
+    """Verify an isolated single-frame detection spike is marked unconfirmed."""
+    detector = YoloDetector(
+        consecutive_frames=3,
+        confirmation_enabled=True,
+        filter_unconfirmed=False,
+    )
+    mock_model = MockYoloModel()
+    detector.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # Frame 1: high confidence spike (0.95), but only 1 frame
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.95, xyxy=[150.0, 150.0, 250.0, 250.0])]
+    dets = detector.detect(dummy_frame, camera_id="CAM_SPIKE")
+    assert len(dets) == 1
+    assert dets[0].confirmed is False, "Single frame spike must not be confirmed"
+
+
+def test_detector_per_camera_isolation():
+    """Verify confidence tracking state is strictly isolated per camera_id."""
+    detector = YoloDetector(
+        consecutive_frames=3,
+        confirmation_enabled=True,
+        filter_unconfirmed=False,
+    )
+    mock_model = MockYoloModel()
+    detector.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # 3 frames on CAM_01 -> target confirmed on CAM_01
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.85, xyxy=[50.0, 50.0, 150.0, 150.0])]
+    detector.detect(dummy_frame, camera_id="CAM_01")
+    detector.detect(dummy_frame, camera_id="CAM_01")
+    dets_cam1 = detector.detect(dummy_frame, camera_id="CAM_01")
+    assert len(dets_cam1) == 1
+    assert dets_cam1[0].confirmed is True
+
+    # Same target coordinates on CAM_02 for frame 1 -> must NOT be confirmed
+    dets_cam2 = detector.detect(dummy_frame, camera_id="CAM_02")
+    assert len(dets_cam2) == 1
+    assert dets_cam2[0].confirmed is False, "Camera isolation: CAM_02 must start unconfirmed"
+
+
+def test_detector_filter_unconfirmed_and_detect_confirmed():
+    """Verify filter_unconfirmed drops unconfirmed hits and detect_confirmed returns only confirmed hits."""
+    detector_filter = YoloDetector(
+        consecutive_frames=2,
+        confirmation_enabled=True,
+        filter_unconfirmed=True,
+    )
+    mock_model = MockYoloModel()
+    detector_filter.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.80, xyxy=[10.0, 10.0, 50.0, 50.0])]
+    # Frame 1: Hit 1 -> unconfirmed -> should be filtered out
+    dets_f1 = detector_filter.detect(dummy_frame, camera_id="CAM_FILT")
+    assert len(dets_f1) == 0, "Unconfirmed hit must be filtered out when filter_unconfirmed=True"
+
+    # Frame 2: Hit 2 -> confirmed -> should be returned
+    dets_f2 = detector_filter.detect(dummy_frame, camera_id="CAM_FILT")
+    assert len(dets_f2) == 1
+    assert dets_f2[0].confirmed is True
+
+    # Convenience method detect_confirmed on non-filtering detector
+    detector_non_filter = YoloDetector(
+        consecutive_frames=2,
+        confirmation_enabled=True,
+        filter_unconfirmed=False,
+    )
+    detector_non_filter.model = mock_model
+    # Frame 1: Hit 1 (unconfirmed)
+    confirmed_f1 = detector_non_filter.detect_confirmed(dummy_frame, camera_id="CAM_CONV")
+    assert len(confirmed_f1) == 0
+    # Frame 2: Hit 2 (confirmed)
+    confirmed_f2 = detector_non_filter.detect_confirmed(dummy_frame, camera_id="CAM_CONV")
+    assert len(confirmed_f2) == 1
+    assert confirmed_f2[0].confirmed is True
+
+
 if __name__ == "__main__":
     print("\n=======================================================")
     print("RUNNING AI DETECTION MODULE TEST SUITE")
     print("=======================================================")
 
-    print("[1/7] Testing ConfidenceTracker Confirmation Flow...")
+    print("[1/11] Testing ConfidenceTracker Confirmation Flow...")
     test_confidence_tracker_confirmation_flow()
-    print("      --> PASS: Target confirmed after consecutive hits threshold.")
+    print("       --> PASS: Target confirmed after consecutive hits threshold.")
 
-    print("[2/7] Testing ConfidenceTracker Low Confidence Reset...")
+    print("[2/11] Testing ConfidenceTracker Low Confidence Reset...")
     test_confidence_tracker_low_confidence_reset()
-    print("      --> PASS: Low confidence resets consecutive counter.")
+    print("       --> PASS: Low confidence resets consecutive counter.")
 
-    print("[3/7] Testing ConfidenceTracker Multi-Object Independence...")
+    print("[3/11] Testing ConfidenceTracker Multi-Object Independence...")
     test_confidence_tracker_multi_object_independence()
-    print("      --> PASS: Multi-object states decoupled.")
+    print("       --> PASS: Multi-object states decoupled.")
 
-    print("[4/7] Testing ConfidenceTracker Stale Pruning...")
+    print("[4/11] Testing ConfidenceTracker Stale Pruning...")
     test_confidence_tracker_stale_pruning()
-    print("      --> PASS: Expired records pruned successfully.")
+    print("       --> PASS: Expired records pruned successfully.")
 
-    print("[5/7] Testing Detection Settings YAML Loader...")
+    print("[5/11] Testing Detection Settings YAML Loader...")
     test_detection_settings_loading()
-    print("      --> PASS: Settings schema and class flags loaded properly.")
+    print("       --> PASS: Settings schema and class flags loaded properly.")
 
-    print("[6/7] Testing BaseDetector Interface & RawDetection Contract...")
+    print("[6/11] Testing BaseDetector Interface & RawDetection Contract...")
     test_base_detector_interface()
-    print("      --> PASS: BaseDetector polymorphism and contract serialized.")
+    print("       --> PASS: BaseDetector polymorphism and contract serialized.")
 
-    print("[7/7] Testing RawDetection Backward Compatibility & Fallback...")
+    print("[7/11] Testing RawDetection Backward Compatibility & Fallback...")
     test_raw_detection_backward_compatibility()
     test_model_resolution_fallback()
-    print("      --> PASS: Backward compatibility and model fallback verified.")
+    print("       --> PASS: Backward compatibility and model fallback verified.")
 
-    print("\nSTATUS: ALL 7 AI DETECTION MODULE TESTS PASSED! [7/7]")
+    print("[8/11] Testing Detector Rising Confidence Confirmation...")
+    test_detector_rising_confidence_confirmation()
+    print("       --> PASS: Target confirmed across 3 consecutive video frames.")
+
+    print("[9/11] Testing Detector Transient Spike Non-Confirmation...")
+    test_detector_transient_spike_non_confirmation()
+    print("       --> PASS: Single-frame spike remains unconfirmed.")
+
+    print("[10/11] Testing Detector Per-Camera State Isolation...")
+    test_detector_per_camera_isolation()
+    print("        --> PASS: Cameras track confirmation independently.")
+
+    print("[11/11] Testing Detector Filtering & detect_confirmed Helper...")
+    test_detector_filter_unconfirmed_and_detect_confirmed()
+    print("        --> PASS: Filtering and convenience helper verified.")
+
+    print("\nSTATUS: ALL 11 AI DETECTION MODULE TESTS PASSED! [11/11]")
+

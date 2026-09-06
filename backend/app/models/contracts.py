@@ -60,6 +60,7 @@ class RawDetection(BaseModel):
     object_id: Optional[Union[int, str]] = Field(default=None, description="Assigned tracker ID or None before tracking")
     camera_id: Optional[str] = Field(default=None, description="Source camera identifier")
     timestamp: Optional[str] = Field(default=None, description="ISO 8601 UTC timestamp of detection")
+    confirmed: Optional[bool] = Field(default=None, description="Whether detection has been confirmed across consecutive frames by ConfidenceTracker")
 
 
 class SecurityEvent(BaseModel):
