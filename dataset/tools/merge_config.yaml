@@ -1,0 +1,146 @@
+# =====================================================================
+# BORDER SENTINEL — DATASET MERGE & CLASS REMAPPING CONFIGURATION
+# Milestone: Dataset v3 Preparation & Expansion
+# =====================================================================
+# This configuration unifies multiple external YOLO-format datasets
+# into our extended production taxonomy.
+#
+# SAFETY:
+# - All 9 existing production classes (IDs 0-8) are strictly preserved.
+# - The merge script will NEVER write into dataset/releases/v2/.
+# - Unmapped classes are DROPPED and logged with an audit trail.
+# =====================================================================
+
+version: "3.0.0-staging"
+description: "Extended class taxonomy and dataset remap configuration for Dataset v3."
+
+# ---------------------------------------------------------------------
+# TARGET CLASS TAXONOMY
+# ---------------------------------------------------------------------
+# IDs 0-8 match config/classes.yaml exactly.
+# IDs 9-12 are the planned additions for border surveillance.
+target_classes:
+  0: person
+  1: car
+  2: truck
+  3: bus
+  4: motorcycle
+  5: bicycle
+  6: animal
+  7: backpack
+  8: bag
+  9: weapon
+  10: drone
+  11: fire
+  12: smoke
+
+# NOTE ON FIRE/SMOKE TAXONOMY:
+# If the team decides to combine fire and smoke into a single class 'fire-smoke'
+# (as in config/detection_settings.yaml), use:
+#   11: fire-smoke
+# and map both 'smoke' and 'fire' -> 'fire-smoke' in the d_fire dataset mapping.
+
+# ---------------------------------------------------------------------
+# GLOBAL MERGE SETTINGS
+# ---------------------------------------------------------------------
+settings:
+  # Staging output directory (must not be dataset/releases/v2)
+  output_dir: "dataset/releases/v3-staging"
+
+  # File transfer mode: "copy" (safe across all platforms) or "symlink"
+  copy_mode: "copy"
+
+  # Prefix image filenames with dataset name to avoid collisions across datasets
+  # e.g. "weapon_frame001.jpg", "visdrone_frame001.jpg"
+  prefix_filenames: true
+
+  # Hard negative handling:
+  # If true, images with 0 annotations after remapping are KEPT as background samples (empty .txt).
+  # If false, images with 0 annotations are dropped entirely.
+  keep_empty_as_background: true
+
+  # Default split ratios when a source dataset has no train/val/test splits
+  random_split:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+    seed: 42
+
+# ---------------------------------------------------------------------
+# SOURCE DATASET DEFINITIONS & CLASS MAPPINGS
+# ---------------------------------------------------------------------
+# Explicit per-dataset mappings only (NO fuzzy matching or guessing).
+# Mapping targets:
+#   - Exact target class name (e.g. "person", "car", "weapon")
+#   - "DROP": Explicitly discard bounding boxes of this class with logging.
+# Any class encountered in a dataset that is NOT in the mapping will also
+# be dropped and flagged in the summary report.
+datasets:
+  # 1. Weapon (Roboflow Guns Dataset)
+  - name: "weapon"
+    enabled: false  # Enable on Colab when downloaded
+    path: "data/external/weapon"
+    # Source classes can be defined here if data.yaml is missing
+    # classes: { 0: "Guns" }
+    mapping:
+      "Guns": "weapon"
+      "weapon": "weapon"
+      "gun": "weapon"
+      "pistol": "weapon"
+
+  # 2. Drone (Roboflow Drones Detect)
+  - name: "drone"
+    enabled: false  # Enable on Colab when downloaded
+    path: "data/external/drone"
+    mapping:
+      "drone": "drone"
+      "Drone": "drone"
+      "uav": "drone"
+
+  # 3. Fire / Smoke (D-Fire Dataset)
+  - name: "d_fire"
+    enabled: false  # Enable on Colab when downloaded
+    path: "data/external/dfire"
+    mapping:
+      "smoke": "smoke"
+      "fire": "fire"
+      # To combine into a single class:
+      # "smoke": "fire-smoke"
+      # "fire": "fire-smoke"
+
+  # 4. VisDrone2019-DET (Accuracy Improvement for Existing Classes)
+  - name: "visdrone"
+    enabled: false  # Enable on Colab when downloaded
+    path: "data/external/visdrone"
+    mapping:
+      "pedestrian": "person"
+      "people": "person"
+      "car": "car"
+      # OPEN DECISION: van mapping
+      # Set to "car" to merge vans into car, or "DROP" to exclude van bounding boxes
+      "van": "DROP"
+      "truck": "truck"
+      "bus": "bus"
+      "motor": "motorcycle"
+      "bicycle": "bicycle"
+      "tricycle": "DROP"
+      "awning-tricycle": "DROP"
+      "others": "DROP"
+
+  # -------------------------------------------------------------------
+  # SYNTHETIC TEST FIXTURES (Local Validation Only)
+  # -------------------------------------------------------------------
+  - name: "fixture_alpha"
+    enabled: true
+    path: "tests/fixtures/synthetic_datasets/dataset_alpha"
+    mapping:
+      "pedestrian": "person"
+      "car": "car"
+      "tricycle": "DROP"
+
+  - name: "fixture_beta"
+    enabled: true
+    path: "tests/fixtures/synthetic_datasets/dataset_beta"
+    mapping:
+      "drone": "drone"
+      "unknown_noise": "DROP"

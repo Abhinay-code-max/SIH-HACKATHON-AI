@@ -1,0 +1,7 @@
+nc: 3
+names:
+  0: pedestrian
+  1: car
+  2: tricycle
+train: images/train
+val: images/val
