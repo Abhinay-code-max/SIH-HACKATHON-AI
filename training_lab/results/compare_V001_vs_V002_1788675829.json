@@ -1,0 +1,29 @@
+{
+  "model_a": "V001",
+  "model_b": "V002",
+  "verdict": "VERIFIED_IMPROVEMENT",
+  "overall_deltas": {
+    "delta_mAP50": 6.0,
+    "delta_precision": 7.0,
+    "delta_recall": 7.0,
+    "delta_fp": -12,
+    "delta_fn": -7
+  },
+  "baseline_summary": {
+    "mAP50": 80.0,
+    "precision": 80.0,
+    "recall": 75.0,
+    "fp": 30,
+    "fn": 25
+  },
+  "candidate_summary": {
+    "mAP50": 86.0,
+    "precision": 87.0,
+    "recall": 82.0,
+    "fp": 18,
+    "fn": 18
+  },
+  "per_camera_deltas": {},
+  "per_class_deltas": {},
+  "timestamp": "2026-09-06T06:23:49.784047+00:00"
+}

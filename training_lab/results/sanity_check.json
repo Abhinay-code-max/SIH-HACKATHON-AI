@@ -1,0 +1,16 @@
+{
+  "lab_status": "READY",
+  "timestamp": 1788676045.1559498,
+  "verified_directories": [
+    "scenarios",
+    "videos",
+    "datasets",
+    "annotations",
+    "models",
+    "experiments",
+    "results",
+    "engine",
+    "ui",
+    "api"
+  ]
+}

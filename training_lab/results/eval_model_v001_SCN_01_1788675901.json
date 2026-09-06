@@ -1,0 +1,93 @@
+{
+  "scenario_id": "SCN_01",
+  "model_version": "model_v001",
+  "status": "EVALUATED",
+  "conf_threshold": 0.35,
+  "iou_threshold": 0.5,
+  "overall": {
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1": 100.0,
+    "mAP50": 100.0,
+    "tp": 1,
+    "fp": 0,
+    "fn": 0,
+    "fps": 10000.0,
+    "latency_ms": 0.1
+  },
+  "per_camera": {
+    "CAM_01": {
+      "camera_id": "CAM_01",
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "mAP50": 100.0,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "total_predictions": 1,
+      "total_ground_truth": 1
+    },
+    "CAM_02": {
+      "camera_id": "CAM_02",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "total_predictions": 0,
+      "total_ground_truth": 0
+    },
+    "CAM_03": {
+      "camera_id": "CAM_03",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "total_predictions": 0,
+      "total_ground_truth": 0
+    },
+    "CAM_04": {
+      "camera_id": "CAM_04",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "total_predictions": 0,
+      "total_ground_truth": 0
+    },
+    "CAM_05": {
+      "camera_id": "CAM_05",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "total_predictions": 0,
+      "total_ground_truth": 0
+    }
+  },
+  "per_class": {
+    "person": {
+      "class_name": "person",
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1": 100.0,
+      "mAP50": 100.0,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0
+    }
+  },
+  "timestamp": "2026-09-06T06:25:01.081939+00:00"
+}

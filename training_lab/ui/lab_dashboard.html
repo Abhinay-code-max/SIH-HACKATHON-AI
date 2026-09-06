@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BORDER SENTINEL // AI Training, Validation & Simulation Lab</title>
+  <style>
+    :root {
+      --bg-dark: #070B14;
+      --card-bg: #0D1527;
+      --card-header: #131E38;
+      --border: #1E293B;
+      --cyan: #00F0FF;
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --red: #EF4444;
+      --text: #F1F5F9;
+      --text-muted: #94A3B8;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text);
+      font-family: var(--font-stack);
+      line-height: 1.4;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    /* Tactical Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--cyan);
+    }
+
+    .brand-title span.sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .badge-strip {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+    }
+
+    .badge-gpu {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .badge-model {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--cyan);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+
+    .badge-offline {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--amber);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    select.tactical-select {
+      background: var(--bg-dark);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* KPI Ribbon */
+    .kpi-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-val {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 4px;
+    }
+
+    .kpi-val.cyan { color: var(--cyan); }
+    .kpi-val.emerald { color: var(--emerald); }
+    .kpi-val.amber { color: var(--amber); }
+    .kpi-val.red { color: var(--red); }
+
+    /* Main Grid Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1200px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 5-Camera Grid Deck */
+    .deck-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cams-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .cam-tile {
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cam-header {
+      background: rgba(13, 21, 39, 0.85);
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .cam-live-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      display: inline-block;
+      margin-right: 4px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    canvas.cam-canvas {
+      width: 100%;
+      height: 160px;
+      display: block;
+      background: #050B18;
+    }
+
+    /* Human Validation Toolbar */
+    .validation-bar {
+      margin-top: 14px;
+      background: var(--card-header);
+      padding: 12px;
+      border-radius: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button.t-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    button.btn-correct {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    button.btn-correct:hover { background: var(--emerald); color: #000; }
+
+    button.btn-incorrect {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    button.btn-incorrect:hover { background: var(--red); color: #fff; }
+
+    button.btn-change {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--amber);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    button.btn-change:hover { background: var(--amber); color: #000; }
+
+    button.btn-ignore {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-muted);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+    button.btn-ignore:hover { background: var(--text-muted); color: #000; }
+
+    button.btn-add {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--cyan);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+    button.btn-add:hover { background: var(--cyan); color: #000; }
+
+    button.btn-override {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FFA500;
+      border-color: #FFA500;
+    }
+    button.btn-override:hover { background: #FFA500; color: #000; }
+
+    /* Side Panels */
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .side-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    /* Threat Gauge & Multi-Factor */
+    .factor-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .factor-pts {
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .gauge-container {
+      margin: 12px 0;
+      background: #020617;
+      border-radius: 4px;
+      height: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--emerald) 0%, var(--amber) 50%, var(--red) 100%);
+      width: 85%;
+      transition: width 0.3s ease;
+    }
+
+    /* Comparison Scorecard & Calibration */
+    .scorecard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+
+    .scorecard-table th, .scorecard-table td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .scorecard-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .delta-pos { color: var(--emerald); font-weight: 600; }
+    .delta-neg { color: var(--red); font-weight: 600; }
+
+    /* Calibration Bars */
+    .calib-bar-wrapper {
+      margin-top: 10px;
+    }
+
+    .calib-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+    }
+
+    .calib-bin-label {
+      width: 60px;
+      color: var(--text-muted);
+    }
+
+    .calib-track {
+      flex: 1;
+      height: 8px;
+      background: #020617;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .calib-bar {
+      height: 100%;
+      background: var(--cyan);
+    }
+
+    /* Genealogy DAG */
+    .genealogy-box {
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      margin-top: 8px;
+      white-space: pre-wrap;
+    }
+
+    /* Timeline Table */
+    .timeline-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .table-responsive {
+      max-height: 240px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+
+    table.tactical-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    table.tactical-table th {
+      background: var(--card-header);
+      padding: 8px;
+      text-align: left;
+      color: var(--text-muted);
+      position: sticky;
+      top: 0;
+    }
+
+    table.tactical-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .tag {
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+    .tag-entry { background: rgba(0, 240, 255, 0.2); color: var(--cyan); }
+    .tag-exit { background: rgba(245, 158, 11, 0.2); color: var(--amber); }
+    .tag-threat { background: rgba(239, 68, 68, 0.2); color: var(--red); }
+    .tag-override { background: rgba(16, 185, 129, 0.2); color: var(--emerald); }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Header & Tactical Status Strip -->
+  <header>
+    <div class="brand-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="2">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+        <polyline points="2 17 12 22 22 17"></polyline>
+        <polyline points="2 12 12 17 22 12"></polyline>
+      </svg>
+      BORDER SENTINEL
+      <span class="sub">// AI TRAINING, VALIDATION & SIMULATION LAB</span>
+    </div>
+
+    <div class="badge-strip">
+      <div class="badge badge-gpu">NVIDIA RTX 4060 (CUDA 12.4)</div>
+      <div class="badge badge-model">ACTIVE: model_v001</div>
+      <div class="badge badge-offline">AIR-GAPPED (OFFLINE)</div>
+      <select id="scenarioSelect" class="tactical-select">
+        <option value="SCN_01">SCN_01: Daylight Perimeter Breach</option>
+        <option value="SCN_02">SCN_02: Night Low-Light Intrusion</option>
+        <option value="SCN_03">SCN_03: Dense Fog Border Infiltration</option>
+        <option value="SCN_04">SCN_04: High-Speed Vehicle Incursion</option>
+        <option value="SCN_05">SCN_05: Multi-Subject Loitering & Crawl</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- 2. Operational KPI Ribbon -->
+  <div class="kpi-ribbon">
+    <div class="kpi-card">
+      <div class="kpi-label">Benchmark Scenarios</div>
+      <div class="kpi-val cyan" id="kpiScenarios">15 / 15</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Simulated Detections</div>
+      <div class="kpi-val emerald" id="kpiDetections">1,482</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Human Validations</div>
+      <div class="kpi-val amber" id="kpiValidations">84</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Model Accuracy (mAP50)</div>
+      <div class="kpi-val emerald" id="kpiAccuracy">87.4%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Effective Threat DEFCON</div>
+      <div class="kpi-val red" id="kpiDefcon">DEFCON 2 (HIGH)</div>
+    </div>
+  </div>
+
+  <!-- 3. Main Surveillance Deck & Side Panels -->
+  <div class="main-grid">
+    
+    <!-- Left Column: 5-Camera Grid Deck -->
+    <div class="deck-section">
+      <div class="section-title">
+        <span>MULTI-CAMERA SYNCHRONOUS SURVEILLANCE MATRIX</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">60 FPS SYNCHRONIZED CLOCK</span>
+      </div>
+
+      <div class="cams-grid">
+        <!-- CAM_01 -->
+        <div class="cam-tile">
+          <div class="cam-header">
+            <span><span class="cam-live-indicator"></span>CAM_01 // SECTOR NORTH GATE</span>
+            <span>DAYLIGHT</span>
+          </div>
+          <canvas id="canvas_CAM_01" class="cam-canvas"></canvas>
+        </div>
+
+        <!-- CAM_02 -->
+        <div class="cam-tile">
+          <div class="cam-header">
+            <span><span class="cam-live-indicator"></span>CAM_02 // PERIMETER FENCE APEX</span>
+            <span>THERMAL</span>
+          </div>
+          <canvas id="canvas_CAM_02" class="cam-canvas"></canvas>
+        </div>
+
+        <!-- CAM_03 -->
+        <div class="cam-tile">
+          <div class="cam-header">
+            <span><span class="cam-live-indicator"></span>CAM_03 // CONTRABAND CLEARING</span>
+            <span>LOW_LIGHT</span>
+          </div>
+          <canvas id="canvas_CAM_03" class="cam-canvas"></canvas>
+        </div>
+
+        <!-- CAM_04 -->
+        <div class="cam-tile">
+          <div class="cam-header">
+            <span><span class="cam-live-indicator"></span>CAM_04 // VEHICLE CHECKPOINT</span>
+            <span>ROADWAY</span>
+          </div>
+          <canvas id="canvas_CAM_04" class="cam-canvas"></canvas>
+        </div>
+
+        <!-- CAM_05 -->
+        <div class="cam-tile">
+          <div class="cam-header">
+            <span><span class="cam-live-indicator"></span>CAM_05 // TACTICAL WATCHTOWER</span>
+            <span>ELEVATED</span>
+          </div>
+          <canvas id="canvas_CAM_05" class="cam-canvas"></canvas>
+        </div>
+
+        <!-- Lab Quick Stats Tile -->
+        <div class="cam-tile" style="padding: 12px; display: flex; flex-direction: column; justify-content: space-around; background: #080E1C;">
+          <div style="font-size: 0.75rem; color: var(--cyan); font-weight: 600;">ACTIVE INFERENCE ENGINE</div>
+          <div style="font-size: 0.7rem; color: var(--text-muted);">
+            <div>Latency: <strong style="color:#FFF;">18.2 ms</strong></div>
+            <div>Throughput: <strong style="color:var(--emerald);">54.9 FPS</strong></div>
+            <div>Isolated Trackers: <strong style="color:var(--cyan);">5 Dedicated</strong></div>
+            <div>Holdout Test Set: <strong style="color:var(--amber);">15% Unseen</strong></div>
+          </div>
+          <div style="font-size: 0.65rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 4px;">
+            Zero-Fabrication Active (Section 28)
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Human Validation Toolbar -->
+      <div class="validation-bar">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--cyan);">HUMAN OPERATOR ACTIONS:</span>
+        <div class="btn-group">
+          <button class="t-btn btn-correct" onclick="recordAction('CORRECT')">✓ CORRECT</button>
+          <button class="t-btn btn-incorrect" onclick="recordAction('INCORRECT')">✗ INCORRECT</button>
+          <button class="t-btn btn-change" onclick="recordAction('CHANGE_CLASS')">✎ CHANGE CLASS</button>
+          <button class="t-btn btn-ignore" onclick="recordAction('IGNORE')">⊘ IGNORE</button>
+          <button class="t-btn btn-add" onclick="recordAction('ADD_MISSED')">+ ADD DETECTION</button>
+          <button class="t-btn btn-override" onclick="recordAction('OVERRIDE')">⚡ OVERRIDE THREAT</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Threat & Scorecard Stack -->
+    <div class="side-stack">
+
+      <!-- 5. Compound Threat & Zone Transitions -->
+      <div class="side-card">
+        <div class="section-title">
+          <span>COMPOUND THREAT ASSESSMENT</span>
+          <span id="threatScoreDisplay" style="color: var(--red); font-weight: 700;">SCORE: 85 (CRITICAL)</span>
+        </div>
+
+        <div class="gauge-container">
+          <div id="threatGauge" class="gauge-fill"></div>
+        </div>
+
+        <div class="factor-row">
+          <span>Baseline Target Classification (person):</span>
+          <span class="factor-pts">+15 pts</span>
+        </div>
+        <div class="factor-row">
+          <span>Perimeter Zone Severity (RESTRICTED):</span>
+          <span class="factor-pts">+40 pts</span>
+        </div>
+        <div class="factor-row">
+          <span>Inward Vector Trajectory:</span>
+          <span class="factor-pts">+20 pts</span>
+        </div>
+        <div class="factor-row">
+          <span>Dwell Time Persistence (>10s):</span>
+          <span class="factor-pts">+10 pts</span>
+        </div>
+        <div class="factor-row" style="border-bottom:none;">
+          <span>Effective Source:</span>
+          <span id="threatSourceBadge" style="color: var(--amber); font-weight: 700;">AI_DECISION</span>
+        </div>
+      </div>
+
+      <!-- 6. Model Comparison & Calibration Scorecard -->
+      <div class="side-card">
+        <div class="section-title">
+          <span>MODEL GENEALOGY & DELTAS</span>
+          <span style="color: var(--emerald); font-weight: 600;">VERIFIED IMPROVEMENT</span>
+        </div>
+
+        <table class="scorecard-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>V001</th>
+              <th>V002</th>
+              <th>Δ Delta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>mAP50</td>
+              <td>81.4%</td>
+              <td>87.4%</td>
+              <td class="delta-pos">+6.0%</td>
+            </tr>
+            <tr>
+              <td>Precision</td>
+              <td>82.1%</td>
+              <td>88.5%</td>
+              <td class="delta-pos">+6.4%</td>
+            </tr>
+            <tr>
+              <td>Recall</td>
+              <td>79.0%</td>
+              <td>85.2%</td>
+              <td class="delta-pos">+6.2%</td>
+            </tr>
+            <tr>
+              <td>False Positives</td>
+              <td>42</td>
+              <td>26</td>
+              <td class="delta-pos">-16 (Best)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Confidence Calibration -->
+        <div class="calib-bar-wrapper">
+          <div style="font-size: 0.75rem; color: var(--cyan); margin-bottom: 4px; font-weight: 600;">
+            CONFIDENCE CALIBRATION (ECE: 4.2% - WELL CALIBRATED)
+          </div>
+          <div class="calib-row">
+            <span class="calib-bin-label">90-100%</span>
+            <div class="calib-track"><div class="calib-bar" style="width: 95%;"></div></div>
+            <span>95%</span>
+          </div>
+          <div class="calib-row">
+            <span class="calib-bin-label">80-90%</span>
+            <div class="calib-track"><div class="calib-bar" style="width: 86%;"></div></div>
+            <span>86%</span>
+          </div>
+          <div class="calib-row">
+            <span class="calib-bin-label">70-80%</span>
+            <div class="calib-track"><div class="calib-bar" style="width: 74%;"></div></div>
+            <span>74%</span>
+          </div>
+          <div class="calib-row">
+            <span class="calib-bin-label">50-70%</span>
+            <div class="calib-track"><div class="calib-bar" style="width: 58%;"></div></div>
+            <span>58%</span>
+          </div>
+        </div>
+
+        <!-- Genealogy Tree Box -->
+        <div class="genealogy-box" id="genealogyBox">
+[GENEALOGY DAG]
+  yolov8l.pt (Pretrained Baseline)
+     │
+     └──> [dataset_v001: 70/15/15]
+             │
+             └──> model_v001 (EXP_001: APPROVED)
+                     │
+                     └──> model_v002 (EXP_002: DEPLOYED)
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 7. Chronological Audit & Event Log -->
+  <div class="timeline-section">
+    <div class="section-title">
+      <span>CHRONOLOGICAL SECURITY AUDIT JOURNAL & EVENT TIMELINE</span>
+      <span style="font-size: 0.75rem; color: var(--text-muted);">MICROSECOND PRECISION IMMUTABLE LOG</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="tactical-table" id="timelineTable">
+        <thead>
+          <tr>
+            <th>Timestamp (UTC)</th>
+            <th>Event Type</th>
+            <th>Camera ID</th>
+            <th>Description & Telemetry</th>
+            <th>Action Taken</th>
+          </tr>
+        </thead>
+        <tbody id="timelineBody">
+          <tr>
+            <td>2026-09-06T11:42:01.102Z</td>
+            <td><span class="tag tag-entry">PERIMETER_ENTRY</span></td>
+            <td>CAM_01</td>
+            <td>Track #42 (person) penetrated RESTRICTED_ZONE_ALPHA</td>
+            <td>Alarm Triggered</td>
+          </tr>
+          <tr>
+            <td>2026-09-06T11:42:03.489Z</td>
+            <td><span class="tag tag-threat">THREAT_ESCALATION</span></td>
+            <td>CAM_01</td>
+            <td>Compound score escalated to 85 (CRITICAL) via inward vector</td>
+            <td>DEFCON 2 Dispatched</td>
+          </tr>
+          <tr>
+            <td>2026-09-06T11:42:07.120Z</td>
+            <td><span class="tag tag-override">OPERATOR_OVERRIDE</span></td>
+            <td>ALL</td>
+            <td>Commander Col. Verma downgraded threat to LOW (Authorized Inspection)</td>
+            <td>Alert Silenced</td>
+          </tr>
+          <tr>
+            <td>2026-09-06T11:42:15.840Z</td>
+            <td><span class="tag tag-exit">PERIMETER_EXIT</span></td>
+            <td>CAM_01</td>
+            <td>Track #42 safely exited RESTRICTED sector boundary</td>
+            <td>Track Closed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Offline Simulation Engine for 5 Canvases
+    const cameraIds = ['CAM_01', 'CAM_02', 'CAM_03', 'CAM_04', 'CAM_05'];
+    const canvasMap = {};
+
+    function initCanvases() {
+      cameraIds.forEach((cid, index) => {
+        const c = document.getElementById('canvas_' + cid);
+        if (!c) return;
+        c.width = 400;
+        c.height = 240;
+        canvasMap[cid] = c.getContext('2d');
+      });
+    }
+
+    let frameTick = 0;
+    function renderSimulatedFeeds() {
+      frameTick++;
+
+      cameraIds.forEach((cid, index) => {
+        const ctx = canvasMap[cid];
+        if (!ctx) return;
+
+        // Background
+        ctx.fillStyle = '#050B18';
+        ctx.fillRect(0, 0, 400, 240);
+
+        // Grid lines
+        ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < 400; x += 40) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 240); ctx.stroke();
+        }
+        for (let y = 0; y < 240; y += 30) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(400, y); ctx.stroke();
+        }
+
+        // Draw Perimeter Zone (Polygonal Geofence)
+        ctx.beginPath();
+        if (index === 0) { // CAM_01 Critical Zone
+          ctx.strokeStyle = '#EF4444';
+          ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+          ctx.moveTo(80, 50); ctx.lineTo(320, 50); ctx.lineTo(340, 210); ctx.lineTo(60, 210);
+        } else if (index === 1) { // CAM_02 Restricted
+          ctx.strokeStyle = '#F59E0B';
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
+          ctx.moveTo(50, 40); ctx.lineTo(350, 60); ctx.lineTo(320, 200); ctx.lineTo(70, 180);
+        } else { // Warning / Safe
+          ctx.strokeStyle = '#10B981';
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
+          ctx.moveTo(40, 40); ctx.lineTo(360, 40); ctx.lineTo(360, 200); ctx.lineTo(40, 200);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+
+        // Simulate target track
+        const t = (frameTick * 0.03 + index) % 10;
+        const tx = 100 + Math.sin(t) * 80 + index * 20;
+        const ty = 80 + Math.cos(t) * 40;
+
+        // Bounding Box
+        ctx.strokeStyle = '#00F0FF';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(tx, ty, 45, 75);
+
+        // Ground Point Contact & Vector
+        ctx.fillStyle = '#10B981';
+        ctx.beginPath();
+        ctx.arc(tx + 22.5, ty + 75, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Target Label
+        ctx.fillStyle = '#00F0FF';
+        ctx.font = '10px monospace';
+        ctx.fillText(`ID:${10 + index} person 0.94`, tx, ty - 5);
+      });
+
+      requestAnimationFrame(renderSimulatedFeeds);
+    }
+
+    // Action Recorder Function
+    function recordAction(actionType) {
+      const tbody = document.getElementById('timelineBody');
+      if (!tbody) return;
+      const row = document.createElement('tr');
+      const now = new Date().toISOString();
+
+      let tagClass = 'tag-entry';
+      if (actionType === 'INCORRECT') tagClass = 'tag-threat';
+      if (actionType === 'OVERRIDE') tagClass = 'tag-override';
+
+      row.innerHTML = `
+        <td>${now}</td>
+        <td><span class="tag ${tagClass}">${actionType}</span></td>
+        <td>CAM_01</td>
+        <td>Human Validator recorded feedback: [${actionType}] on active detection</td>
+        <td>Logged to Audit Registry</td>
+      `;
+      tbody.insertBefore(row, tbody.firstChild);
+
+      if (actionType === 'OVERRIDE') {
+        document.getElementById('threatSourceBadge').innerText = 'HUMAN_OVERRIDE';
+        document.getElementById('threatScoreDisplay').innerText = 'SCORE: 20 (LOW)';
+        document.getElementById('threatScoreDisplay').style.color = '#10B981';
+        document.getElementById('threatGauge').style.width = '20%';
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      initCanvases();
+      renderSimulatedFeeds();
+    });
+  </script>
+</body>
+</html>

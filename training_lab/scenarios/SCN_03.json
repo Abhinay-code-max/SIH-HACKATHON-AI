@@ -1,0 +1,303 @@
+{
+  "scenario_id": "SCN_03",
+  "name": "Multiple People Approaching Perimeter",
+  "description": "Concurrent multi-subject movement toward restricted border sector.",
+  "category": "PERIMETER_DEFENSE",
+  "environment": "OPEN_TERRAIN",
+  "lighting": "DAY_CLEAR",
+  "weather": "CLEAR",
+  "difficulty": "MEDIUM",
+  "assigned_cameras": {
+    "CAM_01": {
+      "camera_id": "CAM_01",
+      "stream_name": "Concourse Main Gateway",
+      "video_file": "training_lab/videos/CAM_01_gateway.mp4",
+      "zones": [
+        {
+          "zone_id": "ZONE_GATE_RESTRICTED",
+          "name": "Perimeter Gateway Corridor",
+          "zone_type": "RESTRICTED",
+          "polygon_normalized": [
+            [
+              0.05,
+              0.05
+            ],
+            [
+              0.45,
+              0.05
+            ],
+            [
+              0.45,
+              0.65
+            ],
+            [
+              0.05,
+              0.65
+            ]
+          ],
+          "severity": "CRITICAL",
+          "restricted_classes": [
+            "person",
+            "car",
+            "truck"
+          ]
+        }
+      ],
+      "tripwires": [
+        {
+          "wire_id": "WIRE_GATE_ENTRY",
+          "name": "Main Ingress Threshold",
+          "line_start": [
+            0.3,
+            0.1
+          ],
+          "line_end": [
+            0.3,
+            0.9
+          ],
+          "severity": "HIGH",
+          "target_classes": [
+            "person",
+            "car"
+          ]
+        }
+      ]
+    },
+    "CAM_02": {
+      "camera_id": "CAM_02",
+      "stream_name": "Gate 1 Vehicle Checkpoint",
+      "video_file": "training_lab/videos/CAM_02_checkpoint.mp4",
+      "zones": [
+        {
+          "zone_id": "ZONE_VEHICLE_RESTRICTED",
+          "name": "Vehicle Inspection Bay",
+          "zone_type": "CRITICAL",
+          "polygon_normalized": [
+            [
+              0.2,
+              0.2
+            ],
+            [
+              0.8,
+              0.2
+            ],
+            [
+              0.8,
+              0.85
+            ],
+            [
+              0.2,
+              0.85
+            ]
+          ],
+          "severity": "CRITICAL",
+          "restricted_classes": [
+            "truck",
+            "bus",
+            "unauthorized_vehicle"
+          ]
+        }
+      ],
+      "tripwires": [
+        {
+          "wire_id": "WIRE_VEHICLE_STOP_LINE",
+          "name": "Security Barrier Stop Line",
+          "line_start": [
+            0.5,
+            0.2
+          ],
+          "line_end": [
+            0.5,
+            0.85
+          ],
+          "severity": "CRITICAL",
+          "target_classes": [
+            "car",
+            "truck",
+            "bus"
+          ]
+        }
+      ]
+    },
+    "CAM_03": {
+      "camera_id": "CAM_03",
+      "stream_name": "Perimeter Command Outpost",
+      "video_file": "training_lab/videos/CAM_03_perimeter.mp4",
+      "zones": [
+        {
+          "zone_id": "ZONE_PERIMETER_NORTH",
+          "name": "North Border Buffer Zone",
+          "zone_type": "WARNING",
+          "polygon_normalized": [
+            [
+              0.1,
+              0.1
+            ],
+            [
+              0.9,
+              0.1
+            ],
+            [
+              0.9,
+              0.4
+            ],
+            [
+              0.1,
+              0.4
+            ]
+          ],
+          "severity": "HIGH",
+          "restricted_classes": [
+            "person",
+            "car"
+          ]
+        }
+      ],
+      "tripwires": [
+        {
+          "wire_id": "WIRE_BORDER_FENCE_NORTH",
+          "name": "Physical Border Fence",
+          "line_start": [
+            0.1,
+            0.35
+          ],
+          "line_end": [
+            0.9,
+            0.35
+          ],
+          "severity": "CRITICAL",
+          "target_classes": [
+            "person",
+            "animal"
+          ]
+        }
+      ]
+    },
+    "CAM_04": {
+      "camera_id": "CAM_04",
+      "stream_name": "Secondary Fence North",
+      "video_file": "training_lab/videos/CAM_04_north_fence.mp4",
+      "zones": [
+        {
+          "zone_id": "ZONE_OUTER_FENCE",
+          "name": "Outer Secondary Buffer",
+          "zone_type": "RESTRICTED",
+          "polygon_normalized": [
+            [
+              0.05,
+              0.15
+            ],
+            [
+              0.95,
+              0.15
+            ],
+            [
+              0.95,
+              0.75
+            ],
+            [
+              0.05,
+              0.75
+            ]
+          ],
+          "severity": "HIGH",
+          "restricted_classes": [
+            "person",
+            "vehicle"
+          ]
+        }
+      ],
+      "tripwires": [
+        {
+          "wire_id": "WIRE_OUTER_FENCE_01",
+          "name": "Secondary Tripwire Line",
+          "line_start": [
+            0.05,
+            0.5
+          ],
+          "line_end": [
+            0.95,
+            0.5
+          ],
+          "severity": "HIGH",
+          "target_classes": [
+            "person"
+          ]
+        }
+      ]
+    },
+    "CAM_05": {
+      "camera_id": "CAM_05",
+      "stream_name": "Restricted Logistics Depot",
+      "video_file": "training_lab/videos/CAM_05_logistics.mp4",
+      "zones": [
+        {
+          "zone_id": "ZONE_DEPOT_RESTRICTED",
+          "name": "Ammunition & Fuel Storage Bay",
+          "zone_type": "CRITICAL",
+          "polygon_normalized": [
+            [
+              0.15,
+              0.15
+            ],
+            [
+              0.85,
+              0.15
+            ],
+            [
+              0.85,
+              0.9
+            ],
+            [
+              0.15,
+              0.9
+            ]
+          ],
+          "severity": "CRITICAL",
+          "restricted_classes": [
+            "person",
+            "car",
+            "truck"
+          ]
+        }
+      ],
+      "tripwires": [
+        {
+          "wire_id": "WIRE_DEPOT_GATE",
+          "name": "Depot Inner Perimeter Line",
+          "line_start": [
+            0.15,
+            0.5
+          ],
+          "line_end": [
+            0.85,
+            0.5
+          ],
+          "severity": "CRITICAL",
+          "target_classes": [
+            "person",
+            "truck"
+          ]
+        }
+      ]
+    }
+  },
+  "threat_rules": [
+    {
+      "rule_id": "R_03",
+      "name": "Coordinated Ingress",
+      "event_type": "CROWD_DENSITY",
+      "severity": "HIGH",
+      "points": 30,
+      "dwell_threshold_seconds": null,
+      "target_classes": [
+        "person"
+      ]
+    }
+  ],
+  "model_version": "YOLO-L-v002",
+  "dataset_version": "v2",
+  "results_summary": null,
+  "created_at": "2026-09-06T06:27:06.154449+00:00",
+  "updated_at": "2026-09-06T06:27:06.154449+00:00"
+}

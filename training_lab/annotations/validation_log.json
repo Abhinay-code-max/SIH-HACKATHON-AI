@@ -1,0 +1,197 @@
+[
+  {
+    "record_id": "VAL_00001",
+    "scenario_id": "SCN_01",
+    "camera_id": "CAM_01",
+    "frame_idx": 12,
+    "timestamp": 0.4,
+    "tracking_id": 1,
+    "ai_prediction": {
+      "class_name": "person",
+      "confidence": 0.94,
+      "bbox": [
+        60.0,
+        188.0,
+        91.0,
+        293.0
+      ]
+    },
+    "decision": "CORRECT",
+    "human_verified_class": "person",
+    "human_bbox": [
+      60.0,
+      188.0,
+      91.0,
+      293.0
+    ],
+    "error_category": "TRUE_POSITIVE",
+    "is_training_candidate": true,
+    "validator_notes": "Verified standard daytime pedestrian detection",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.208529+00:00"
+  },
+  {
+    "record_id": "VAL_00002",
+    "scenario_id": "SCN_02",
+    "camera_id": "CAM_02",
+    "frame_idx": 45,
+    "timestamp": 1.5,
+    "tracking_id": 5,
+    "ai_prediction": {
+      "class_name": "car",
+      "confidence": 0.78,
+      "bbox": [
+        120.0,
+        200.0,
+        240.0,
+        310.0
+      ]
+    },
+    "decision": "CHANGE_CLASS",
+    "human_verified_class": "truck",
+    "human_bbox": [
+      120.0,
+      200.0,
+      240.0,
+      310.0
+    ],
+    "error_category": "WRONG_CLASS",
+    "is_training_candidate": true,
+    "validator_notes": "Commercial flatbed misclassified as passenger car",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.211528+00:00"
+  },
+  {
+    "record_id": "VAL_00003",
+    "scenario_id": "SCN_03",
+    "camera_id": "CAM_03",
+    "frame_idx": 80,
+    "timestamp": 2.6667,
+    "tracking_id": null,
+    "ai_prediction": {
+      "class_name": "person",
+      "confidence": 0.39,
+      "bbox": [
+        400.0,
+        110.0,
+        435.0,
+        165.0
+      ]
+    },
+    "decision": "INCORRECT",
+    "human_verified_class": null,
+    "human_bbox": null,
+    "error_category": "FALSE_POSITIVE",
+    "is_training_candidate": false,
+    "validator_notes": "Shadow artifact falsely tagged as human intruder",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.213526+00:00"
+  },
+  {
+    "record_id": "VAL_00004",
+    "scenario_id": "SCN_01",
+    "camera_id": "CAM_01",
+    "frame_idx": 30,
+    "timestamp": 1.0,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "MANUAL_ADDITION",
+    "human_verified_class": "person",
+    "human_bbox": [
+      100.0,
+      150.0,
+      180.0,
+      260.0
+    ],
+    "error_category": "FALSE_NEGATIVE",
+    "is_training_candidate": true,
+    "validator_notes": "Human validator drawn box for missed crawling subject",
+    "crop_path": "training_lab/annotations/crops/SCN_01_CAM_01_f0030_crop_47217.jpg",
+    "validated_at": "2026-09-06T06:27:27.222596+00:00"
+  },
+  {
+    "record_id": "VAL_00005",
+    "scenario_id": "SCN_04",
+    "camera_id": "CAM_04",
+    "frame_idx": 50,
+    "timestamp": 1.6667,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "IGNORE",
+    "human_verified_class": null,
+    "human_bbox": null,
+    "error_category": "LOW_CONFIDENCE",
+    "is_training_candidate": false,
+    "validator_notes": "Vegetation glare below threshold",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.225114+00:00"
+  },
+  {
+    "record_id": "VAL_00006",
+    "scenario_id": "SCN_05",
+    "camera_id": "CAM_05",
+    "frame_idx": 50,
+    "timestamp": 1.6667,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "INCORRECT",
+    "human_verified_class": null,
+    "human_bbox": null,
+    "error_category": "DUPLICATE_DETECTION",
+    "is_training_candidate": false,
+    "validator_notes": "Double bbox on same motorcycle",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.229173+00:00"
+  },
+  {
+    "record_id": "VAL_00007",
+    "scenario_id": "SCN_01",
+    "camera_id": "CAM_01",
+    "frame_idx": 50,
+    "timestamp": 1.6667,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "INCORRECT",
+    "human_verified_class": null,
+    "human_bbox": null,
+    "error_category": "TRACKING_ERROR",
+    "is_training_candidate": false,
+    "validator_notes": "Track ID switch across occlusion",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.232169+00:00"
+  },
+  {
+    "record_id": "VAL_00008",
+    "scenario_id": "SCN_02",
+    "camera_id": "CAM_02",
+    "frame_idx": 50,
+    "timestamp": 1.6667,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "INCORRECT",
+    "human_verified_class": null,
+    "human_bbox": null,
+    "error_category": "PERIMETER_ERROR",
+    "is_training_candidate": false,
+    "validator_notes": "Target detected outside legal zone",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.235170+00:00"
+  },
+  {
+    "record_id": "VAL_00009",
+    "scenario_id": "SCN_03",
+    "camera_id": "CAM_03",
+    "frame_idx": 50,
+    "timestamp": 1.6667,
+    "tracking_id": null,
+    "ai_prediction": null,
+    "decision": "INCORRECT",
+    "human_verified_class": null,
+    "human_bbox": null,
+    "error_category": "THREAT_CLASSIFICATION_ERROR",
+    "is_training_candidate": false,
+    "validator_notes": "Threat score under-weighted",
+    "crop_path": null,
+    "validated_at": "2026-09-06T06:27:27.237168+00:00"
+  }
+]

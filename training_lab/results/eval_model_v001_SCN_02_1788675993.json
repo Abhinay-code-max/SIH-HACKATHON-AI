@@ -1,0 +1,133 @@
+{
+  "scenario_id": "SCN_02",
+  "model_version": "model_v001",
+  "status": "EVALUATED",
+  "conf_threshold": 0.35,
+  "iou_threshold": 0.5,
+  "overall": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "mAP50": 0.0,
+    "tp": 0,
+    "fp": 11,
+    "fn": 5,
+    "fps": 4.3,
+    "latency_ms": 234.83
+  },
+  "per_camera": {
+    "CAM_01": {
+      "camera_id": "CAM_01",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "total_predictions": 0,
+      "total_ground_truth": 1
+    },
+    "CAM_02": {
+      "camera_id": "CAM_02",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 11,
+      "fn": 1,
+      "total_predictions": 11,
+      "total_ground_truth": 1
+    },
+    "CAM_03": {
+      "camera_id": "CAM_03",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "total_predictions": 0,
+      "total_ground_truth": 1
+    },
+    "CAM_04": {
+      "camera_id": "CAM_04",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "total_predictions": 0,
+      "total_ground_truth": 1
+    },
+    "CAM_05": {
+      "camera_id": "CAM_05",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "total_predictions": 0,
+      "total_ground_truth": 1
+    }
+  },
+  "per_class": {
+    "backpack": {
+      "class_name": "backpack",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    "car": {
+      "class_name": "car",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    "motorcycle": {
+      "class_name": "motorcycle",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1
+    },
+    "person": {
+      "class_name": "person",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2
+    },
+    "traffic light": {
+      "class_name": "traffic light",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "mAP50": 0.0,
+      "tp": 0,
+      "fp": 11,
+      "fn": 0
+    }
+  },
+  "timestamp": "2026-09-06T06:26:33.493726+00:00"
+}

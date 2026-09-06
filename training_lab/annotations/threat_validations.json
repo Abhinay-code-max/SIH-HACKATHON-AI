@@ -1,0 +1,38 @@
+[
+  {
+    "validation_id": "tval_9acf3b5e",
+    "assessment_id": "th_001",
+    "ai_level": "CRITICAL",
+    "human_level": "CRITICAL",
+    "is_correct": true,
+    "notes": "Confirmed breach with inward weapon carriage.",
+    "timestamp": "2026-09-06T06:10:34.765712+00:00"
+  },
+  {
+    "validation_id": "tval_ea1fece4",
+    "assessment_id": "th_002",
+    "ai_level": "HIGH",
+    "human_level": "MEDIUM",
+    "is_correct": false,
+    "notes": "Validator downgraded: friendly patrol unit identified.",
+    "timestamp": "2026-09-06T06:10:34.765712+00:00"
+  },
+  {
+    "validation_id": "tval_fa3e3e6d",
+    "assessment_id": "th_001",
+    "ai_level": "CRITICAL",
+    "human_level": "CRITICAL",
+    "is_correct": true,
+    "notes": "Confirmed breach with inward weapon carriage.",
+    "timestamp": "2026-09-06T06:27:05.459387+00:00"
+  },
+  {
+    "validation_id": "tval_7303a132",
+    "assessment_id": "th_002",
+    "ai_level": "HIGH",
+    "human_level": "MEDIUM",
+    "is_correct": false,
+    "notes": "Validator downgraded: friendly patrol unit identified.",
+    "timestamp": "2026-09-06T06:27:05.460398+00:00"
+  }
+]

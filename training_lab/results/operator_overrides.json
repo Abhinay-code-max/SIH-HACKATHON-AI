@@ -1,0 +1,128 @@
+[
+  {
+    "override_id": "ovr_be78dcab",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized UN border inspection convoy confirmed via radio dispatch",
+    "operator": "Sector Commander Col. Verma",
+    "timestamp": "2026-09-06T06:10:34.789294+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_1ece8657",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:20:32.691789+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_c8956a44",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:21:15.040513+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_5441fa82",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:21:48.408754+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_57cf7a29",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:22:19.163065+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_56f6a56f",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:22:49.669829+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_a6c063f8",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:23:16.565732+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_84a68a30",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:23:49.644520+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_abb8393b",
+    "automatic_level": "CRITICAL",
+    "override_level": "MEDIUM",
+    "reason": "Test API Override",
+    "operator": "API Tester",
+    "timestamp": "2026-09-06T06:23:50.669793+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_8442b174",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:25:00.978246+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_3b4f66f7",
+    "automatic_level": "CRITICAL",
+    "override_level": "MEDIUM",
+    "reason": "Test API Override",
+    "operator": "API Tester",
+    "timestamp": "2026-09-06T06:25:01.821413+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_01d7c8f3",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized Routine Patrol",
+    "operator": "Command Officer",
+    "timestamp": "2026-09-06T06:26:47.283035+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_02d22b32",
+    "automatic_level": "CRITICAL",
+    "override_level": "MEDIUM",
+    "reason": "Test API Override",
+    "operator": "API Tester",
+    "timestamp": "2026-09-06T06:26:48.144002+00:00",
+    "is_active": true
+  },
+  {
+    "override_id": "ovr_9d0f7b6e",
+    "automatic_level": "CRITICAL",
+    "override_level": "LOW",
+    "reason": "Authorized UN border inspection convoy confirmed via radio dispatch",
+    "operator": "Sector Commander Col. Verma",
+    "timestamp": "2026-09-06T06:27:05.491919+00:00",
+    "is_active": true
+  }
+]

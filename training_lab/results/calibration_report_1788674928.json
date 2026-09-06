@@ -1,0 +1,48 @@
+{
+  "total_detections_analyzed": 5,
+  "expected_calibration_error_pct": 27.6,
+  "calibration_quality": "POORLY_CALIBRATED",
+  "bins": {
+    "90-100%": {
+      "bin_range": "[90%, 100%)",
+      "sample_count": 2,
+      "correct_count": 2,
+      "empirical_accuracy": 100.0,
+      "mean_confidence": 93.5,
+      "calibration_error": 6.5
+    },
+    "80-90%": {
+      "bin_range": "[80%, 90%)",
+      "sample_count": 1,
+      "correct_count": 1,
+      "empirical_accuracy": 100.0,
+      "mean_confidence": 85.0,
+      "calibration_error": 15.0
+    },
+    "70-80%": {
+      "bin_range": "[70%, 80%)",
+      "sample_count": 1,
+      "correct_count": 0,
+      "empirical_accuracy": 0.0,
+      "mean_confidence": 75.0,
+      "calibration_error": 75.0
+    },
+    "50-70%": {
+      "bin_range": "[50%, 70%)",
+      "sample_count": 0,
+      "correct_count": 0,
+      "empirical_accuracy": 0.0,
+      "mean_confidence": 0.0,
+      "calibration_error": 0.0
+    },
+    "<50%": {
+      "bin_range": "[0%, 50%)",
+      "sample_count": 1,
+      "correct_count": 0,
+      "empirical_accuracy": 0.0,
+      "mean_confidence": 35.0,
+      "calibration_error": 35.0
+    }
+  },
+  "timestamp": "2026-09-06T06:08:48.162189+00:00"
+}

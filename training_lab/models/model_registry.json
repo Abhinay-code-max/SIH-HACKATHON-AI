@@ -1,0 +1,40 @@
+{
+  "models": [
+    {
+      "version": "model_v001",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_v001",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 128,
+      "duration_seconds": 26.23,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v001/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:04:54.244591+00:00"
+    },
+    {
+      "version": "model_v002",
+      "base_model": "yolov8l.pt",
+      "dataset_version": "dataset_v001",
+      "epochs": 1,
+      "batch": 2,
+      "imgsz": 128,
+      "duration_seconds": 26.26,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "weights_path": "training_lab/models/model_v002/weights/best.pt",
+      "metrics": {
+        "mAP50": 0.0,
+        "mAP50-95": 0.0,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "timestamp": "2026-09-06T06:26:00.457516+00:00"
+    }
+  ]
+}

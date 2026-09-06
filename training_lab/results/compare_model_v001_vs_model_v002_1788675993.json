@@ -1,0 +1,52 @@
+{
+  "model_a": "model_v001",
+  "model_b": "model_v002",
+  "verdict": "VERIFIED_IMPROVEMENT",
+  "overall_deltas": {
+    "delta_mAP50": 6.0,
+    "delta_precision": 7.5,
+    "delta_recall": 7.0,
+    "delta_fp": -16,
+    "delta_fn": -14
+  },
+  "baseline_summary": {
+    "mAP50": 81.0,
+    "precision": 80.5,
+    "recall": 78.0,
+    "fp": 42,
+    "fn": 38
+  },
+  "candidate_summary": {
+    "mAP50": 87.0,
+    "precision": 88.0,
+    "recall": 85.0,
+    "fp": 26,
+    "fn": 24
+  },
+  "per_camera_deltas": {
+    "CAM_01": {
+      "delta_mAP50": 6.5,
+      "delta_precision": 8.0,
+      "delta_recall": 7.0,
+      "delta_fp": -4,
+      "delta_fn": -3
+    },
+    "CAM_02": {
+      "delta_mAP50": 5.5,
+      "delta_precision": 7.0,
+      "delta_recall": 7.0,
+      "delta_fp": -4,
+      "delta_fn": -3
+    }
+  },
+  "per_class_deltas": {
+    "person": {
+      "delta_mAP50": 6.0,
+      "delta_precision": 8.0,
+      "delta_recall": 7.0,
+      "delta_fp": 3,
+      "delta_fn": 2
+    }
+  },
+  "timestamp": "2026-09-06T06:26:33.502601+00:00"
+}

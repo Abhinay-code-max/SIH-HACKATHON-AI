@@ -1,0 +1,33 @@
+{
+  "dataset_version": "dataset_test_e2e",
+  "created_at": "2026-09-06T06:26:47.388575+00:00",
+  "total_samples": 7,
+  "splits": {
+    "train": 5,
+    "val": 1,
+    "test": 1
+  },
+  "class_distribution": {
+    "person": 3,
+    "car": 1,
+    "truck": 1,
+    "backpack": 1,
+    "motorcycle": 1
+  },
+  "source_scenarios": [
+    "SCN_01",
+    "SCN_02",
+    "SCN_03",
+    "SCN_04",
+    "SCN_05"
+  ],
+  "source_cameras": [
+    "CAM_01",
+    "CAM_02",
+    "CAM_03",
+    "CAM_04",
+    "CAM_05"
+  ],
+  "holdout_test_set_hash": "293ba3c0dd9ee162",
+  "data_yaml_path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/datasets/dataset_test_e2e/data.yaml"
+}

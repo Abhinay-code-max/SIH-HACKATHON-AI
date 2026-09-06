@@ -1,0 +1,42 @@
+[
+  {
+    "event_id": "tl_b28d3087",
+    "event_type": "DETECTION",
+    "camera_id": "CAM_01",
+    "description": "Detected person bbox=[150, 150, 200, 260] conf=0.92",
+    "metadata": {},
+    "timestamp": "2026-09-06T06:27:05.505628+00:00"
+  },
+  {
+    "event_id": "tl_d7a3ec98",
+    "event_type": "TRACKING",
+    "camera_id": "CAM_01",
+    "description": "Assigned persistent ByteTrack ID 42",
+    "metadata": {},
+    "timestamp": "2026-09-06T06:27:05.507140+00:00"
+  },
+  {
+    "event_id": "tl_6d350b67",
+    "event_type": "PERIMETER_ENTRY",
+    "camera_id": "CAM_01",
+    "description": "Track 42 entered ZONE_RESTRICTED_ALPHA",
+    "metadata": {},
+    "timestamp": "2026-09-06T06:27:05.520779+00:00"
+  },
+  {
+    "event_id": "tl_62d76d67",
+    "event_type": "THREAT_ESCALATION",
+    "camera_id": "CAM_01",
+    "description": "Threat score escalated to 95 (CRITICAL)",
+    "metadata": {},
+    "timestamp": "2026-09-06T06:27:05.535453+00:00"
+  },
+  {
+    "event_id": "tl_a305889d",
+    "event_type": "OPERATOR_OVERRIDE",
+    "camera_id": "CAM_01",
+    "description": "Operator Col. Verma downgraded threat to LOW",
+    "metadata": {},
+    "timestamp": "2026-09-06T06:27:05.547170+00:00"
+  }
+]

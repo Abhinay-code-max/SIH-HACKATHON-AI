@@ -1,0 +1,20 @@
+[
+  {
+    "validation_id": "pval_e395594f",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-06T06:10:34.763702+00:00"
+  },
+  {
+    "validation_id": "pval_92b0d146",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-06T06:27:05.443839+00:00"
+  }
+]
