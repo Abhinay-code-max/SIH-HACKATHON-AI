@@ -1,8 +1,9 @@
 """
-Dataset Generator & Data Quality Gate.
-Audits human annotations, filters out corrupted/duplicate bounding boxes,
-converts verified candidates into normalized YOLO format, and partitions data
-into 70% Train / 15% Val / 15% Unseen Holdout Test benchmark sets.
+Dataset Generation Engine & Data Quality Gate.
+Transforms raw bounding box annotations and surveillance image frames into
+standardized YOLO format (normalized coordinates, class IDs, data.yaml),
+enforcing quality gates, video-aware frame grouping, and strict sequence-level
+partitioning (70% Train / 15% Val / 15% Unseen Holdout Test).
 """
 
 from datetime import datetime, timezone
@@ -11,8 +12,7 @@ import json
 from pathlib import Path
 import shutil
 import sys
-import time
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 import cv2
 import numpy as np
 import yaml
@@ -34,9 +34,11 @@ def compute_iou(boxA: List[float], boxB: List[float]) -> float:
     yB = min(boxA[3], boxB[3])
 
     inter = max(0.0, xB - xA) * max(0.0, yB - yA)
+    if inter <= 0.0:
+        return 0.0
+
     areaA = max(0.0, boxA[2] - boxA[0]) * max(0.0, boxA[3] - boxA[1])
     areaB = max(0.0, boxB[2] - boxB[0]) * max(0.0, boxB[3] - boxB[1])
-
     union = areaA + areaB - inter
     if union <= 0.0:
         return 0.0
@@ -46,12 +48,31 @@ def compute_iou(boxA: List[float], boxB: List[float]) -> float:
 class DataQualityGate:
     """
     Validates annotation quality, rejects corrupted boundaries, filters sub-pixel
-    noise, and flags duplicates and conflicting labels.
+    noise, enforces master class validity, and flags duplicates and conflicting labels.
     """
 
     MIN_SIZE_PX = 10.0
     DUPLICATE_IOU_THRESHOLD = 0.95
     CONFLICT_IOU_THRESHOLD = 0.80
+
+    @classmethod
+    def clip_box(
+        cls,
+        bbox: List[float],
+        image_shape: Tuple[int, ...],
+    ) -> Tuple[List[float], bool]:
+        """
+        Clips [x1, y1, x2, y2] to image bounds [0, w] and [0, h].
+        Returns (clipped_bbox, was_clipped).
+        """
+        h, w = float(image_shape[0]), float(image_shape[1])
+        x1, y1, x2, y2 = map(float, bbox)
+        cx1 = max(0.0, min(w, x1))
+        cy1 = max(0.0, min(h, y1))
+        cx2 = max(0.0, min(w, x2))
+        cy2 = max(0.0, min(h, y2))
+        was_clipped = (cx1 != x1) or (cy1 != y1) or (cx2 != x2) or (cy2 != y2)
+        return [round(cx1, 2), round(cy1, 2), round(cx2, 2), round(cy2, 2)], was_clipped
 
     @classmethod
     def audit_annotation(
@@ -60,6 +81,8 @@ class DataQualityGate:
         image_shape: Tuple[int, ...],
         class_name: str,
         existing_boxes: Optional[List[Dict[str, Any]]] = None,
+        allowed_classes: Optional[Set[str]] = None,
+        clip_to_bounds: bool = False,
     ) -> Tuple[bool, List[str]]:
         """
         Audits an individual bounding box against data quality standards.
@@ -69,29 +92,76 @@ class DataQualityGate:
             image_shape: (height, width) or (h, w, c)
             class_name: target class name
             existing_boxes: list of already audited annotations on the same frame
+            allowed_classes: optional set of allowed master class names
+            clip_to_bounds: if True, clips box to [0, w] and [0, h] before validation
 
         Returns:
             Tuple of (is_valid: bool, issues: List[str])
         """
+        is_valid, issues, _ = cls.audit_and_clean_annotation(
+            bbox=bbox,
+            image_shape=image_shape,
+            class_name=class_name,
+            existing_boxes=existing_boxes,
+            allowed_classes=allowed_classes,
+            clip_to_bounds=clip_to_bounds,
+        )
+        return is_valid, issues
+
+    @classmethod
+    def audit_and_clean_annotation(
+        cls,
+        bbox: List[float],
+        image_shape: Tuple[int, ...],
+        class_name: str,
+        existing_boxes: Optional[List[Dict[str, Any]]] = None,
+        allowed_classes: Optional[Set[str]] = None,
+        clip_to_bounds: bool = True,
+    ) -> Tuple[bool, List[str], List[float]]:
+        """
+        Audits and optionally clips bounding boxes against boundary and geometry standards.
+
+        Returns:
+            Tuple of (is_valid: bool, issues: List[str], cleaned_bbox: List[float])
+        """
         issues: List[str] = []
 
         if not bbox or len(bbox) != 4:
-            return False, [f"Invalid bbox length: expected 4 coordinates, got {bbox}"]
+            return False, [f"Invalid bbox length: expected 4 coordinates, got {bbox}"], bbox
 
-        x1, y1, x2, y2 = map(float, bbox)
         h, w = float(image_shape[0]), float(image_shape[1])
+        x1, y1, x2, y2 = map(float, bbox)
 
-        # 1. Coordinate ordering and inverted geometry
+        # 1. Check master class validity
+        if allowed_classes is not None:
+            norm_cls = class_name.lower().strip()
+            if norm_cls not in allowed_classes:
+                issues.append(
+                    f"Unknown/unregistered class: '{class_name}' is not in master classes: {sorted(list(allowed_classes))}"
+                )
+
+        # 2. Coordinate ordering and inverted geometry
         if x2 <= x1:
             issues.append(f"Inverted horizontal coordinates: x1={x1} >= x2={x2}")
         if y2 <= y1:
             issues.append(f"Inverted vertical coordinates: y1={y1} >= y2={y2}")
 
-        # 2. Boundary bounds clamping check
-        if x1 < 0.0 or y1 < 0.0 or x2 > w or y2 > h:
-            issues.append(f"Coordinates out of bounds: [{x1}, {y1}, {x2}, {y2}] exceeds image dimensions ({w}x{h})")
+        # If inverted, cannot proceed with clipping
+        if issues:
+            return False, issues, bbox
 
-        # 3. Minimum dimension validation
+        # 3. Boundary bounds check & clipping
+        cleaned_box = [x1, y1, x2, y2]
+        if clip_to_bounds:
+            cleaned_box, was_clipped = cls.clip_box(bbox, image_shape)
+            x1, y1, x2, y2 = cleaned_box
+        else:
+            if x1 < 0.0 or y1 < 0.0 or x2 > w or y2 > h:
+                issues.append(
+                    f"Coordinates out of bounds: [{x1}, {y1}, {x2}, {y2}] exceeds image dimensions ({w}x{h})"
+                )
+
+        # 4. Minimum dimension validation (after clipping)
         width_px = x2 - x1
         height_px = y2 - y1
         if width_px < cls.MIN_SIZE_PX or height_px < cls.MIN_SIZE_PX:
@@ -99,7 +169,7 @@ class DataQualityGate:
                 f"Bounding box smaller than {cls.MIN_SIZE_PX}x{cls.MIN_SIZE_PX} px minimum: {width_px:.1f}x{height_px:.1f} px"
             )
 
-        # 4. Duplicate and conflicting class audit against existing boxes
+        # 5. Duplicate and conflicting class audit against existing boxes on same frame
         if existing_boxes:
             for other in existing_boxes:
                 other_box = other.get("bbox")
@@ -121,13 +191,31 @@ class DataQualityGate:
                         f"Conflicting class labels for overlapping object (IoU={iou:.3f}): '{class_name}' vs '{other_cls}'"
                     )
 
-        return (len(issues) == 0, issues)
+        return (len(issues) == 0, issues, cleaned_box)
 
 
 class DatasetGenerator:
     """
     Generates versioned YOLO datasets partitioned into 70% Train / 15% Val / 15% Test.
+    Enforces video-aware frame grouping so multiple targets in one physical frame
+    are properly consolidated into one image and multi-line label file.
     """
+
+    # Master taxonomy synonym mappings for compatibility with external datasets
+    SYNONYM_MAPPINGS: Dict[str, str] = {
+        "civilian_vehicle": "car",
+        "military_vehicle": "truck",
+        "patrol_unit": "person",
+        "soldier": "person",
+        "human": "person",
+        "pedestrian": "person",
+        "vehicle": "car",
+        "van": "car",
+        "auto": "car",
+        "automobile": "car",
+        "lorry": "truck",
+        "pickup": "truck",
+    }
 
     def __init__(
         self,
@@ -152,7 +240,7 @@ class DatasetGenerator:
             except Exception:
                 pass
 
-        # Default master class fallback
+        # Default master class fallback (config/classes.yaml)
         default_names = [
             "person", "car", "truck", "bus", "motorcycle",
             "bicycle", "animal", "backpack", "bag"
@@ -161,6 +249,31 @@ class DatasetGenerator:
         id_to_cls = {i: name for i, name in enumerate(default_names)}
         return cls_to_id, id_to_cls
 
+    @property
+    def classes(self) -> List[str]:
+        """Returns the list of valid master class names."""
+        return list(self.class_to_id.keys())
+
+    def resolve_class_id(self, class_name: str) -> int:
+        """
+        Resolves class name to integer class ID.
+        Strictly prevents unknown classes from silently defaulting to 0 (person).
+        """
+        cls_key = str(class_name).lower().strip()
+        if cls_key in self.class_to_id:
+            return self.class_to_id[cls_key]
+
+        # Check synonym mapping
+        if cls_key in self.SYNONYM_MAPPINGS:
+            resolved = self.SYNONYM_MAPPINGS[cls_key]
+            if resolved in self.class_to_id:
+                return self.class_to_id[resolved]
+
+        raise ValueError(
+            f"Unknown/unregistered class '{class_name}'. "
+            f"Must be one of master classes: {sorted(list(self.class_to_id.keys()))}"
+        )
+
     def bbox_to_yolo_format(
         self,
         bbox: List[float],
@@ -168,8 +281,11 @@ class DatasetGenerator:
         img_h: float,
         class_name: str,
     ) -> str:
-        """Converts [x1, y1, x2, y2] to YOLO normalized string: 'cls_id x_c y_c w h'."""
-        cls_id = self.class_to_id.get(class_name.lower().strip(), 0)
+        """
+        Converts [x1, y1, x2, y2] to YOLO normalized string: 'cls_id x_c y_c w h'.
+        Raises ValueError if class_name is unrecognized.
+        """
+        cls_id = self.resolve_class_id(class_name)
         x1, y1, x2, y2 = bbox
 
         x_c = ((x1 + x2) / 2.0) / img_w
@@ -177,11 +293,11 @@ class DatasetGenerator:
         w = (x2 - x1) / img_w
         h = (y2 - y1) / img_h
 
-        # Clamp normalized coords to [0.0, 1.0]
+        # Clamp normalized coords strictly to [0.0, 1.0]
         x_c = max(0.0, min(1.0, x_c))
         y_c = max(0.0, min(1.0, y_c))
-        w = max(0.001, min(1.0, w))
-        h = max(0.001, min(1.0, h))
+        w = max(0.0001, min(1.0, w))
+        h = max(0.0001, min(1.0, h))
 
         return f"{cls_id} {x_c:.6f} {y_c:.6f} {w:.6f} {h:.6f}"
 
@@ -190,19 +306,27 @@ class DatasetGenerator:
         dataset_version: str,
         candidates: List[Dict[str, Any]],
         frame_provider_func: Optional[Callable[[Dict[str, Any]], Optional[np.ndarray]]] = None,
+        allow_synthetic_fallback: bool = True,
+        clip_out_of_bounds: bool = True,
+        video_splits: Optional[Union[Dict[str, str], Dict[str, List[str]]]] = None,
     ) -> Dict[str, Any]:
         """
         Builds a versioned dataset on disk partitioned into:
-          - 70% Train
-          - 15% Val
-          - 15% Holdout Test (segregated benchmark)
+          - 70% Train (or explicit split)
+          - 15% Val (or explicit split)
+          - 15% Holdout Test (segregated benchmark / unseen holdout)
 
-        Directory Layout:
-          training_lab/datasets/{dataset_version}/
-            ├── data.yaml
-            ├── dataset_manifest.json
-            ├── images/ (train/, val/, test/)
-            └── labels/ (train/, val/, test/)
+        Groups all bounding boxes belonging to the same physical frame (video_id + frame_idx)
+        so that one physical image has all its valid annotations in one .txt file.
+
+        Args:
+            dataset_version: Target dataset name / directory (e.g. 'dataset_v001')
+            candidates: List of candidate annotation dicts
+            frame_provider_func: Callable returning BGR np.ndarray given a frame dict
+            allow_synthetic_fallback: If False, raises FileNotFoundError if real frame is missing
+            clip_out_of_bounds: If True, boundary coordinates are clipped to image shape
+            video_splits: Optional explicit sequence-to-split mapping (e.g. {'seq1': 'train', ...}
+                          or {'train': ['seq1'], 'val': [...], 'test': [...]})
         """
         version_dir = self.datasets_dir / dataset_version
         if version_dir.is_dir():
@@ -213,48 +337,159 @@ class DatasetGenerator:
             (version_dir / "images" / split).mkdir(parents=True, exist_ok=True)
             (version_dir / "labels" / split).mkdir(parents=True, exist_ok=True)
 
-        # 1. Audit Candidates via DataQualityGate
+        allowed_cls = set(self.class_to_id.keys()).union(set(self.SYNONYM_MAPPINGS.keys()))
+
+        # 1. Audit Candidates via DataQualityGate with video-aware frame grouping
         audited_candidates: List[Dict[str, Any]] = []
+        rejected_candidates: List[Dict[str, Any]] = []
         frame_group_audit: Dict[str, List[Dict[str, Any]]] = {}
 
         for c in candidates:
             bbox = c.get("bbox")
             cls_name = c.get("class_name", "person")
-            shape = c.get("image_shape", (480, 640, 3))
-            frame_key = f"{c.get('scenario_id', 'SCN')}_{c.get('camera_id', 'CAM')}_{c.get('frame_idx', 0)}"
+            shape = c.get("image_shape", (540, 960, 3))
+            v_id = str(c.get("video_id") or c.get("scenario_id") or "VID_01")
+            f_idx = int(c.get("frame_idx", 0))
+
+            # Video-aware frame key prevents collisions across multiple sequences
+            frame_key = f"{v_id}_f{f_idx:06d}"
 
             existing_on_frame = frame_group_audit.get(frame_key, [])
-            is_valid, issues = DataQualityGate.audit_annotation(
+            is_valid, issues, cleaned_bbox = DataQualityGate.audit_and_clean_annotation(
                 bbox=bbox,
                 image_shape=shape,
                 class_name=cls_name,
                 existing_boxes=existing_on_frame,
+                allowed_classes=allowed_cls,
+                clip_to_bounds=clip_out_of_bounds,
             )
 
             if is_valid:
-                audited_candidates.append(c)
+                c_clean = dict(c)
+                c_clean["bbox"] = cleaned_bbox
+                c_clean["video_id"] = v_id
+                c_clean["frame_idx"] = f_idx
+                # Normalize synonym to canonical master class
+                norm_cls = str(cls_name).lower().strip()
+                if norm_cls in self.SYNONYM_MAPPINGS:
+                    c_clean["class_name"] = self.SYNONYM_MAPPINGS[norm_cls]
+                audited_candidates.append(c_clean)
+
                 if frame_key not in frame_group_audit:
                     frame_group_audit[frame_key] = []
-                frame_group_audit[frame_key].append({"bbox": bbox, "class_name": cls_name})
+                frame_group_audit[frame_key].append({"bbox": cleaned_bbox, "class_name": c_clean["class_name"]})
+            else:
+                rejected_candidates.append({
+                    "video_id": v_id,
+                    "frame_idx": f_idx,
+                    "class_name": cls_name,
+                    "bbox": bbox,
+                    "issues": issues,
+                })
 
-        total_samples = len(audited_candidates)
-        if total_samples == 0:
-            raise ValueError("No valid candidates passed DataQualityGate auditing.")
+        if not audited_candidates:
+            raise ValueError(
+                f"No valid candidates passed DataQualityGate auditing. "
+                f"Rejected {len(rejected_candidates)} candidates: {rejected_candidates[:3]}"
+            )
 
-        # 2. Split Partitioning: Video / Scenario-Level Segregation (Zero Data Leakage)
-        # Group candidates by unique video_id or scenario_id to prevent frame leakage
-        video_groups: Dict[str, List[Dict[str, Any]]] = {}
+        # 2. Frame-Level Grouping (Multiple objects per physical frame)
+        frames_by_video: Dict[str, Dict[int, Dict[str, Any]]] = {}
         for c in audited_candidates:
-            v_id = str(c.get("video_id") or c.get("scenario_id") or f"{c.get('scenario_id')}_{c.get('camera_id')}")
-            if v_id not in video_groups:
-                video_groups[v_id] = []
-            video_groups[v_id].append(c)
+            v_id = c["video_id"]
+            f_idx = c["frame_idx"]
+            if v_id not in frames_by_video:
+                frames_by_video[v_id] = {}
+            if f_idx not in frames_by_video[v_id]:
+                frames_by_video[v_id][f_idx] = {
+                    "video_id": v_id,
+                    "frame_idx": f_idx,
+                    "scenario_id": c.get("scenario_id", "SCN_01"),
+                    "camera_id": c.get("camera_id", "CAM_01"),
+                    "image_shape": c.get("image_shape", (540, 960, 3)),
+                    "crop_path": c.get("crop_path"),
+                    "frame": c.get("frame"),
+                    "annotations": [],
+                }
+            frames_by_video[v_id][f_idx]["annotations"].append({
+                "bbox": c["bbox"],
+                "class_name": c["class_name"],
+            })
 
-        unique_videos = sorted(list(video_groups.keys()))
-        splits: Dict[str, List[Dict[str, Any]]] = {"train": [], "val": [], "test": []}
+        # 3. Split Partitioning: Video / Sequence-Level Segregation (Zero Data Leakage)
+        unique_videos = sorted(list(frames_by_video.keys()))
+        splits_frames: Dict[str, List[Dict[str, Any]]] = {"train": [], "val": [], "test": []}
         videos_per_split: Dict[str, List[str]] = {"train": [], "val": [], "test": []}
 
-        if len(unique_videos) >= 3:
+        if video_splits is not None:
+            split_strategy = "EXPLICIT_SEQUENCE_LEVEL"
+
+            if not isinstance(video_splits, dict):
+                raise ValueError(
+                    f"video_splits must be a dictionary, got {type(video_splits).__name__}"
+                )
+
+            norm_splits: Dict[str, str] = {}
+            # Detect whether format is Dict[str, List[str]] (e.g. {'train': [...], ...})
+            # or Dict[str, str] (e.g. {'seq1': 'train', ...})
+            is_group_format = any(k in ("train", "val", "test") for k in video_splits.keys()) and any(
+                isinstance(v, (list, tuple, set)) for v in video_splits.values()
+            )
+
+            if is_group_format:
+                for s_name, seq_list in video_splits.items():
+                    if s_name not in ("train", "val", "test"):
+                        raise ValueError(
+                            f"Invalid split name '{s_name}' in video_splits. Allowed split names are: 'train', 'val', 'test'"
+                        )
+                    for sid in seq_list:
+                        s_key = str(sid).strip()
+                        if s_key in norm_splits:
+                            raise ValueError(
+                                f"Duplicate/conflicting split assignment: sequence '{s_key}' is assigned to both '{norm_splits[s_key]}' and '{s_name}'"
+                            )
+                        norm_splits[s_key] = s_name
+            else:
+                for sid, s_name in video_splits.items():
+                    s_key = str(sid).strip()
+                    s_val = str(s_name).strip().lower()
+                    if s_val not in ("train", "val", "test"):
+                        raise ValueError(
+                            f"Invalid split name '{s_name}' for sequence '{s_key}'. Allowed split names are: 'train', 'val', 'test'"
+                        )
+                    norm_splits[s_key] = s_val
+
+            # Validate against discovered unique videos in candidates
+            discovered_videos_set = set(unique_videos)
+            specified_videos_set = set(norm_splits.keys())
+
+            # 1. Unknown sequences check
+            unknown_videos = sorted(list(specified_videos_set - discovered_videos_set))
+            if unknown_videos:
+                raise ValueError(
+                    f"Unknown sequence(s) present in video_splits that do not exist in dataset candidates: {unknown_videos}"
+                )
+
+            # 2. Missing sequences check
+            missing_videos = sorted(list(discovered_videos_set - specified_videos_set))
+            if missing_videos:
+                raise ValueError(
+                    f"Missing sequence(s) in video_splits: {missing_videos} must be explicitly assigned to 'train', 'val', or 'test'"
+                )
+
+            # Deterministic, mutually disjoint sequence assignment
+            videos_per_split["train"] = sorted([v for v in unique_videos if norm_splits[v] == "train"])
+            videos_per_split["val"] = sorted([v for v in unique_videos if norm_splits[v] == "val"])
+            videos_per_split["test"] = sorted([v for v in unique_videos if norm_splits[v] == "test"])
+
+            for v in videos_per_split["train"]:
+                splits_frames["train"].extend(list(frames_by_video[v].values()))
+            for v in videos_per_split["val"]:
+                splits_frames["val"].extend(list(frames_by_video[v].values()))
+            for v in videos_per_split["test"]:
+                splits_frames["test"].extend(list(frames_by_video[v].values()))
+
+        elif len(unique_videos) >= 3:
             split_strategy = "VIDEO_SCENARIO_LEVEL"
             n_test_v = max(1, int(round(len(unique_videos) * 0.15)))
             n_val_v = max(1, int(round(len(unique_videos) * 0.15)))
@@ -271,94 +506,129 @@ class DatasetGenerator:
             videos_per_split["test"] = unique_videos[n_train_v + n_val_v:]
 
             for v in videos_per_split["train"]:
-                splits["train"].extend(video_groups[v])
+                splits_frames["train"].extend(list(frames_by_video[v].values()))
             for v in videos_per_split["val"]:
-                splits["val"].extend(video_groups[v])
+                splits_frames["val"].extend(list(frames_by_video[v].values()))
             for v in videos_per_split["test"]:
-                splits["test"].extend(video_groups[v])
+                splits_frames["test"].extend(list(frames_by_video[v].values()))
         else:
-            # Fallback for single/dual video datasets: temporal chunking
+            # Fallback for single/dual video datasets: temporal sequence partitioning
             split_strategy = "TEMPORAL_SEQUENCE_LEVEL"
-            if total_samples >= 3:
-                n_test = max(1, int(round(total_samples * 0.15)))
-                n_val = max(1, int(round(total_samples * 0.15)))
-                n_train = total_samples - n_val - n_test
+            all_frames: List[Dict[str, Any]] = []
+            for v in unique_videos:
+                for f_idx in sorted(frames_by_video[v].keys()):
+                    all_frames.append(frames_by_video[v][f_idx])
+
+            total_frames = len(all_frames)
+            if total_frames >= 3:
+                n_test = max(1, int(round(total_frames * 0.15)))
+                n_val = max(1, int(round(total_frames * 0.15)))
+                n_train = total_frames - n_val - n_test
                 if n_train < 1:
                     n_train = 1
                     if n_test > 1:
                         n_test -= 1
                     elif n_val > 1:
                         n_val -= 1
-            elif total_samples == 2:
+            elif total_frames == 2:
                 n_train, n_val, n_test = 1, 0, 1
             else:
                 n_train, n_val, n_test = 1, 0, 0
 
-            splits["train"] = audited_candidates[:n_train]
-            splits["val"] = audited_candidates[n_train:n_train + n_val]
-            splits["test"] = audited_candidates[n_train + n_val:]
-            videos_per_split["train"] = list({c.get("video_id") or c.get("scenario_id", "V1") for c in splits["train"]})
-            videos_per_split["val"] = list({c.get("video_id") or c.get("scenario_id", "V1") for c in splits["val"]})
-            videos_per_split["test"] = list({c.get("video_id") or c.get("scenario_id", "V1") for c in splits["test"]})
+            splits_frames["train"] = all_frames[:n_train]
+            splits_frames["val"] = all_frames[n_train:n_train + n_val]
+            splits_frames["test"] = all_frames[n_train + n_val:]
+            videos_per_split["train"] = sorted(list({f["video_id"] for f in splits_frames["train"]}))
+            videos_per_split["val"] = sorted(list({f["video_id"] for f in splits_frames["val"]}))
+            videos_per_split["test"] = sorted(list({f["video_id"] for f in splits_frames["test"]}))
 
-        train_samples = splits["train"]
-        val_samples = splits["val"]
-        test_samples = splits["test"]
-
+        # 4. Write Images and Labels (One physical image per frame, all bounding boxes in one .txt file)
         class_distribution: Dict[str, int] = {}
         source_scenarios: set = set()
         source_cameras: set = set()
+        frame_counts_per_split: Dict[str, int] = {}
+        annotation_counts_per_split: Dict[str, int] = {}
+        total_annotations_written = 0
 
-        # 3. Write Images and Labels for each split
-        for split_name, sample_list in splits.items():
-            for idx, item in enumerate(sample_list):
-                sample_id = f"{dataset_version}_{split_name}_{idx + 1:04d}"
-                cls_name = item.get("class_name", "person").lower()
-                bbox = item.get("bbox")
-                scn_id = item.get("scenario_id", "SCN_01")
-                cam_id = item.get("camera_id", "CAM_01")
+        for split_name, frame_list in splits_frames.items():
+            frame_counts_per_split[split_name] = len(frame_list)
+            annotation_counts_per_split[split_name] = sum(len(f["annotations"]) for f in frame_list)
 
+            for idx, frame_item in enumerate(frame_list):
+                v_id = frame_item["video_id"]
+                f_idx = frame_item["frame_idx"]
+                sample_id = f"{dataset_version}_{split_name}_{v_id}_f{f_idx:06d}"
+                scn_id = frame_item.get("scenario_id", "SCN_01")
+                cam_id = frame_item.get("camera_id", "CAM_01")
                 source_scenarios.add(scn_id)
                 source_cameras.add(cam_id)
-                class_distribution[cls_name] = class_distribution.get(cls_name, 0) + 1
 
-                # Obtain Image
+                # Obtain Image via provider, buffer, crop, or synthetic fallback
                 img = None
+                src_file_path = None
+
+                # Check if provider can supply physical file path for byte-identical copy
+                if frame_provider_func and hasattr(frame_provider_func, "get_frame_path"):
+                    try:
+                        src_file_path = frame_provider_func.get_frame_path(v_id, f_idx)
+                    except Exception:
+                        src_file_path = None
+
                 if frame_provider_func:
                     try:
-                        img = frame_provider_func(item)
-                    except Exception:
+                        img = frame_provider_func(frame_item)
+                    except Exception as e:
+                        if not allow_synthetic_fallback:
+                            raise FileNotFoundError(
+                                f"Failed to load real frame for video '{v_id}' frame {f_idx}: {e}"
+                            )
                         img = None
 
-                if img is None and "frame" in item and isinstance(item["frame"], np.ndarray):
-                    img = item["frame"]
+                if img is None and "frame" in frame_item and isinstance(frame_item["frame"], np.ndarray):
+                    img = frame_item["frame"]
 
-                # If crop_path exists on disk, use crop or composite frame
-                if img is None and item.get("crop_path"):
-                    crop_file = ROOT_DIR / item["crop_path"]
+                if img is None and frame_item.get("crop_path"):
+                    crop_file = ROOT_DIR / frame_item["crop_path"]
                     if crop_file.is_file():
                         img = cv2.imread(str(crop_file))
+                        src_file_path = crop_file
 
-                # Default fallback frame generator
+                # Handle missing image
                 if img is None or not isinstance(img, np.ndarray) or img.size == 0:
-                    img = np.full((480, 640, 3), 42, dtype=np.uint8)
-                    if bbox:
-                        bx1, by1, bx2, by2 = map(int, bbox)
+                    if not allow_synthetic_fallback:
+                        raise FileNotFoundError(
+                            f"Real frame image not found for video '{v_id}' frame {f_idx}. "
+                            f"Synthetic placeholder fallback is disabled for real datasets."
+                        )
+                    # Synthetic fallback only when explicitly permitted
+                    shape = frame_item.get("image_shape", (540, 960, 3))
+                    img = np.full((int(shape[0]), int(shape[1]), 3), 42, dtype=np.uint8)
+                    for ann in frame_item["annotations"]:
+                        bx1, by1, bx2, by2 = map(int, ann["bbox"])
                         cv2.rectangle(img, (bx1, by1), (bx2, by2), (80, 120, 180), -1)
 
                 h, w = img.shape[:2]
 
-                # Save Image
+                # Write Physical Image ONCE (byte-identical copy if source file is available)
                 img_path = version_dir / "images" / split_name / f"{sample_id}.jpg"
-                cv2.imwrite(str(img_path), img)
+                if src_file_path and Path(src_file_path).is_file():
+                    shutil.copy2(str(src_file_path), str(img_path))
+                else:
+                    cv2.imwrite(str(img_path), img)
 
-                # Save Normalized Label
-                yolo_line = self.bbox_to_yolo_format(bbox, float(w), float(h), cls_name)
+                # Write All Bounding Boxes for this frame to .txt label file
                 lbl_path = version_dir / "labels" / split_name / f"{sample_id}.txt"
                 with open(lbl_path, "w", encoding="utf-8") as lf:
-                    lf.write(f"{yolo_line}\n")
+                    for ann in frame_item["annotations"]:
+                        cls_name = ann["class_name"]
+                        bbox = ann["bbox"]
+                        yolo_line = self.bbox_to_yolo_format(bbox, float(w), float(h), cls_name)
+                        lf.write(f"{yolo_line}\n")
+                        class_distribution[cls_name] = class_distribution.get(cls_name, 0) + 1
+                        total_annotations_written += 1
 
-        # 4. Generate data.yaml
+        # 5. Generate data.yaml and dataset.yaml
+        data_yaml_path = version_dir / "data.yaml"
         data_yaml_dict = {
             "path": str(version_dir.resolve()).replace("\\", "/"),
             "train": "images/train",
@@ -366,11 +636,11 @@ class DatasetGenerator:
             "test": "images/test",
             "names": {i: name for i, name in sorted(self.id_to_class.items())},
         }
-        data_yaml_path = version_dir / "data.yaml"
-        with open(data_yaml_path, "w", encoding="utf-8") as yf:
-            yaml.dump(data_yaml_dict, yf, default_flow_style=False, sort_keys=False)
+        for yml_name in ("data.yaml", "dataset.yaml"):
+            with open(version_dir / yml_name, "w", encoding="utf-8") as yf:
+                yaml.dump(data_yaml_dict, yf, default_flow_style=False, sort_keys=False)
 
-        # 5. Compute Holdout Test Set Hash for integrity auditing
+        # 6. Compute Holdout Test Set Hash for integrity auditing
         test_files = sorted((version_dir / "images" / "test").glob("*.jpg"))
         hasher = hashlib.sha256()
         for tf in test_files:
@@ -380,19 +650,21 @@ class DatasetGenerator:
                 hasher.update(lbl_f.read_bytes())
         holdout_hash = hasher.hexdigest()[:16]
 
-        # 6. Generate dataset_manifest.json
+        total_frames = sum(frame_counts_per_split.values())
+
+        # 7. Generate dataset_manifest.json
         manifest = {
             "dataset_version": dataset_version,
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "total_samples": total_samples,
+            "total_samples": total_frames,
+            "total_frames": total_frames,
+            "total_annotations": total_annotations_written,
             "split_strategy": split_strategy,
             "videos_per_split": videos_per_split,
-            "splits": {
-                "train": len(train_samples),
-                "val": len(val_samples),
-                "test": len(test_samples),
-            },
+            "splits": frame_counts_per_split,
+            "annotation_splits": annotation_counts_per_split,
             "class_distribution": class_distribution,
+            "rejected_annotations_count": len(rejected_candidates),
             "source_scenarios": sorted(list(source_scenarios)),
             "source_cameras": sorted(list(source_cameras)),
             "holdout_test_set_hash": holdout_hash,
@@ -404,20 +676,71 @@ class DatasetGenerator:
 
         return manifest
 
+    def generate_yolo_dataset(
+        self,
+        dataset_version: str,
+        candidates: List[Dict[str, Any]],
+        frame_provider_func: Optional[Callable[[Dict[str, Any]], Optional[np.ndarray]]] = None,
+        allow_synthetic_fallback: bool = True,
+        clip_out_of_bounds: bool = True,
+        video_splits: Optional[Union[Dict[str, str], Dict[str, List[str]]]] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        """Alias for create_dataset_version to support dataset importers."""
+        return self.create_dataset_version(
+            dataset_version=dataset_version,
+            candidates=candidates,
+            frame_provider_func=frame_provider_func,
+            allow_synthetic_fallback=allow_synthetic_fallback,
+            clip_out_of_bounds=clip_out_of_bounds,
+            video_splits=video_splits,
+            **kwargs,
+        )
+
+    @classmethod
+    def load_ua_detrac_splits(
+        cls,
+        config_path: Optional[Union[str, Path]] = None,
+        as_sequence_map: bool = True,
+    ) -> Union[Dict[str, str], Dict[str, List[str]]]:
+        """
+        Loads the canonical UA-DETRAC 32 Train / 7 Val / 7 Holdout split definition
+        from config/ua_detrac_splits.yaml without hardcoding sequences in generator logic.
+
+        Args:
+            config_path: Optional custom path to yaml file.
+            as_sequence_map: If True, returns Dict[video_id, split_name].
+                             If False, returns Dict[split_name, List[video_id]].
+        """
+        cfg_p = Path(config_path) if config_path else ROOT_DIR / "config" / "ua_detrac_splits.yaml"
+        if not cfg_p.is_file():
+            raise FileNotFoundError(f"UA-DETRAC split configuration not found: {cfg_p}")
+
+        with open(cfg_p, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+
+        splits_data = data.get("splits", {})
+        if not as_sequence_map:
+            return {
+                "train": list(splits_data.get("train", [])),
+                "val": list(splits_data.get("val", [])),
+                "test": list(splits_data.get("test", [])),
+            }
+
+        seq_map: Dict[str, str] = {}
+        for split_name in ("train", "val", "test"):
+            for seq_id in splits_data.get(split_name, []):
+                seq_map[str(seq_id).strip()] = split_name
+        return seq_map
+
+
+def load_ua_detrac_split_config(
+    config_path: Optional[Union[str, Path]] = None,
+    as_sequence_map: bool = True,
+) -> Union[Dict[str, str], Dict[str, List[str]]]:
+    """Helper function to load the canonical UA-DETRAC sequence split configuration."""
+    return DatasetGenerator.load_ua_detrac_splits(config_path=config_path, as_sequence_map=as_sequence_map)
+
 
 dataset_generator = DatasetGenerator()
 
-
-if __name__ == "__main__":
-    print("[DatasetGenerator] Testing DataQualityGate & DatasetGenerator...")
-    sample_cands = [
-        {"scenario_id": "SCN_01", "camera_id": "CAM_01", "frame_idx": 10, "class_name": "person", "bbox": [60.0, 188.0, 91.0, 293.0]},
-        {"scenario_id": "SCN_02", "camera_id": "CAM_02", "frame_idx": 20, "class_name": "car", "bbox": [120.0, 200.0, 240.0, 310.0]},
-        {"scenario_id": "SCN_03", "camera_id": "CAM_03", "frame_idx": 30, "class_name": "backpack", "bbox": [306.0, 260.0, 360.0, 319.0]},
-        {"scenario_id": "SCN_04", "camera_id": "CAM_04", "frame_idx": 40, "class_name": "person", "bbox": [480.0, 226.0, 505.0, 257.0]},
-        {"scenario_id": "SCN_05", "camera_id": "CAM_05", "frame_idx": 50, "class_name": "motorcycle", "bbox": [30.0, 255.0, 110.0, 346.0]},
-        {"scenario_id": "SCN_01", "camera_id": "CAM_01", "frame_idx": 60, "class_name": "truck", "bbox": [150.0, 180.0, 280.0, 300.0]},
-        {"scenario_id": "SCN_02", "camera_id": "CAM_02", "frame_idx": 70, "class_name": "person", "bbox": [80.0, 150.0, 120.0, 250.0]},
-    ]
-    res = dataset_generator.create_dataset_version("dataset_v001_demo", sample_cands)
-    print(f"  Created dataset version: {res['dataset_version']} with {res['total_samples']} samples. Splits: {res['splits']}")

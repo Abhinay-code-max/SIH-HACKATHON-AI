@@ -75,6 +75,7 @@ def test_spatiotemporal_association_corridors():
 
 
 def test_global_subject_lifecycle_and_transit():
+    reset_reid()
     # Create synthetic frame with person
     frame_cam1 = np.zeros((480, 640, 3), dtype=np.uint8)
     frame_cam1[100:300, 200:300] = (200, 100, 50)  # orange jacket

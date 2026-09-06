@@ -15,8 +15,11 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 import sys
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import xml.etree.ElementTree as ET
+
+import cv2
+import numpy as np
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 if str(ROOT_DIR) not in sys.path:
@@ -51,11 +54,11 @@ TAXONOMY_MAPPINGS: Dict[str, Dict[str, str]] = {
         "object": "backpack",
     },
     DatasetFormat.UA_DETRAC: {
-        "car": "civilian_vehicle",
-        "van": "civilian_vehicle",
-        "bus": "civilian_vehicle",
-        "others": "civilian_vehicle",
-        "truck": "military_vehicle",
+        "car": "car",
+        "van": "car",
+        "bus": "bus",
+        "others": "car",
+        "truck": "truck",
     },
     DatasetFormat.MOT17: {
         "1": "person",  # Pedestrian
@@ -99,10 +102,14 @@ class DatasetImporter:
 
     @classmethod
     def map_class(cls, raw_label: str, fmt: str) -> str:
-        """Maps an external label string/ID to BORDER SENTINEL's master class."""
+        """Maps an external label string/ID to BORDER SENTINEL's master class.
+        Returns 'unknown' for unmapped labels so DataQualityGate can audit and reject it.
+        """
         mapping = TAXONOMY_MAPPINGS.get(fmt, {})
         key = str(raw_label).strip().lower()
-        return mapping.get(key, "person")
+        if key in mapping:
+            return mapping[key]
+        return "unknown"
 
     def parse_virat(
         self,
@@ -169,11 +176,14 @@ class DatasetImporter:
     def parse_ua_detrac(
         self,
         xml_content: Union[str, Path],
-        video_id: str = "DETRAC_MVI_20011",
-        image_shape: Tuple[int, int, int] = (480, 640, 3),
+        video_id: Optional[str] = None,
+        image_shape: Tuple[int, int, int] = (540, 960, 3),
+        images_dir: Optional[Union[str, Path]] = None,
+        max_frames: Optional[int] = None,
     ) -> List[Dict[str, Any]]:
         """
         Parses UA-DETRAC XML tracking annotations.
+        Enforces true default image dimensions (540, 960, 3) and clips bounding boxes.
         """
         candidates: List[Dict[str, Any]] = []
 
@@ -183,8 +193,32 @@ class DatasetImporter:
         else:
             root = ET.fromstring(str(xml_content))
 
-        for frame_elem in root.findall(".//frame"):
+        seq_name = root.attrib.get("name", "")
+        effective_video_id = video_id or (f"DETRAC_{seq_name}" if seq_name else "DETRAC_MVI_20011")
+
+        # Dynamically infer image dimensions if images_dir is available
+        actual_shape = image_shape
+        if images_dir:
+            images_path = Path(images_dir)
+            test_names = [seq_name, effective_video_id, str(effective_video_id).replace("DETRAC_", "")]
+            for s in test_names:
+                if not s:
+                    continue
+                sample_img_path = images_path / s / "img00001.jpg"
+                if sample_img_path.is_file():
+                    img = cv2.imread(str(sample_img_path))
+                    if img is not None:
+                        actual_shape = img.shape
+                    break
+
+        img_h, img_w = int(actual_shape[0]), int(actual_shape[1])
+
+        frames = root.findall(".//frame")
+        for frame_elem in frames:
             frame_num = int(frame_elem.attrib.get("num", 1))
+            if max_frames is not None and frame_num > max_frames:
+                continue
+
             for target in frame_elem.findall(".//target"):
                 box_elem = target.find("box")
                 if box_elem is None:
@@ -200,15 +234,22 @@ class DatasetImporter:
                     vehicle_type = attr_elem.attrib.get("vehicle_type", "car")
 
                 mapped_cls = self.map_class(vehicle_type, DatasetFormat.UA_DETRAC)
+
+                # 1-based (MATLAB continuous) to 0-based pixel continuous coordinate transformation
+                x1 = max(0.0, min(float(img_w), left - 1.0))
+                y1 = max(0.0, min(float(img_h), top - 1.0))
+                x2 = max(0.0, min(float(img_w), x1 + width))
+                y2 = max(0.0, min(float(img_h), y1 + height))
+
                 candidates.append({
-                    "scenario_id": "SCN_DETRAC",
-                    "video_id": video_id,
+                    "scenario_id": f"SCN_{seq_name or 'DETRAC'}",
+                    "video_id": effective_video_id,
                     "camera_id": "CAM_DETRAC",
                     "frame_idx": frame_num,
-                    "bbox": [left, top, left + width, top + height],
+                    "bbox": [x1, y1, x2, y2],
                     "class_name": mapped_cls,
                     "confidence": 1.0,
-                    "image_shape": image_shape,
+                    "image_shape": actual_shape,
                 })
 
         return candidates
@@ -286,6 +327,9 @@ class DatasetImporter:
         dataset_version: str,
         candidates: List[Dict[str, Any]],
         frame_provider_func=None,
+        allow_synthetic_fallback: bool = True,
+        clip_out_of_bounds: bool = True,
+        video_splits: Optional[Union[Dict[str, str], Dict[str, List[str]]]] = None,
     ) -> Dict[str, Any]:
         """
         Runs candidates through DataQualityGate and generates an audited,
@@ -295,12 +339,93 @@ class DatasetImporter:
             if "video_id" not in c:
                 c["video_id"] = f"{c.get('scenario_id', 'SCN')}_{c.get('camera_id', 'CAM')}"
 
-        manifest = self.generator.generate_yolo_dataset(
+        manifest = self.generator.create_dataset_version(
             dataset_version=dataset_version,
             candidates=candidates,
             frame_provider_func=frame_provider_func,
+            allow_synthetic_fallback=allow_synthetic_fallback,
+            clip_out_of_bounds=clip_out_of_bounds,
+            video_splits=video_splits,
         )
 
         manifest["imported_at"] = datetime.now(timezone.utc).isoformat()
         manifest["dataset_format"] = "NORMALIZED_BORDER_SENTINEL_YOLO"
         return manifest
+
+
+class UADetracFrameProvider:
+    """
+    Frame provider for UA-DETRAC dataset sequences on local disk.
+    Resolves sequence images in the format:
+      <images_dir>/<sequence_name>/img%05d.jpg
+    Returns BGR numpy array or None.
+    """
+
+    def __init__(self, images_dir: Union[str, Path]):
+        self.images_dir = Path(images_dir)
+        if not self.images_dir.is_dir():
+            raise FileNotFoundError(f"UA-DETRAC images directory does not exist: {self.images_dir}")
+
+    def resolve_frame_path(self, video_id: str, frame_idx: int) -> Path:
+        # Strip common prefixes like DETRAC_ or SCN_
+        seq_name = str(video_id).replace("DETRAC_", "").replace("SCN_", "").strip()
+        candidates = [
+            self.images_dir / seq_name / f"img{frame_idx:05d}.jpg",
+            self.images_dir / video_id / f"img{frame_idx:05d}.jpg",
+            self.images_dir / "DETRAC-Images" / seq_name / f"img{frame_idx:05d}.jpg",
+            self.images_dir / "DETRAC-Images" / video_id / f"img{frame_idx:05d}.jpg",
+        ]
+        for c in candidates:
+            if c.is_file():
+                return c
+        return candidates[0]
+
+    def has_sequence(self, video_id: str) -> bool:
+        """Checks if physical images directory exists for video_id."""
+        seq_name = str(video_id).replace("DETRAC_", "").replace("SCN_", "").strip()
+        return (
+            (self.images_dir / seq_name).is_dir()
+            or (self.images_dir / video_id).is_dir()
+            or (self.images_dir / "DETRAC-Images" / seq_name).is_dir()
+        )
+
+    def get_frame_path(
+        self,
+        frame_item_or_vid: Union[Dict[str, Any], str],
+        frame_idx: Optional[int] = None,
+    ) -> Optional[Path]:
+        """Returns the physical Path of the frame on disk, or None if missing."""
+        if isinstance(frame_item_or_vid, dict):
+            v_id = frame_item_or_vid.get("video_id", "")
+            f_idx = int(frame_item_or_vid.get("frame_idx", 1))
+        else:
+            v_id = str(frame_item_or_vid)
+            f_idx = int(frame_idx if frame_idx is not None else 1)
+
+        p = self.resolve_frame_path(v_id, f_idx)
+        return p if p.is_file() else None
+
+    def get_frame(
+        self,
+        frame_item_or_vid: Union[Dict[str, Any], str],
+        frame_idx: Optional[int] = None,
+    ) -> Optional[np.ndarray]:
+        if isinstance(frame_item_or_vid, dict):
+            v_id = frame_item_or_vid.get("video_id", "")
+            f_idx = int(frame_item_or_vid.get("frame_idx", 1))
+        else:
+            v_id = str(frame_item_or_vid)
+            f_idx = int(frame_idx if frame_idx is not None else 1)
+
+        p = self.resolve_frame_path(v_id, f_idx)
+        if not p.is_file():
+            return None
+        return cv2.imread(str(p))
+
+    def __call__(
+        self,
+        frame_item_or_vid: Union[Dict[str, Any], str],
+        frame_idx: Optional[int] = None,
+    ) -> Optional[np.ndarray]:
+        return self.get_frame(frame_item_or_vid, frame_idx)
+
