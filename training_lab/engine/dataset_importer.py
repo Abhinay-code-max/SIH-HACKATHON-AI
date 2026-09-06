@@ -213,10 +213,30 @@ class DatasetImporter:
 
         img_h, img_w = int(actual_shape[0]), int(actual_shape[1])
 
+        # Pre-index existing frames for the sequence if images_dir is provided
+        valid_frame_nums: Optional[Set[int]] = None
+        if images_dir:
+            seq_disk_names = [seq_name, effective_video_id, str(effective_video_id).replace("DETRAC_", "")]
+            for s in seq_disk_names:
+                if not s:
+                    continue
+                s_dir = Path(images_dir) / s
+                if s_dir.is_dir():
+                    valid_frame_nums = set()
+                    for img_p in s_dir.glob("img*.jpg"):
+                        stem = img_p.stem.replace("img", "")
+                        if stem.isdigit():
+                            valid_frame_nums.add(int(stem))
+                    break
+
         frames = root.findall(".//frame")
         for frame_elem in frames:
             frame_num = int(frame_elem.attrib.get("num", 1))
             if max_frames is not None and frame_num > max_frames:
+                continue
+
+            # If images_dir is known, skip frames that have no physical image on disk
+            if valid_frame_nums is not None and frame_num not in valid_frame_nums:
                 continue
 
             for target in frame_elem.findall(".//target"):
@@ -322,6 +342,89 @@ class DatasetImporter:
             })
         return candidates
 
+    @staticmethod
+    def compute_ua_detrac_source_accounting(
+        sequences: List[str],
+        annotations_dir: Union[str, Path],
+        images_dir: Union[str, Path],
+    ) -> Dict[str, Any]:
+        """
+        Computes exact, auditable source-accounting metrics for UA-DETRAC dataset sequences:
+          - total_xml_frames: Number of frame entries declared by the selected XML files.
+          - total_physical_frames_on_disk: Number of JPEG frames physically present on disk.
+          - unannotated_disk_frames_skipped: Frames physically present that lack XML annotations.
+          - missing_physical_frames_skipped: XML frame entries that lack physical JPEG files.
+          - missing_physical_frames_by_sequence: Detailed per-sequence breakdown of missing frames.
+        """
+        ann_path = Path(annotations_dir)
+        img_path = Path(images_dir)
+
+        total_xml_frames = 0
+        total_physical_frames = 0
+        missing_physical_frames = 0
+        unannotated_disk_frames = 0
+        missing_by_seq: Dict[str, Dict[str, Any]] = {}
+
+        for seq in sorted(list(set(sequences))):
+            seq_clean = str(seq).replace("DETRAC_", "").replace("SCN_", "").strip()
+
+            # 1. Inspect on-disk image frames
+            s_img_dir = None
+            for cand in [img_path / seq_clean, img_path / seq, img_path / "DETRAC-Images" / seq_clean]:
+                if cand.is_dir():
+                    s_img_dir = cand
+                    break
+
+            disk_fnums: Set[int] = set()
+            if s_img_dir:
+                for p in s_img_dir.glob("img*.jpg"):
+                    stem = p.stem.replace("img", "")
+                    if stem.isdigit():
+                        disk_fnums.add(int(stem))
+
+            n_disk = len(disk_fnums)
+            total_physical_frames += n_disk
+
+            # 2. Inspect XML frames
+            s_xml_file = None
+            for cand in [ann_path / f"{seq_clean}.xml", ann_path / f"{seq}.xml"]:
+                if cand.is_file():
+                    s_xml_file = cand
+                    break
+
+            xml_fnums: Set[int] = set()
+            if s_xml_file:
+                tree = ET.parse(str(s_xml_file))
+                for f in tree.findall(".//frame"):
+                    num = int(f.attrib.get("num", 1))
+                    xml_fnums.add(num)
+
+            n_xml = len(xml_fnums)
+            total_xml_frames += n_xml
+
+            # Missing source images that XML expected
+            missing_fnums = sorted(list(xml_fnums - disk_fnums))
+            if missing_fnums:
+                missing_physical_frames += len(missing_fnums)
+                missing_by_seq[seq_clean] = {
+                    "xml_frames": n_xml,
+                    "available_frames": n_disk,
+                    "missing_frames": len(missing_fnums),
+                    "missing_frame_range": [min(missing_fnums), max(missing_fnums)],
+                }
+
+            # Physical frames on disk that XML did not annotate
+            unannotated = disk_fnums - xml_fnums
+            unannotated_disk_frames += len(unannotated)
+
+        return {
+            "total_xml_frames": total_xml_frames,
+            "total_physical_frames_on_disk": total_physical_frames,
+            "unannotated_disk_frames_skipped": unannotated_disk_frames,
+            "missing_physical_frames_skipped": missing_physical_frames,
+            "missing_physical_frames_by_sequence": missing_by_seq,
+        }
+
     def import_and_generate(
         self,
         dataset_version: str,
@@ -330,6 +433,7 @@ class DatasetImporter:
         allow_synthetic_fallback: bool = True,
         clip_out_of_bounds: bool = True,
         video_splits: Optional[Union[Dict[str, str], Dict[str, List[str]]]] = None,
+        source_accounting: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Runs candidates through DataQualityGate and generates an audited,
@@ -346,6 +450,7 @@ class DatasetImporter:
             allow_synthetic_fallback=allow_synthetic_fallback,
             clip_out_of_bounds=clip_out_of_bounds,
             video_splits=video_splits,
+            source_accounting=source_accounting,
         )
 
         manifest["imported_at"] = datetime.now(timezone.utc).isoformat()

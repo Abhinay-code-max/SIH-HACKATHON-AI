@@ -309,6 +309,7 @@ class DatasetGenerator:
         allow_synthetic_fallback: bool = True,
         clip_out_of_bounds: bool = True,
         video_splits: Optional[Union[Dict[str, str], Dict[str, List[str]]]] = None,
+        source_accounting: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Builds a versioned dataset on disk partitioned into:
@@ -670,6 +671,9 @@ class DatasetGenerator:
             "holdout_test_set_hash": holdout_hash,
             "data_yaml_path": str(data_yaml_path.resolve()).replace("\\", "/"),
         }
+        if source_accounting is not None:
+            manifest["source_accounting"] = dict(source_accounting)
+
         manifest_path = version_dir / "dataset_manifest.json"
         with open(manifest_path, "w", encoding="utf-8") as mf:
             json.dump(manifest, mf, indent=2)

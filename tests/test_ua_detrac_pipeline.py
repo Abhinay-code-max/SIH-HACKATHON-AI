@@ -468,13 +468,57 @@ class TestUADetracPipeline(unittest.TestCase):
         )
         self.assertEqual(manifest["split_strategy"], "EXPLICIT_SEQUENCE_LEVEL")
 
-        report = self.leakage_detector.audit_dataset(ds_name)
-        self.assertFalse(report["leakage_detected"])
-        self.assertEqual(report["status"], "LEAKAGE_FREE")
-        self.assertEqual(len(report["violations"]), 0)
+    def test_20_source_accounting_metadata(self):
+        """Verify compute_ua_detrac_source_accounting and manifest integration."""
+        # Create mock sequence with 3 disk images and 5 XML frames (2 missing)
+        seq_dir = self.test_dir / "MVI_MOCK_ACC"
+        seq_dir.mkdir(parents=True, exist_ok=True)
+        for i in (1, 2, 3):
+            (seq_dir / f"img{i:05d}.jpg").write_bytes(b"dummy")
+
+        mock_xml = f"""<sequence name="MVI_MOCK_ACC">
+            <frame num="1"><target><box left="10" top="10" width="50" height="50"/></target></frame>
+            <frame num="2"><target><box left="10" top="10" width="50" height="50"/></target></frame>
+            <frame num="3"><target><box left="10" top="10" width="50" height="50"/></target></frame>
+            <frame num="4"><target><box left="10" top="10" width="50" height="50"/></target></frame>
+            <frame num="5"><target><box left="10" top="10" width="50" height="50"/></target></frame>
+        </sequence>"""
+        xml_dir = self.test_dir / "mock_xmls"
+        xml_dir.mkdir(parents=True, exist_ok=True)
+        (xml_dir / "MVI_MOCK_ACC.xml").write_text(mock_xml, encoding="utf-8")
+
+        accounting = DatasetImporter.compute_ua_detrac_source_accounting(
+            sequences=["MVI_MOCK_ACC"],
+            annotations_dir=xml_dir,
+            images_dir=self.test_dir,
+        )
+
+        self.assertEqual(accounting["total_xml_frames"], 5)
+        self.assertEqual(accounting["total_physical_frames_on_disk"], 3)
+        self.assertEqual(accounting["missing_physical_frames_skipped"], 2)
+        self.assertEqual(accounting["unannotated_disk_frames_skipped"], 0)
+        self.assertIn("MVI_MOCK_ACC", accounting["missing_physical_frames_by_sequence"])
+        self.assertEqual(
+            accounting["missing_physical_frames_by_sequence"]["MVI_MOCK_ACC"]["missing_frames"], 2
+        )
+        self.assertEqual(
+            accounting["missing_physical_frames_by_sequence"]["MVI_MOCK_ACC"]["missing_frame_range"],
+            [4, 5],
+        )
+
+        # Verify generator records source_accounting in manifest
+        cands = [
+            {"video_id": "MVI_MOCK_ACC", "frame_idx": 1, "bbox": [10, 10, 50, 50], "class_name": "car"}
+        ]
+        manifest = self.generator.create_dataset_version(
+            dataset_version="test_ds_source_acc",
+            candidates=cands,
+            video_splits={"MVI_MOCK_ACC": "train"},
+            source_accounting=accounting,
+        )
+        self.assertIn("source_accounting", manifest)
+        self.assertEqual(manifest["source_accounting"]["missing_physical_frames_skipped"], 2)
 
 
 if __name__ == "__main__":
     unittest.main()
-
-

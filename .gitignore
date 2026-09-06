@@ -26,3 +26,6 @@ data/evidence/*
 !data/evidence/.gitkeep
 data/evidence/reid_crops/*
 !data/evidence/reid_crops/.gitkeep
+
+# Large generated real datasets
+training_lab/datasets/dataset_ua_detrac_v001/
