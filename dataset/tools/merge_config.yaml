@@ -76,6 +76,21 @@ settings:
 # Any class encountered in a dataset that is NOT in the mapping will also
 # be dropped and flagged in the summary report.
 datasets:
+  # 0. Existing Production Dataset v2 (Preserve core 9 classes against catastrophic forgetting)
+  - name: "existing_v2"
+    enabled: true
+    path: "dataset/releases/v2"
+    mapping:
+      "person": "person"
+      "car": "car"
+      "truck": "truck"
+      "bus": "bus"
+      "motorcycle": "motorcycle"
+      "bicycle": "bicycle"
+      "animal": "animal"
+      "backpack": "backpack"
+      "bag": "bag"
+
   # 1. Weapon (Roboflow Guns Dataset)
   - name: "weapon"
     enabled: false  # Enable on Colab when downloaded
