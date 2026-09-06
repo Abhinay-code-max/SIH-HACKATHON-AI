@@ -70,11 +70,17 @@ class IncidentManager:
                 score += 35
             elif ev_type == "TAILGATING_BREACH":
                 score += 25
+            elif ev_type == "VEHICLE_STOPPAGE_ALERT":
+                score += 25
+            elif ev_type == "BORDER_APPROACH_SURGE":
+                score += 20
             elif ev_type == "SPRINTING_DETECTED":
                 score += 20
             elif ev_type == "RESTRICTED_ZONE_INTRUSION":
                 score += 25
             elif ev_type == "LOITERING_DETECTED":
+                score += 15
+            elif ev_type == "VEHICLE_LOITERING_ALERT":
                 score += 15
 
             if ev.get("class_name") in {"truck", "bus", "unauthorized_vehicle"}:

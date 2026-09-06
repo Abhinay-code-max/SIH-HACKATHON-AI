@@ -20,6 +20,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from ai.reid.extractor import feature_extractor
 from ai.reid.association import cross_camera_associator
+from ai.reid.intelligence_graph import surveillance_graph
 
 REID_CROPS_DIR = ROOT_DIR / "data" / "evidence" / "reid_crops"
 REID_CROPS_DIR.mkdir(parents=True, exist_ok=True)
@@ -174,6 +175,23 @@ class GlobalSubjectManager:
                 }
                 self.transit_log.append(transit_event)
                 matched_subj.setdefault("transits", []).append(transit_event)
+                surveillance_graph.add_transit(
+                    from_camera=prev_cam,
+                    to_camera=camera_id,
+                    subject_id=subject_id,
+                    transit_sec=transit_sec,
+                    similarity=sim_score,
+                    timestamp=now,
+                )
+
+            surveillance_graph.add_sighting(
+                subject_id=subject_id,
+                camera_id=camera_id,
+                timestamp=now,
+                bbox=bbox,
+                class_name=class_name,
+                confidence=confidence,
+            )
 
             # Update subject state
             matched_subj["last_seen"] = now
@@ -234,6 +252,14 @@ class GlobalSubjectManager:
         self.subjects[subject_id] = new_subject
         self.active_track_map[key] = subject_id
         self.last_embed_time[key] = now
+        surveillance_graph.add_sighting(
+            subject_id=subject_id,
+            camera_id=camera_id,
+            timestamp=now,
+            bbox=bbox,
+            class_name=class_name,
+            confidence=confidence,
+        )
         self._save_persisted()
         return new_subject
 

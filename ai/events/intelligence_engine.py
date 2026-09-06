@@ -29,6 +29,8 @@ from backend.app.services.event_service import event_service
 from backend.app.models.contracts import GeoLocation, SecurityEvent, SeverityLevel, EventType
 from ai.events.behavioral_engine import behavioral_anomaly_engine
 from ai.events.incident_manager import incident_manager
+from ai.tracking.movement_analyzer import movement_analyzer
+from ai.tracking.vehicle_analyzer import vehicle_analyzer
 
 
 def line_intersection(p1, p2, p3, p4) -> bool:
@@ -76,6 +78,9 @@ class IntelligenceEngine:
         triggered_events = []
         loc = camera_location or GeoLocation(lat=17.4435, lon=78.3765, zone_name="Sector Alpha")
         h, w = frame.shape[:2]
+
+        # Tactical movement and border heading vector analysis
+        movement_analyzer.analyze_tracks(tracks)
 
         # -------------------------------------------------------------
         # 1. RESTRICTED ZONE GEOFENCE INTRUSION
@@ -270,6 +275,47 @@ class IntelligenceEngine:
                 metadata=anom,
             )
             triggered_events.append(dossier)
+
+        # -------------------------------------------------------------
+        # 4b. VEHICLE BEHAVIOR & STOPPAGE INTELLIGENCE
+        # -------------------------------------------------------------
+        veh_anomalies = vehicle_analyzer.evaluate_vehicles(
+            camera_id=camera_id,
+            tracks=tracks,
+            zones=self.rules.get("zones", []),
+            frame_shape=(h, w),
+        )
+        for vanom in veh_anomalies:
+            self.event_counter += 1
+            vanom_id = f"EVT_{self.event_counter:05d}"
+            vtype = vanom["anomaly_type"]
+            vsev = vanom["severity"]
+            vdossier = evidence_engine.capture_evidence(
+                event_id=vanom_id,
+                event_type=vtype,
+                camera_id=camera_id,
+                class_name=vanom.get("class_name", "car"),
+                confidence=vanom.get("confidence", 0.9),
+                track_id=vanom.get("track_id", 0),
+                bbox=vanom.get("bbox", [0, 0, 10, 10]),
+                frame=frame,
+                trajectory=vanom.get("trajectory", []),
+                severity=vsev,
+                metadata=vanom,
+            )
+            sec_evt = SecurityEvent(
+                event_id=vanom_id,
+                source_id=camera_id,
+                event_type=EventType.UNAUTHORIZED_VEHICLE,
+                class_name=vanom.get("class_name", "car"),
+                confidence=vanom.get("confidence", 0.9),
+                bbox=vanom.get("bbox", [0, 0, 10, 10]),
+                severity=SeverityLevel.CRITICAL if vsev == "CRITICAL" else SeverityLevel.HIGH,
+                location=loc,
+                metadata=vanom,
+            )
+            event_service.add_event(sec_evt)
+            triggered_events.append(vdossier)
 
         # -------------------------------------------------------------
         # 5. REGISTER OR ESCALATE COMPOUND SECURITY INCIDENT
