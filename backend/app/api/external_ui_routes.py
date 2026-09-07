@@ -20,6 +20,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from backend.app.services.camera_manager import camera_manager
+from ai.detection.detector import YoloDetector
 from ai.events.intelligence_engine import intelligence_engine
 from ai.reid.manager import global_subject_manager
 from ai.events.incident_manager import incident_manager
@@ -145,7 +146,11 @@ def get_model_registry():
 @router.post("/api/models/activate")
 def activate_model(req: ModelActivateRequest):
     """Dynamically switches the active inference model across all camera workers."""
+    new_detector = YoloDetector(model_name=req.version)
+    camera_manager.detector = new_detector
     for cid, worker in camera_manager.cameras.items():
+        worker.detector = new_detector
+        worker.tracker.detector = new_detector
         worker.tracker.model_name = req.version
         worker.tracker.model = None
     return {"status": "MODEL_ACTIVATED", "active_model": req.version}

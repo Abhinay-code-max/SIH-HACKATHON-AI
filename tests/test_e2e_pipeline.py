@@ -128,6 +128,11 @@ def run_e2e_test():
     return True
 
 
+def test_e2e_pipeline():
+    """PyTest entrypoint for complete 5-stage end-to-end integration pipeline."""
+    assert run_e2e_test() is True
+
+
 if __name__ == "__main__":
     try:
         run_e2e_test()
