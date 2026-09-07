@@ -8,6 +8,7 @@ Complies with Rule 2: Absolute Offline Edge Operation.
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 import json
+import logging
 from pathlib import Path
 import sys
 import time
@@ -25,6 +26,7 @@ from ai.inference.loader import get_device, load_local_model
 from backend.app.models.contracts import RawDetection
 
 DEFAULT_CONFIG_PATH = ROOT_DIR / "config" / "detection_settings.yaml"
+logger = logging.getLogger(__name__)
 
 
 def _box_iou(box1: List[float], box2: List[float]) -> float:
@@ -118,6 +120,7 @@ class YoloDetector(BaseDetector):
         confirmation_enabled: Optional[bool] = None,
         consecutive_frames: Optional[int] = None,
         filter_unconfirmed: Optional[bool] = None,
+        half_precision: Optional[bool] = None,
     ):
         self.config = load_detection_config(config_path)
 
@@ -132,6 +135,11 @@ class YoloDetector(BaseDetector):
             iou_threshold
             if iou_threshold is not None
             else float(thresh_cfg.get("iou", 0.70))
+        )
+        self.half_precision = (
+            half_precision
+            if half_precision is not None
+            else bool(thresh_cfg.get("half_precision", False))
         )
 
         # 2. Resolve target classes
@@ -181,6 +189,12 @@ class YoloDetector(BaseDetector):
         self._camera_next_id: Dict[str, int] = {}
 
         self.device = get_device()
+        self.use_half = bool(self.half_precision and self.device == "cuda")
+        if self.half_precision and self.device != "cuda":
+            logger.warning(
+                f"Half-precision (FP16) requested, but device is '{self.device}'. "
+                "FP16 is only supported on CUDA devices; falling back to FP32."
+            )
         self.model = None
 
     def _ensure_model(self) -> None:
@@ -231,13 +245,17 @@ class YoloDetector(BaseDetector):
         now_sec = now_dt.timestamp()
 
         # Execute local inference
-        results = self.model.predict(
-            source=frame,
-            conf=self.conf_threshold,
-            iou=self.iou_threshold,
-            device=self.device,
-            verbose=False,
-        )
+        predict_kwargs: Dict[str, Any] = {
+            "source": frame,
+            "conf": self.conf_threshold,
+            "iou": self.iou_threshold,
+            "device": self.device,
+            "verbose": False,
+        }
+        if self.use_half:
+            predict_kwargs["half"] = True
+
+        results = self.model.predict(**predict_kwargs)
 
         detections: List[RawDetection] = []
         if not results:
