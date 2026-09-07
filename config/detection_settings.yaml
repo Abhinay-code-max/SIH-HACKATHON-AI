@@ -65,24 +65,33 @@ classes:
 
   # Future Border Surveillance Target Classes (Pending Dataset v3)
   # Taxonomy matches merge_config.yaml: weapon (ID 9), drone (ID 10), fire (ID 11), smoke (ID 12), boat (ID 13)
+  # Note: Drone and Fire/Smoke are now active via specialist modules (BaseSpecialistDetector).
   weapon:
     enabled: false
+    # Scaffolded-but-inactive: Disabled pending better training data / future fine-tuning due to
+    # high false-positive rate on real-world CCTV footage (7.1% - 21.4% across tested community models).
+    # Retained for future fine-tuning or evaluation. Status: in_development (not accidentally broken).
+    status: "in_development"
     pending_training_data: true
     min_confidence: 0.40
   drone:
     enabled: false
+    # Base model class inactive; handled via DroneSpecialistDetector (TomSmail/drone-yolo-v1)
     pending_training_data: true
     min_confidence: 0.40
   fire:
     enabled: false
+    # Base model class inactive; handled via FireSmokeSpecialistDetector (rabahdev/fire-smoke-yolov8n)
     pending_training_data: true
     min_confidence: 0.40
   smoke:
     enabled: false
+    # Base model class inactive; handled via FireSmokeSpecialistDetector (rabahdev/fire-smoke-yolov8n)
     pending_training_data: true
     min_confidence: 0.40
   # Native COCO class scaffolded for maritime/riverine border security.
-  # Requires future fine-tuning pass with dedicated boat imagery; does not detect boats yet.
+  # Scaffolded-but-inactive (abandoned): Custom unified training run was cancelled and
+  # maritime/riverine imagery was not collected. Does not detect boats (not accidentally broken).
   boat:
     enabled: false
     pending_training_data: true

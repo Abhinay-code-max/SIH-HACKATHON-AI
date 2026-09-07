@@ -18,7 +18,7 @@ classes:
   6: animal
   7: backpack
   8: bag
-  # Scaffolded pending future training with maritime/riverine imagery (does not detect boats yet)
+  # Scaffolded-but-inactive (abandoned): maritime/riverine imagery not collected, unified training cancelled.
   13: boat
 
 

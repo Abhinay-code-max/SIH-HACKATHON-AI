@@ -152,7 +152,7 @@ In automated border monitoring, false alarms caused by moving foliage, shadows, 
 
 ### Multi-Frame Confirmation Integration
 To eliminate transient single-frame false positives entirely, the AI detection module includes a production-grade temporal filter:
-- **Module**: [`ai/detection/confidence_tracker.py`](file:///d:/SIH%202026/SIH-HACKATHON-AI/ai/detection/confidence_tracker.py)
+- **Module**: [`ai/detection/confidence_tracker.py`](../ai/detection/confidence_tracker.py)
 - **Mechanism**: Requires $N=2$ consecutive frames of confidence $\ge 0.50$ with IoU spatial consistency ($\ge 0.40$) before escalating a detection to the alert pipeline.
 - **Operational Result**: Suppresses momentary false positives (e.g., occasional bicycle or bag hallucinations) from triggering false incident alerts.
 
