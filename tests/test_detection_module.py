@@ -22,6 +22,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from ai.detection.confidence_tracker import ConfidenceTracker
+from ai.detection.preprocessing import FramePreprocessor
 from ai.detection.detector import (
     BaseDetector,
     YoloDetector,
@@ -227,6 +228,15 @@ def test_detection_settings_loading():
         assert fc in classes, f"Future target {fc} missing from detection settings"
         assert classes[fc]["enabled"] is False, f"Future target {fc} must be disabled pending training"
         assert classes[fc].get("pending_training_data") is True
+
+    # Verify preprocessing scaffold defaults (task 18)
+    assert "preprocessing" in cfg, "Config missing preprocessing section"
+    pre = cfg["preprocessing"]
+    assert pre.get("enabled") is False
+    assert pre.get("enable_clahe") is False
+    assert pre.get("enable_gamma") is False
+    assert pre.get("enable_dehaze") is False
+    assert pre.get("enable_grayscale_ir") is False
 
 
 
@@ -457,60 +467,181 @@ def test_detector_half_precision_initialization_and_safety():
         assert "half" not in mock_model_cuda_fp32.last_predict_kwargs
 
 
+def test_frame_preprocessor_defaults_and_activation():
+    """
+    Verify FramePreprocessor defaults to master enabled=False and inactive,
+    does not modify frames when inactive, and only activates when master-enabled
+    with at least one transform configured.
+    """
+    # 1. Default no-args: master enabled=False, is_active=False
+    prep_default = FramePreprocessor()
+    assert prep_default.enabled is False
+    assert prep_default.is_active is False
+
+    # 2. Master disabled even if transform flag is passed -> stays inactive (fail-safe)
+    prep_dormant = FramePreprocessor(enable_gamma=True)
+    assert prep_dormant.enabled is False
+    assert prep_dormant.is_active is False
+
+    # 3. Master enabled without transforms -> stays inactive
+    prep_no_transforms = FramePreprocessor(enabled=True)
+    assert prep_no_transforms.enabled is True
+    assert prep_no_transforms.is_active is False
+
+    # 4. Master enabled with single transform -> active
+    prep_active = FramePreprocessor(enabled=True, enable_gamma=True)
+    assert prep_active.enabled is True
+    assert prep_active.is_active is True
+
+    # 5. Inactive preprocessor returns byte-identical frame without modification
+    dummy_frame = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
+    unmodified = prep_default.preprocess(dummy_frame)
+    assert np.array_equal(unmodified, dummy_frame)
+    assert np.array_equal(prep_dormant.preprocess(dummy_frame), dummy_frame)
+
+
+def test_detector_preprocessing_hook_integration():
+    """
+    Verify YoloDetector respects fail-closed preprocessing hook:
+    - Default configuration never invokes preprocess()
+    - Fallback is fail-closed when is_active is absent
+    - Explicitly enabled preprocessor is executed during detect()
+    """
+    from unittest.mock import MagicMock
+
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # 1. Default detector: preprocessor is not active, preprocess() is never called
+    detector = YoloDetector()
+    detector.model = MockYoloModel()
+    assert detector.preprocessor.is_active is False
+
+    detector.preprocessor.preprocess = MagicMock(return_value=dummy_frame)
+    detector.detect(dummy_frame, camera_id="CAM_TEST")
+    detector.preprocessor.preprocess.assert_not_called()
+
+    # 2. Fail-closed fallback: object without is_active attribute defaults to False
+    class DummyNoActive:
+        def preprocess(self, f):
+            raise RuntimeError("Should never be called")
+
+    detector.preprocessor = DummyNoActive()
+    # Does not crash or invoke preprocess
+    dets = detector.detect(dummy_frame, camera_id="CAM_TEST")
+    assert isinstance(dets, list)
+
+    # 3. Explicitly enabled preprocessor: preprocess() is called
+    active_prep = FramePreprocessor(enabled=True, enable_gamma=True, gamma_value=1.5)
+    detector_active = YoloDetector(preprocessor=active_prep)
+    detector_active.model = MockYoloModel()
+    assert detector_active.preprocessor.is_active is True
+
+    detector_active.preprocessor.preprocess = MagicMock(return_value=dummy_frame)
+    detector_active.detect(dummy_frame, camera_id="CAM_ACTIVE")
+    detector_active.preprocessor.preprocess.assert_called_once_with(dummy_frame)
+
+
+def test_preprocessing_synthetic_transforms():
+    """
+    Verify correctness of synthetic transforms on controlled test images:
+    - Gamma correction brightens dark imagery (mean pixel value increases)
+    - CLAHE improves contrast on low-contrast imagery (standard deviation increases)
+    - Grayscale IR conversion produces 3-channel identical values
+    """
+    # 1. Gamma brightening on dark image
+    dark_img = np.full((100, 100, 3), 30, dtype=np.uint8)
+    prep_gamma = FramePreprocessor(enabled=True, enable_gamma=True, gamma_value=1.5)
+    bright_img = prep_gamma.preprocess(dark_img)
+    assert bright_img.shape == dark_img.shape
+    assert float(bright_img.mean()) > float(dark_img.mean())
+
+    # 2. CLAHE contrast enhancement on low-contrast image
+    low_contrast = np.full((100, 100, 3), 128, dtype=np.uint8)
+    low_contrast[25:75, 25:75] = 135  # subtle patch
+    prep_clahe = FramePreprocessor(enabled=True, enable_clahe=True, clahe=True)
+    clahe_img = prep_clahe.preprocess(low_contrast)
+    assert clahe_img.shape == low_contrast.shape
+    assert float(clahe_img.std()) > float(low_contrast.std())
+
+    # 3. Grayscale IR simulation on colored image
+    color_img = np.zeros((50, 50, 3), dtype=np.uint8)
+    color_img[:, :, 0] = 200  # blue
+    color_img[:, :, 1] = 50   # green
+    color_img[:, :, 2] = 100  # red
+    prep_ir = FramePreprocessor(enabled=True, enable_grayscale_ir=True)
+    ir_img = prep_ir.preprocess(color_img)
+    assert ir_img.shape == color_img.shape
+    assert np.array_equal(ir_img[:, :, 0], ir_img[:, :, 1])
+    assert np.array_equal(ir_img[:, :, 1], ir_img[:, :, 2])
+
+
 if __name__ == "__main__":
     print("\n=======================================================")
     print("RUNNING AI DETECTION MODULE TEST SUITE")
     print("=======================================================")
 
-    print("[1/12] Testing ConfidenceTracker Confirmation Flow...")
+    print("[1/15] Testing ConfidenceTracker Confirmation Flow...")
     test_confidence_tracker_confirmation_flow()
     print("       --> PASS: Target confirmed after consecutive hits threshold.")
 
-    print("[2/12] Testing ConfidenceTracker Low Confidence Reset...")
+    print("[2/15] Testing ConfidenceTracker Low Confidence Reset...")
     test_confidence_tracker_low_confidence_reset()
     print("       --> PASS: Low confidence resets consecutive counter.")
 
-    print("[3/12] Testing ConfidenceTracker Multi-Object Independence...")
+    print("[3/15] Testing ConfidenceTracker Multi-Object Independence...")
     test_confidence_tracker_multi_object_independence()
     print("       --> PASS: Multi-object states decoupled.")
 
-    print("[4/12] Testing ConfidenceTracker Stale Pruning...")
+    print("[4/15] Testing ConfidenceTracker Stale Pruning...")
     test_confidence_tracker_stale_pruning()
     print("       --> PASS: Expired records pruned successfully.")
 
-    print("[5/12] Testing Detection Settings YAML Loader...")
+    print("[5/15] Testing Detection Settings YAML Loader...")
     test_detection_settings_loading()
     print("       --> PASS: Settings schema and class flags loaded properly.")
 
-    print("[6/12] Testing BaseDetector Interface & RawDetection Contract...")
+    print("[6/15] Testing BaseDetector Interface & RawDetection Contract...")
     test_base_detector_interface()
     print("       --> PASS: BaseDetector polymorphism and contract serialized.")
 
-    print("[7/12] Testing RawDetection Backward Compatibility & Fallback...")
+    print("[7/15] Testing RawDetection Backward Compatibility & Fallback...")
     test_raw_detection_backward_compatibility()
     test_model_resolution_fallback()
     print("       --> PASS: Backward compatibility and model fallback verified.")
 
-    print("[8/12] Testing Detector Rising Confidence Confirmation...")
+    print("[8/15] Testing Detector Rising Confidence Confirmation...")
     test_detector_rising_confidence_confirmation()
     print("       --> PASS: Target confirmed across 3 consecutive video frames.")
 
-    print("[9/12] Testing Detector Transient Spike Non-Confirmation...")
+    print("[9/15] Testing Detector Transient Spike Non-Confirmation...")
     test_detector_transient_spike_non_confirmation()
     print("       --> PASS: Single-frame spike remains unconfirmed.")
 
-    print("[10/12] Testing Detector Per-Camera State Isolation...")
+    print("[10/15] Testing Detector Per-Camera State Isolation...")
     test_detector_per_camera_isolation()
     print("        --> PASS: Cameras track confirmation independently.")
 
-    print("[11/12] Testing Detector Filtering & detect_confirmed Helper...")
+    print("[11/15] Testing Detector Filtering & detect_confirmed Helper...")
     test_detector_filter_unconfirmed_and_detect_confirmed()
     print("        --> PASS: Filtering and convenience helper verified.")
 
-    print("[12/12] Testing Detector Half-Precision (FP16) Safety & Initialization...")
+    print("[12/15] Testing Detector Half-Precision (FP16) Safety & Initialization...")
     test_detector_half_precision_initialization_and_safety()
     print("        --> PASS: Half-precision initialization, fallback, and kwargs verified.")
 
-    print("\nSTATUS: ALL 12 AI DETECTION MODULE TESTS PASSED! [12/12]")
+    print("[13/15] Testing FramePreprocessor Defaults and Fail-Safe Activation...")
+    test_frame_preprocessor_defaults_and_activation()
+    print("        --> PASS: Default inactive, master-enabled gating verified.")
+
+    print("[14/15] Testing Detector Fail-Closed Preprocessing Hook Integration...")
+    test_detector_preprocessing_hook_integration()
+    print("        --> PASS: Fail-closed fallback and default-off verified.")
+
+    print("[15/15] Testing Preprocessing Synthetic Image Transforms...")
+    test_preprocessing_synthetic_transforms()
+    print("        --> PASS: Gamma brightening, CLAHE contrast, and IR grayscale verified.")
+
+    print("\nSTATUS: ALL 15 AI DETECTION MODULE TESTS PASSED! [15/15]")
+
 
 

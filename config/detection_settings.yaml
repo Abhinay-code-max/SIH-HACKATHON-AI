@@ -88,4 +88,11 @@ classes:
     pending_training_data: true
     min_confidence: 0.40
 
-
+# Preprocessing Pipeline (Night / Fog / IR Enhancement)
+# Scaffolded for future night/fog robustness work (task 18) — requires real validation before enabling in production.
+preprocessing:
+  enabled: false
+  enable_clahe: false
+  enable_gamma: false
+  enable_dehaze: false
+  enable_grayscale_ir: false

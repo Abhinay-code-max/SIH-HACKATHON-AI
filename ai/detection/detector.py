@@ -22,6 +22,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from ai.detection.confidence_tracker import ConfidenceTracker
+from ai.detection.preprocessing import FramePreprocessor
 from ai.inference.loader import get_device, load_local_model
 from backend.app.models.contracts import RawDetection
 
@@ -121,6 +122,7 @@ class YoloDetector(BaseDetector):
         consecutive_frames: Optional[int] = None,
         filter_unconfirmed: Optional[bool] = None,
         half_precision: Optional[bool] = None,
+        preprocessor: Optional[FramePreprocessor] = None,
     ):
         self.config = load_detection_config(config_path)
 
@@ -197,6 +199,13 @@ class YoloDetector(BaseDetector):
             )
         self.model = None
 
+        # 5. Resolve frame preprocessing pipeline (night/fog/IR enhancement)
+        if preprocessor is not None:
+            self.preprocessor = preprocessor
+        else:
+            pre_cfg = self.config.get("preprocessing", {})
+            self.preprocessor = FramePreprocessor(**pre_cfg)
+
     def _ensure_model(self) -> None:
         """Lazy-load local model weights strictly from disk."""
         if self.model is None:
@@ -237,6 +246,10 @@ class YoloDetector(BaseDetector):
         """
         if frame is None or frame.size == 0:
             return []
+
+        # Apply optional frame preprocessing (night/fog/IR transforms) before inference
+        if self.preprocessor is not None and getattr(self.preprocessor, "is_active", False):
+            frame = self.preprocessor.preprocess(frame)
 
         self._ensure_model()
         h, w = frame.shape[:2]
