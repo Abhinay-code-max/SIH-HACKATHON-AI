@@ -26,3 +26,6 @@ data/evidence/*
 !data/evidence/.gitkeep
 data/evidence/reid_crops/*
 !data/evidence/reid_crops/.gitkeep
+
+# Specialist Model Weights
+ai/models/specialists/*.pt
