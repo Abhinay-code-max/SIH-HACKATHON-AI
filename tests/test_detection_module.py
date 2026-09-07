@@ -575,6 +575,33 @@ def test_preprocessing_synthetic_transforms():
     assert np.array_equal(ir_img[:, :, 1], ir_img[:, :, 2])
 
 
+def test_detector_per_class_confidence_filtering():
+    """Verify YoloDetector applies differentiated per-class confidence thresholds."""
+    detector = YoloDetector(
+        confirmation_enabled=False,
+    )
+    mock_model = MockYoloModel()
+    detector.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # Class 0: 'person' (threshold 0.30) -> 0.32 should PASS
+    # Class 1: 'car' (threshold 0.45) -> 0.40 should be FILTERED OUT, 0.50 should PASS
+    mock_model.boxes = [
+        MockYoloBox(cls_id=0, conf=0.32, xyxy=[10.0, 10.0, 50.0, 100.0]),
+        MockYoloBox(cls_id=1, conf=0.40, xyxy=[100.0, 100.0, 200.0, 200.0]),
+        MockYoloBox(cls_id=1, conf=0.50, xyxy=[300.0, 100.0, 400.0, 200.0]),
+    ]
+    dets = detector.detect(dummy_frame, camera_id="CAM_TEST")
+
+    # Only person (0.32) and car (0.50) should survive; car (0.40) filtered out
+    class_confs = [(d.class_name, d.confidence) for d in dets]
+    assert len(dets) == 2, f"Expected 2 detections, got {len(dets)}: {class_confs}"
+    assert dets[0].class_name == "person"
+    assert dets[0].confidence == 0.32
+    assert dets[1].class_name == "car"
+    assert dets[1].confidence == 0.50
+
+
 if __name__ == "__main__":
     print("\n=======================================================")
     print("RUNNING AI DETECTION MODULE TEST SUITE")

@@ -57,7 +57,7 @@ class BaseSpecialistDetector(BaseDetector, ABC):
         iou_threshold: float = 0.60,
         device: Optional[str] = None,
         half_precision: bool = False,
-        auto_download: bool = True,
+        auto_download: bool = False,
         enabled: bool = True,
     ):
         self.conf_threshold = float(conf_threshold)
@@ -114,7 +114,8 @@ class BaseSpecialistDetector(BaseDetector, ABC):
         if not self.auto_download:
             raise FileNotFoundError(
                 f"[{self.__class__.__name__}] Specialist weights not found at: {self.weights_path}. "
-                "Automatic download is disabled."
+                "Automatic download is disabled by default to enforce 100% offline tactical deployment (Rule 2). "
+                f"Place model weights manually at {self.weights_path} or pass auto_download=True for one-time developer setup."
             )
 
         if hf_hub_download is None:
@@ -247,7 +248,7 @@ class WeaponSpecialistDetector(BaseSpecialistDetector):
         iou_threshold: float = 0.60,
         device: Optional[str] = None,
         half_precision: bool = False,
-        auto_download: bool = True,
+        auto_download: bool = False,
         # Disabled by default due to high false-positive rate on real-world CCTV footage
         # (7.1% - 21.4% across tested models with significant confidence score overlap against true positives).
         # Retained for future fine-tuning or evaluation. Status: in_development.

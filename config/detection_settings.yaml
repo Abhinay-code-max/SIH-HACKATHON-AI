@@ -37,16 +37,16 @@ classes:
   # Active baseline classes (from config/classes.yaml)
   person:
     enabled: true
-    min_confidence: 0.35
+    min_confidence: 0.30  # High-recall for distant/small human silhouettes (<35px)
   car:
     enabled: true
-    min_confidence: 0.35
+    min_confidence: 0.45  # High-precision against road asphalt/shadow artifacts
   truck:
     enabled: true
-    min_confidence: 0.35
+    min_confidence: 0.45
   bus:
     enabled: true
-    min_confidence: 0.35
+    min_confidence: 0.45
   motorcycle:
     enabled: true
     min_confidence: 0.35
@@ -55,7 +55,7 @@ classes:
     min_confidence: 0.35
   animal:
     enabled: true
-    min_confidence: 0.35
+    min_confidence: 0.45  # Suppresses wind-blown foliage and bush motion false alarms
   backpack:
     enabled: true
     min_confidence: 0.35

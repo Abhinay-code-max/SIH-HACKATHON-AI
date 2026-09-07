@@ -257,10 +257,20 @@ class YoloDetector(BaseDetector):
         now_iso = now_dt.isoformat()
         now_sec = now_dt.timestamp()
 
-        # Execute local inference
+        # Effective YOLO inference confidence floor (lowest among global and per-class thresholds)
+        conf_floor = self.conf_threshold
+        if self.classes_config:
+            active_mins = [
+                float(c.get("min_confidence", self.conf_threshold))
+                for name, c in self.classes_config.items()
+                if isinstance(c, dict) and (self.enabled_classes is None or name in self.enabled_classes)
+            ]
+            if active_mins:
+                conf_floor = min(conf_floor, min(active_mins))
+
         predict_kwargs: Dict[str, Any] = {
             "source": frame,
-            "conf": self.conf_threshold,
+            "conf": conf_floor,
             "iou": self.iou_threshold,
             "device": self.device,
             "verbose": False,

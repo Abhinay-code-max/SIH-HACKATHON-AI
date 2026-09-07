@@ -162,6 +162,13 @@ def test_empty_and_none_frame_safety():
         assert det.detect(empty_frame) == []
 
 
+def test_specialist_detectors_default_auto_download_false():
+    """Verify all specialist detectors default to auto_download=False to enforce Rule 2 (Zero Network Call)."""
+    assert WeaponSpecialistDetector().auto_download is False
+    assert DroneSpecialistDetector().auto_download is False
+    assert FireSmokeSpecialistDetector().auto_download is False
+
+
 def test_missing_weights_handling_no_auto_download():
     """Verify FileNotFoundError is raised when weights are missing and auto_download is False."""
     fake_path = ROOT_DIR / "ai" / "models" / "specialists" / "non_existent_weights.pt"
@@ -171,6 +178,7 @@ def test_missing_weights_handling_no_auto_download():
     with pytest.raises(FileNotFoundError) as excinfo:
         detector.detect(dummy_frame)
     assert "Specialist weights not found" in str(excinfo.value)
+    assert "Rule 2" in str(excinfo.value)
 
 
 def test_download_failure_handling():
