@@ -106,9 +106,12 @@ class MockYoloModel:
     def __init__(self, names: Optional[Dict[int, str]] = None):
         self.names = names or {0: "person", 1: "car", 2: "truck"}
         self.boxes: List[MockYoloBox] = []
+        self.last_predict_kwargs: Dict[str, Any] = {}
 
     def predict(self, source: Any, **kwargs: Any) -> List[MockYoloResult]:
+        self.last_predict_kwargs = {"source": source, **kwargs}
         return [MockYoloResult(self.boxes)]
+
 
 
 
@@ -211,6 +214,7 @@ def test_detection_settings_loading():
     thresholds = cfg["thresholds"]
     assert thresholds["confidence"] == 0.35
     assert thresholds["iou"] == 0.70
+    assert thresholds.get("half_precision") is False
 
     # Verify classes: baseline enabled, future classes disabled
     classes = cfg["classes"]
@@ -219,10 +223,11 @@ def test_detection_settings_loading():
         assert classes[c]["enabled"] is True, f"Baseline class {c} should be enabled"
 
     # Verify future border surveillance targets
-    for fc in ["weapon", "drone", "fire", "smoke"]:
+    for fc in ["weapon", "drone", "fire", "smoke", "boat"]:
         assert fc in classes, f"Future target {fc} missing from detection settings"
         assert classes[fc]["enabled"] is False, f"Future target {fc} must be disabled pending training"
         assert classes[fc].get("pending_training_data") is True
+
 
 
 def test_base_detector_interface():
@@ -403,55 +408,109 @@ def test_detector_filter_unconfirmed_and_detect_confirmed():
     assert confirmed_f2[0].confirmed is True
 
 
+def test_detector_half_precision_initialization_and_safety():
+    """
+    Verify FP16 (half-precision) initialization, safety fallback on non-CUDA devices,
+    and propagation of half=True kwarg to model.predict().
+    """
+    from unittest.mock import patch
+
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # 1. Default initialization -> use_half=False
+    detector_default = YoloDetector()
+    assert detector_default.half_precision is False
+    assert detector_default.use_half is False
+
+    # 2. CPU + half_precision=True -> fallback to use_half=False (no crash)
+    with patch("ai.detection.detector.get_device", return_value="cpu"):
+        detector_cpu = YoloDetector(half_precision=True)
+        assert detector_cpu.device == "cpu"
+        assert detector_cpu.half_precision is True
+        assert detector_cpu.use_half is False
+
+        mock_model_cpu = MockYoloModel()
+        detector_cpu.model = mock_model_cpu
+        detector_cpu.detect(dummy_frame, camera_id="CAM_CPU")
+        assert "half" not in mock_model_cpu.last_predict_kwargs
+
+    # 3. CUDA + half_precision=True -> use_half=True
+    with patch("ai.detection.detector.get_device", return_value="cuda"):
+        detector_cuda = YoloDetector(half_precision=True)
+        assert detector_cuda.device == "cuda"
+        assert detector_cuda.half_precision is True
+        assert detector_cuda.use_half is True
+
+        mock_model_cuda = MockYoloModel()
+        detector_cuda.model = mock_model_cuda
+        detector_cuda.detect(dummy_frame, camera_id="CAM_CUDA")
+        assert mock_model_cuda.last_predict_kwargs.get("half") is True
+
+    # 4. Verify detect() does NOT pass half kwarg when use_half is False (even on CUDA)
+    with patch("ai.detection.detector.get_device", return_value="cuda"):
+        detector_cuda_fp32 = YoloDetector(half_precision=False)
+        assert detector_cuda_fp32.use_half is False
+
+        mock_model_cuda_fp32 = MockYoloModel()
+        detector_cuda_fp32.model = mock_model_cuda_fp32
+        detector_cuda_fp32.detect(dummy_frame, camera_id="CAM_CUDA_FP32")
+        assert "half" not in mock_model_cuda_fp32.last_predict_kwargs
+
+
 if __name__ == "__main__":
     print("\n=======================================================")
     print("RUNNING AI DETECTION MODULE TEST SUITE")
     print("=======================================================")
 
-    print("[1/11] Testing ConfidenceTracker Confirmation Flow...")
+    print("[1/12] Testing ConfidenceTracker Confirmation Flow...")
     test_confidence_tracker_confirmation_flow()
     print("       --> PASS: Target confirmed after consecutive hits threshold.")
 
-    print("[2/11] Testing ConfidenceTracker Low Confidence Reset...")
+    print("[2/12] Testing ConfidenceTracker Low Confidence Reset...")
     test_confidence_tracker_low_confidence_reset()
     print("       --> PASS: Low confidence resets consecutive counter.")
 
-    print("[3/11] Testing ConfidenceTracker Multi-Object Independence...")
+    print("[3/12] Testing ConfidenceTracker Multi-Object Independence...")
     test_confidence_tracker_multi_object_independence()
     print("       --> PASS: Multi-object states decoupled.")
 
-    print("[4/11] Testing ConfidenceTracker Stale Pruning...")
+    print("[4/12] Testing ConfidenceTracker Stale Pruning...")
     test_confidence_tracker_stale_pruning()
     print("       --> PASS: Expired records pruned successfully.")
 
-    print("[5/11] Testing Detection Settings YAML Loader...")
+    print("[5/12] Testing Detection Settings YAML Loader...")
     test_detection_settings_loading()
     print("       --> PASS: Settings schema and class flags loaded properly.")
 
-    print("[6/11] Testing BaseDetector Interface & RawDetection Contract...")
+    print("[6/12] Testing BaseDetector Interface & RawDetection Contract...")
     test_base_detector_interface()
     print("       --> PASS: BaseDetector polymorphism and contract serialized.")
 
-    print("[7/11] Testing RawDetection Backward Compatibility & Fallback...")
+    print("[7/12] Testing RawDetection Backward Compatibility & Fallback...")
     test_raw_detection_backward_compatibility()
     test_model_resolution_fallback()
     print("       --> PASS: Backward compatibility and model fallback verified.")
 
-    print("[8/11] Testing Detector Rising Confidence Confirmation...")
+    print("[8/12] Testing Detector Rising Confidence Confirmation...")
     test_detector_rising_confidence_confirmation()
     print("       --> PASS: Target confirmed across 3 consecutive video frames.")
 
-    print("[9/11] Testing Detector Transient Spike Non-Confirmation...")
+    print("[9/12] Testing Detector Transient Spike Non-Confirmation...")
     test_detector_transient_spike_non_confirmation()
     print("       --> PASS: Single-frame spike remains unconfirmed.")
 
-    print("[10/11] Testing Detector Per-Camera State Isolation...")
+    print("[10/12] Testing Detector Per-Camera State Isolation...")
     test_detector_per_camera_isolation()
     print("        --> PASS: Cameras track confirmation independently.")
 
-    print("[11/11] Testing Detector Filtering & detect_confirmed Helper...")
+    print("[11/12] Testing Detector Filtering & detect_confirmed Helper...")
     test_detector_filter_unconfirmed_and_detect_confirmed()
     print("        --> PASS: Filtering and convenience helper verified.")
 
-    print("\nSTATUS: ALL 11 AI DETECTION MODULE TESTS PASSED! [11/11]")
+    print("[12/12] Testing Detector Half-Precision (FP16) Safety & Initialization...")
+    test_detector_half_precision_initialization_and_safety()
+    print("        --> PASS: Half-precision initialization, fallback, and kwargs verified.")
+
+    print("\nSTATUS: ALL 12 AI DETECTION MODULE TESTS PASSED! [12/12]")
+
 

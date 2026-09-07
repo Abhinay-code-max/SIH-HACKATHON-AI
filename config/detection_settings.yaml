@@ -19,6 +19,8 @@ profiles:
 thresholds:
   confidence: 0.35      # Matches existing inference pipeline default
   iou: 0.70             # Standard Ultralytics NMS IoU threshold
+  half_precision: false  # FP16 half-precision (CUDA only; defaults to false for safety)
+
 
 # Multi-frame Confidence Confirmation (False Positive Reduction)
 confirmation:
@@ -62,7 +64,7 @@ classes:
     min_confidence: 0.35
 
   # Future Border Surveillance Target Classes (Pending Dataset v3)
-  # Taxonomy matches merge_config.yaml: weapon (ID 9), drone (ID 10), fire (ID 11), smoke (ID 12)
+  # Taxonomy matches merge_config.yaml: weapon (ID 9), drone (ID 10), fire (ID 11), smoke (ID 12), boat (ID 13)
   weapon:
     enabled: false
     pending_training_data: true
@@ -79,4 +81,11 @@ classes:
     enabled: false
     pending_training_data: true
     min_confidence: 0.40
+  # Native COCO class scaffolded for maritime/riverine border security.
+  # Requires future fine-tuning pass with dedicated boat imagery; does not detect boats yet.
+  boat:
+    enabled: false
+    pending_training_data: true
+    min_confidence: 0.40
+
 

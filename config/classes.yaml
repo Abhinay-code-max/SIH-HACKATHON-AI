@@ -18,6 +18,9 @@ classes:
   6: animal
   7: backpack
   8: bag
+  # Scaffolded pending future training with maritime/riverine imagery (does not detect boats yet)
+  13: boat
+
 
 # Target environments & scenarios for test reporting
 scenarios:
