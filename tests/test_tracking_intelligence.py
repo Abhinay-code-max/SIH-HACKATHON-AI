@@ -133,6 +133,20 @@ def test_tracking_intelligence():
     assert run_tracking_intelligence_tests() is True
 
 
+def test_drone_specialist_scenario_injection():
+    """Verify Scenario 7 drone intrusion produces immediate DEFCON 1 / CRITICAL alert."""
+    from tools.demo_scenario_injector import run_scenario_7_drone_intrusion
+    from ai.events.incident_manager import incident_manager
+
+    incident_manager.incidents.clear()
+    run_scenario_7_drone_intrusion()
+
+    defcon = incident_manager.get_current_system_defcon()
+    assert defcon["defcon"]["level"] == "DEFCON_1"
+    assert defcon["defcon"]["status"] == "CRITICAL"
+    assert defcon["threat_score"] >= 75
+
+
 if __name__ == "__main__":
     try:
         run_tracking_intelligence_tests()

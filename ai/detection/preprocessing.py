@@ -116,8 +116,14 @@ class FramePreprocessor:
             return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
         return img
 
-    def _apply_gamma(self, img: np.ndarray) -> np.ndarray:
-        """Apply gamma correction using precomputed LUT (gamma > 1 brightens, < 1 darkens)."""
+    def _apply_gamma(self, img: np.ndarray, gamma_override: Optional[float] = None) -> np.ndarray:
+        """Apply gamma correction using precomputed LUT or override (gamma > 1 brightens, < 1 darkens)."""
+        if gamma_override is not None and gamma_override > 0 and gamma_override != 1.0:
+            table = self._build_gamma_table(float(gamma_override))
+            if table is not None:
+                return cv2.LUT(img, table)
+            return img
+
         if self._gamma_table is None:
             self._gamma_table = self._build_gamma_table(self.gamma_value)
         if self._gamma_table is not None:

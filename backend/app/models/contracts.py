@@ -61,6 +61,8 @@ class RawDetection(BaseModel):
     camera_id: Optional[str] = Field(default=None, description="Source camera identifier")
     timestamp: Optional[str] = Field(default=None, description="ISO 8601 UTC timestamp of detection")
     confirmed: Optional[bool] = Field(default=None, description="Whether detection has been confirmed across consecutive frames by ConfidenceTracker")
+    is_night_scene: Optional[bool] = Field(default=None, description="Whether adaptive low-light enhancement was triggered")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Custom detection metadata")
 
 
 class SecurityEvent(BaseModel):

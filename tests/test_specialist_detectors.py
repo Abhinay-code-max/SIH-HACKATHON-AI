@@ -27,6 +27,8 @@ from ai.detection.specialist_detectors import (
     WeaponSpecialistDetector,
     DroneSpecialistDetector,
     FireSmokeSpecialistDetector,
+    FaceSpecialistDetector,
+    PlateSpecialistDetector,
     CompositeSpecialistDetector,
     run_composite_detection,
 )
@@ -56,6 +58,8 @@ def test_specialist_detectors_conform_to_base_detector():
     assert issubclass(WeaponSpecialistDetector, BaseDetector)
     assert issubclass(DroneSpecialistDetector, BaseDetector)
     assert issubclass(FireSmokeSpecialistDetector, BaseDetector)
+    assert issubclass(FaceSpecialistDetector, BaseDetector)
+    assert issubclass(PlateSpecialistDetector, BaseDetector)
     assert issubclass(CompositeSpecialistDetector, BaseDetector)
 
 
@@ -167,6 +171,8 @@ def test_specialist_detectors_default_auto_download_false():
     assert WeaponSpecialistDetector().auto_download is False
     assert DroneSpecialistDetector().auto_download is False
     assert FireSmokeSpecialistDetector().auto_download is False
+    assert FaceSpecialistDetector().auto_download is False
+    assert PlateSpecialistDetector().auto_download is False
 
 
 def test_missing_weights_handling_no_auto_download():
@@ -310,3 +316,63 @@ def test_real_cached_models_loading_and_names():
     assert isinstance(weap_det.detect(dummy_frame), list)
     assert isinstance(drone_det.detect(dummy_frame), list)
     assert isinstance(fs_det.detect(dummy_frame), list)
+
+
+def test_face_specialist_detector_contract_and_mapping():
+    """Verify FaceSpecialistDetector defaults, contract compliance, and class mapping."""
+    detector = FaceSpecialistDetector(auto_download=False)
+    assert detector.enabled is False
+    assert detector.status == "in_development"
+    assert detector.detector_tag == "face"
+    assert detector._map_class_name(0, "face_0") == "face"
+
+    # Enabled with mock model
+    active_det = FaceSpecialistDetector(auto_download=False, enabled=True)
+    mock_model = MockSpecialistModel(
+        names={0: "face"},
+        boxes=[MockBox(cls_id=0, conf=0.92, xyxy=[120.0, 80.0, 180.0, 160.0])],
+    )
+    active_det.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+    dets = active_det.detect(dummy_frame, camera_id="CAM_FACE")
+
+    assert len(dets) == 1
+    assert dets[0].class_name == "face"
+    assert dets[0].confidence == 0.92
+    assert "face" in dets[0].detection_id
+    assert dets[0].camera_id == "CAM_FACE"
+
+
+def test_plate_specialist_detector_contract_and_vehicle_crops():
+    """Verify PlateSpecialistDetector defaults and vehicle crop coordinate translation."""
+    detector = PlateSpecialistDetector(auto_download=False)
+    assert detector.enabled is False
+    assert detector.status == "in_development"
+    assert detector.detector_tag == "plate"
+    assert detector._map_class_name(0, "license_plate") == "license_plate"
+
+    # Enabled with mock model
+    active_det = PlateSpecialistDetector(auto_download=False, enabled=True)
+    mock_model = MockSpecialistModel(
+        names={0: "license_plate"},
+        boxes=[MockBox(cls_id=0, conf=0.88, xyxy=[20.0, 40.0, 100.0, 70.0])],
+    )
+    active_det.model = mock_model
+    dummy_frame = np.zeros((480, 640, 3), dtype=np.uint8)
+
+    # Detect on vehicle crop (car at [150, 200, 350, 350])
+    vehicle_det = RawDetection(
+        detection_id="det_cam_001",
+        class_name="car",
+        confidence=0.95,
+        bbox=[150.0, 200.0, 350.0, 350.0],
+        camera_id="CAM_GATE",
+    )
+    plates = active_det.detect_on_vehicles(dummy_frame, [vehicle_det], camera_id="CAM_GATE")
+
+    assert len(plates) == 1
+    assert plates[0].class_name == "license_plate"
+    assert plates[0].confidence == 0.88
+    # Global coordinate: 20 + 150 = 170, 40 + 200 = 240, 100 + 150 = 250, 70 + 200 = 270
+    assert plates[0].bbox == [170.0, 240.0, 250.0, 270.0]
+

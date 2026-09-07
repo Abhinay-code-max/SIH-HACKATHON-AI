@@ -13,6 +13,7 @@ from pathlib import Path
 import sys
 import time
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
+import cv2
 import numpy as np
 import yaml
 
@@ -205,6 +206,7 @@ class YoloDetector(BaseDetector):
         else:
             pre_cfg = self.config.get("preprocessing", {})
             self.preprocessor = FramePreprocessor(**pre_cfg)
+        self.last_is_night_scene: bool = False
 
     def _ensure_model(self) -> None:
         """Lazy-load local model weights strictly from disk."""
@@ -250,6 +252,20 @@ class YoloDetector(BaseDetector):
         # Apply optional frame preprocessing (night/fog/IR transforms) before inference
         if self.preprocessor is not None and getattr(self.preprocessor, "is_active", False):
             frame = self.preprocessor.preprocess(frame)
+
+        # Task 18: Adaptive low-light / night scene trigger
+        # Dynamically engage gamma brightening (1.5) when scene luminance < 60.0 without running CLAHE
+        is_night_scene = False
+        try:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if len(frame.shape) == 3 else frame
+            if float(np.mean(gray)) < 60.0:
+                is_night_scene = True
+                if hasattr(self.preprocessor, "_apply_gamma"):
+                    frame = self.preprocessor._apply_gamma(frame, gamma_override=1.5)
+        except Exception as e:
+            logger.warning(f"Adaptive low-light check failed: {e}")
+
+        self.last_is_night_scene = is_night_scene
 
         self._ensure_model()
         h, w = frame.shape[:2]
@@ -336,6 +352,8 @@ class YoloDetector(BaseDetector):
                     camera_id=camera_id,
                     timestamp=now_iso,
                     confirmed=True,
+                    is_night_scene=is_night_scene,
+                    metadata={"is_night_scene": is_night_scene},
                 )
                 detections.append(det)
             return detections
@@ -403,6 +421,8 @@ class YoloDetector(BaseDetector):
                 camera_id=camera_id,
                 timestamp=now_iso,
                 confirmed=is_confirmed,
+                is_night_scene=is_night_scene,
+                metadata={"is_night_scene": is_night_scene},
             )
             detections.append(det)
 

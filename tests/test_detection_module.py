@@ -602,6 +602,33 @@ def test_detector_per_class_confidence_filtering():
     assert dets[1].confidence == 0.50
 
 
+def test_detector_adaptive_low_light_trigger():
+    """Verify adaptive low-light detection triggers gamma 1.5 and sets is_night_scene flag."""
+    detector = YoloDetector(confirmation_enabled=False)
+    mock_model = MockYoloModel()
+    detector.model = mock_model
+
+    # 1. Dark night-time frame (mean pixel luminance ~30 < 60)
+    dark_frame = np.full((480, 640, 3), 30, dtype=np.uint8)
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.75, xyxy=[50.0, 50.0, 150.0, 150.0])]
+
+    dets_dark = detector.detect(dark_frame, camera_id="CAM_NIGHT")
+    assert len(dets_dark) == 1
+    assert detector.last_is_night_scene is True
+    assert dets_dark[0].is_night_scene is True
+    assert dets_dark[0].metadata.get("is_night_scene") is True
+
+    # 2. Bright daytime frame (mean pixel luminance ~180 >= 60)
+    bright_frame = np.full((480, 640, 3), 180, dtype=np.uint8)
+    mock_model.boxes = [MockYoloBox(cls_id=0, conf=0.82, xyxy=[50.0, 50.0, 150.0, 150.0])]
+
+    dets_bright = detector.detect(bright_frame, camera_id="CAM_DAY")
+    assert len(dets_bright) == 1
+    assert detector.last_is_night_scene is False
+    assert dets_bright[0].is_night_scene is False
+    assert dets_bright[0].metadata.get("is_night_scene") is False
+
+
 if __name__ == "__main__":
     print("\n=======================================================")
     print("RUNNING AI DETECTION MODULE TEST SUITE")

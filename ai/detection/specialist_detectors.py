@@ -382,6 +382,158 @@ class FireSmokeSpecialistDetector(BaseSpecialistDetector):
         return "smoke" if cls_id == 0 else "fire"
 
 
+class FaceSpecialistDetector(BaseSpecialistDetector):
+    """
+    Specialist detector for human faces (Task 42).
+    Scaffolded detector conforming to BaseDetector interface.
+    Outputs standardized RawDetection items with class_name="face".
+
+    Default: disabled (in_development scaffold, 0 VRAM and 0 ms latency when disabled).
+    """
+
+    def __init__(
+        self,
+        weights_path: Optional[Union[str, Path]] = None,
+        conf_threshold: float = 0.40,
+        iou_threshold: float = 0.50,
+        device: Optional[str] = None,
+        half_precision: bool = False,
+        auto_download: bool = False,
+        enabled: bool = False,
+    ):
+        super().__init__(
+            weights_path=weights_path,
+            conf_threshold=conf_threshold,
+            iou_threshold=iou_threshold,
+            device=device,
+            half_precision=half_precision,
+            auto_download=auto_download,
+            enabled=enabled,
+        )
+
+    @property
+    def default_weights_path(self) -> Path:
+        return DEFAULT_SPECIALISTS_DIR / "face_best.pt"
+
+    @property
+    def hf_repo_id(self) -> str:
+        return "arnabdhar/YOLOv8-Face-Detection"
+
+    @property
+    def hf_filename(self) -> str:
+        return "model.pt"
+
+    @property
+    def detector_tag(self) -> str:
+        return "face"
+
+    def _map_class_name(self, cls_id: int, raw_name: str) -> str:
+        return "face"
+
+
+class PlateSpecialistDetector(BaseSpecialistDetector):
+    """
+    Specialist detector for vehicle license plates (Task 42).
+    Scaffolded detector conforming to BaseDetector interface.
+    Outputs standardized RawDetection items with class_name="license_plate".
+    Can detect on full frame or targeted vehicle crops (car, truck, bus).
+
+    Default: disabled (in_development scaffold, 0 VRAM and 0 ms latency when disabled).
+    """
+
+    def __init__(
+        self,
+        weights_path: Optional[Union[str, Path]] = None,
+        conf_threshold: float = 0.40,
+        iou_threshold: float = 0.50,
+        device: Optional[str] = None,
+        half_precision: bool = False,
+        auto_download: bool = False,
+        enabled: bool = False,
+    ):
+        super().__init__(
+            weights_path=weights_path,
+            conf_threshold=conf_threshold,
+            iou_threshold=iou_threshold,
+            device=device,
+            half_precision=half_precision,
+            auto_download=auto_download,
+            enabled=enabled,
+        )
+
+    @property
+    def default_weights_path(self) -> Path:
+        return DEFAULT_SPECIALISTS_DIR / "license_plate_best.pt"
+
+    @property
+    def hf_repo_id(self) -> str:
+        return "keremberke/yolov8n-license-plate-detection"
+
+    @property
+    def hf_filename(self) -> str:
+        return "best.pt"
+
+    @property
+    def detector_tag(self) -> str:
+        return "plate"
+
+    def _map_class_name(self, cls_id: int, raw_name: str) -> str:
+        return "license_plate"
+
+    def detect_on_vehicles(
+        self,
+        frame: np.ndarray,
+        vehicle_detections: List[Union[RawDetection, Dict[str, Any]]],
+        camera_id: Optional[str] = None,
+    ) -> List[RawDetection]:
+        """
+        Detects license plates specifically inside detected vehicle bounding boxes (car, truck, bus).
+        Translates crop coordinates back to global frame coordinates.
+        """
+        if not self.enabled or frame is None or frame.size == 0 or not vehicle_detections:
+            return []
+
+        all_plate_dets: List[RawDetection] = []
+        h, w = frame.shape[:2]
+
+        for v in vehicle_detections:
+            if isinstance(v, RawDetection):
+                v_class = v.class_name
+                v_box = v.bbox
+            elif isinstance(v, dict):
+                v_class = v.get("class_name", "")
+                v_box = v.get("bbox", [])
+            else:
+                continue
+
+            if v_class not in {"car", "truck", "bus", "motorcycle", "vehicle", "suspicious_vehicle"}:
+                continue
+
+            if len(v_box) != 4:
+                continue
+
+            vx1, vy1, vx2, vy2 = [max(0, int(c)) for c in v_box]
+            vx1, vy1 = min(w - 1, vx1), min(h - 1, vy1)
+            vx2, vy2 = min(w, vx2), min(h, vy2)
+            if (vx2 - vx1) < 20 or (vy2 - vy1) < 20:
+                continue
+
+            crop = frame[vy1:vy2, vx1:vx2]
+            crop_plates = self.detect(crop, camera_id=camera_id)
+            for p in crop_plates:
+                px1, py1, px2, py2 = p.bbox
+                gx1, gy1 = px1 + vx1, py1 + vy1
+                gx2, gy2 = px2 + vx1, py2 + vy1
+                p.bbox = [round(gx1, 2), round(gy1, 2), round(gx2, 2), round(gy2, 2)]
+                p.normalized_center = [
+                    round(((gx1 + gx2) / 2.0) / max(1, w), 4),
+                    round(((gy1 + gy2) / 2.0) / max(1, h), 4),
+                ]
+                all_plate_dets.append(p)
+
+        return all_plate_dets
+
+
 class CompositeSpecialistDetector(BaseDetector):
     """
     Orchestrator that combines a primary BaseDetector (e.g. YoloDetector) with

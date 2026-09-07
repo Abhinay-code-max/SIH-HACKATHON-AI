@@ -12,10 +12,29 @@ from ai.detection.detector import (
     resolve_registered_model,
 )
 
+from ai.detection.specialist_detectors import (
+    BaseSpecialistDetector,
+    WeaponSpecialistDetector,
+    DroneSpecialistDetector,
+    FireSmokeSpecialistDetector,
+    FaceSpecialistDetector,
+    PlateSpecialistDetector,
+    CompositeSpecialistDetector,
+    run_composite_detection,
+)
+
 __all__ = [
     "BaseDetector",
     "YoloDetector",
     "ConfidenceTracker",
     "load_detection_config",
     "resolve_registered_model",
+    "BaseSpecialistDetector",
+    "WeaponSpecialistDetector",
+    "DroneSpecialistDetector",
+    "FireSmokeSpecialistDetector",
+    "FaceSpecialistDetector",
+    "PlateSpecialistDetector",
+    "CompositeSpecialistDetector",
+    "run_composite_detection",
 ]
