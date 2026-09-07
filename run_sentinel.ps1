@@ -20,13 +20,16 @@ Write-Host "[✓] Python 3.11 Virtual Environment verified: $VenvPy" -Foreground
 
 # 2. Local Weights Check
 $ModelV2 = Join-Path $Root "models\registry\YOLO-L-v002\weights\best.pt"
+$ModelAi = Join-Path $Root "ai\models\yolov8l.pt"
 $ModelBase = Join-Path $Root "yolov8l.pt"
 if (Test-Path $ModelV2) {
     Write-Host "[✓] Custom Fine-Tuned Weights verified: YOLO-L-v002" -ForegroundColor Green
+} elseif (Test-Path $ModelAi) {
+    Write-Host "[✓] Base YOLOv8l Weights verified: $ModelAi" -ForegroundColor Green
 } elseif (Test-Path $ModelBase) {
     Write-Host "[✓] Base YOLOv8l Weights verified: $ModelBase" -ForegroundColor Yellow
 } else {
-    Write-Host "[ERROR] No model weights found!" -ForegroundColor Red
+    Write-Host "[ERROR] No model weights found in models\registry, ai\models, or root directory!" -ForegroundColor Red
     exit 1
 }
 

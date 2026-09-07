@@ -18,16 +18,17 @@ IF NOT EXIST ".venv\Scripts\activate.bat" (
 call .venv\Scripts\activate.bat
 
 REM 2. Verify AI Weights
-IF NOT EXIST "models\registry\YOLO-L-v002\weights\best.pt" (
-    IF NOT EXIST "yolov8l.pt" (
-        echo [ERROR] No local YOLO weights found in models\registry or root directory!
-        pause
-        exit /b 1
-    )
+IF EXIST "models\registry\YOLO-L-v002\weights\best.pt" (
+    echo [System] AI Model Weights verified (YOLO-L-v002)
+) ELSE IF EXIST "ai\models\yolov8l.pt" (
+    echo [System] AI Model Weights verified (ai\models\yolov8l.pt)
+) ELSE IF EXIST "yolov8l.pt" (
+    echo [System] AI Model Weights verified (yolov8l.pt)
+) ELSE (
+    echo [ERROR] No local YOLO weights found in models\registry, ai\models, or root directory!
+    pause
+    exit /b 1
 )
-
-echo [System] Virtual environment activated (.venv)
-echo [System] AI Model Weights verified (YOLO-L-v002)
 echo [System] Clearing any lingering processes on port 8000...
 
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8000" ^| findstr "LISTENING"') do (

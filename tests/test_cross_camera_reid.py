@@ -20,6 +20,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+import pytest
 from ai.reid.extractor import feature_extractor
 from ai.reid.association import cross_camera_associator
 from ai.reid.manager import global_subject_manager
@@ -33,7 +34,16 @@ def reset_reid():
     global_subject_manager.last_embed_time.clear()
     global_subject_manager.transit_log.clear()
     global_subject_manager.next_subject_idx = 1
-    global_subject_manager.transit_log.clear()
+
+
+@pytest.fixture(autouse=True)
+def clean_reid_state(monkeypatch, tmp_path):
+    """Ensures a clean Re-ID state before and after every test in this module."""
+    test_storage = tmp_path / "global_subjects_test.json"
+    monkeypatch.setattr("ai.reid.manager.STORAGE_FILE", test_storage)
+    reset_reid()
+    yield
+    reset_reid()
 
 
 def test_feature_extractor():
