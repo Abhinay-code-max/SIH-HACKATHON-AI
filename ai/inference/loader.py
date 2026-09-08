@@ -36,6 +36,10 @@ def find_local_model(model_name_or_path: str = "yolov8s.pt") -> Path:
     if candidate_in_models.is_file():
         return candidate_in_models.resolve()
 
+    registry_candidate = root_dir / "models" / "registry" / model_name_or_path / "weights" / "best.pt"
+    if registry_candidate.is_file():
+        return registry_candidate.resolve()
+
     if not model_name_or_path.endswith(".pt"):
         candidate_with_ext = base_models_dir / f"{model_name_or_path}.pt"
         if candidate_with_ext.is_file():

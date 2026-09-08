@@ -1,0 +1,14 @@
+path: C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/datasets/dataset_v001
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: person
+  1: car
+  2: truck
+  3: bus
+  4: motorcycle
+  5: bicycle
+  6: animal
+  7: backpack
+  8: bag

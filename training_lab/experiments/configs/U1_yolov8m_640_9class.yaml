@@ -1,0 +1,66 @@
+# ==============================================================================
+# BORDER SENTINEL — U1 UNIFIED 9-CLASS DETECTOR CONFIGURATION
+# Experiment: U1_yolov8m_640_9class_unified
+# Base Architecture: YOLOv8m (25.9M params)
+# Dataset: dataset_unified_v001
+# ==============================================================================
+
+experiment_id: U1_yolov8m_640_9class_unified
+task: detect
+mode: train
+model: yolov8m.pt
+data: training_lab/datasets/dataset_unified_v001/data.yaml
+
+# Hardened Runtime Constraints (Guaranteed Stability on RTX 4060 Laptop GPU)
+epochs: 5
+batch: 4
+workers: 0
+imgsz: 640
+device: "0"
+amp: true
+deterministic: true
+seed: 42
+
+# Augmentations
+mosaic: 1.0
+close_mosaic: 1
+mixup: 0.0
+degrees: 0.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+
+# Optimizer & LR Schedule
+optimizer: SGD
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 1.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+
+# Save & Validation
+save: true
+save_period: 1
+val: true
+plots: true
+project: training_lab/runs
+name: U1_yolov8m_640_9class_unified
+exist_ok: true
+
+# Taxonomy (9 Classes)
+nc: 9
+names:
+  0: person
+  1: car
+  2: truck
+  3: bus
+  4: motorcycle
+  5: bicycle
+  6: animal
+  7: backpack
+  8: bag

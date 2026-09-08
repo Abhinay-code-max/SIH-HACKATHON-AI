@@ -1,7 +1,9 @@
 {
   "dataset_version": "dataset_test_e2e",
-  "created_at": "2026-09-06T06:43:09.872756+00:00",
+  "created_at": "2026-09-08T08:32:11.447927+00:00",
   "total_samples": 7,
+  "total_frames": 7,
+  "total_annotations": 7,
   "split_strategy": "VIDEO_SCENARIO_LEVEL",
   "videos_per_split": {
     "train": [
@@ -21,6 +23,11 @@
     "val": 1,
     "test": 1
   },
+  "annotation_splits": {
+    "train": 5,
+    "val": 1,
+    "test": 1
+  },
   "class_distribution": {
     "person": 3,
     "car": 1,
@@ -28,6 +35,7 @@
     "backpack": 1,
     "motorcycle": 1
   },
+  "rejected_annotations_count": 0,
   "source_scenarios": [
     "SCN_01",
     "SCN_02",
@@ -42,6 +50,6 @@
     "CAM_04",
     "CAM_05"
   ],
-  "holdout_test_set_hash": "293ba3c0dd9ee162",
+  "holdout_test_set_hash": "97f4bcc5e0848f86",
   "data_yaml_path": "C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/datasets/dataset_test_e2e/data.yaml"
 }

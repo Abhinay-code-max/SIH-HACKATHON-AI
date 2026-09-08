@@ -61,7 +61,15 @@ class LabDetector:
             self._class_map = {i: c for i, c in enumerate(self.MASTER_CLASSES)}
 
     def _resolve_model_path(self, requested: str) -> str:
-        """Resolves model path: checks registry index first if auto, otherwise falls back to yolov8l.pt."""
+        """Resolves model path: checks candidate aliases, or registry index if auto, otherwise falls back to yolov8l.pt."""
+        if requested in ("YOLO-U-v003", "candidate", "experimental", "3f"):
+            cand = ROOT_DIR / "models" / "registry" / "YOLO-U-v003" / "weights" / "best.pt"
+            if cand.is_file():
+                return str(cand)
+            cand_3f = ROOT_DIR / "training_lab" / "runs" / "unified_9class_yolov8m_3f" / "weights" / "best.pt"
+            if cand_3f.is_file():
+                return str(cand_3f)
+
         if requested != "auto":
             return requested
 

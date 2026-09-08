@@ -95,12 +95,48 @@ class ValidationEngine:
                     pass
 
     def _save_to_disk(self) -> None:
-        """Atomically persists validation records to disk."""
-        tmp_file = self.log_file.with_suffix(".tmp")
+        """Persists validation records to disk with Windows file-lock resilience.
+
+        On Windows, OneDrive/AV scanners may briefly hold the .tmp file open
+        after writing. We retry the atomic rename up to 3 times with a short
+        sleep, then fall back to shutil.move, and finally to a direct write.
+        """
+        import shutil
+        import time as _time
+
         data = [r.model_dump() for r in self._records.values()]
+        tmp_file = self.log_file.with_suffix(".tmp")
+
+        # Write temp file
         with open(tmp_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
-        tmp_file.replace(self.log_file)
+
+        # Attempt atomic rename with retries
+        for attempt in range(3):
+            try:
+                tmp_file.replace(self.log_file)
+                return
+            except PermissionError:
+                _time.sleep(0.05 * (attempt + 1))
+
+        # Fallback: shutil.move (handles cross-device and locked-file edge cases)
+        try:
+            shutil.move(str(tmp_file), str(self.log_file))
+            return
+        except Exception:
+            pass
+
+        # Last resort: write directly to destination without temp file
+        try:
+            with open(self.log_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+        finally:
+            # Clean up orphaned temp file if it still exists
+            try:
+                if tmp_file.exists():
+                    tmp_file.unlink(missing_ok=True)
+            except Exception:
+                pass
 
     def record_feedback(
         self,

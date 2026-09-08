@@ -28,7 +28,7 @@
     "is_training_candidate": true,
     "validator_notes": "Verified standard daytime pedestrian detection",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.208529+00:00"
+    "validated_at": "2026-09-08T08:32:56.368435+00:00"
   },
   {
     "record_id": "VAL_00002",
@@ -59,7 +59,7 @@
     "is_training_candidate": true,
     "validator_notes": "Commercial flatbed misclassified as passenger car",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.211528+00:00"
+    "validated_at": "2026-09-08T08:32:56.374646+00:00"
   },
   {
     "record_id": "VAL_00003",
@@ -85,7 +85,7 @@
     "is_training_candidate": false,
     "validator_notes": "Shadow artifact falsely tagged as human intruder",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.213526+00:00"
+    "validated_at": "2026-09-08T08:32:56.380594+00:00"
   },
   {
     "record_id": "VAL_00004",
@@ -106,8 +106,8 @@
     "error_category": "FALSE_NEGATIVE",
     "is_training_candidate": true,
     "validator_notes": "Human validator drawn box for missed crawling subject",
-    "crop_path": "training_lab/annotations/crops/SCN_01_CAM_01_f0030_crop_47217.jpg",
-    "validated_at": "2026-09-06T06:27:27.222596+00:00"
+    "crop_path": "training_lab/annotations/crops/SCN_01_CAM_01_f0030_crop_376387.jpg",
+    "validated_at": "2026-09-08T08:32:56.389422+00:00"
   },
   {
     "record_id": "VAL_00005",
@@ -124,7 +124,7 @@
     "is_training_candidate": false,
     "validator_notes": "Vegetation glare below threshold",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.225114+00:00"
+    "validated_at": "2026-09-08T08:32:56.395613+00:00"
   },
   {
     "record_id": "VAL_00006",
@@ -141,7 +141,7 @@
     "is_training_candidate": false,
     "validator_notes": "Double bbox on same motorcycle",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.229173+00:00"
+    "validated_at": "2026-09-08T08:32:56.398215+00:00"
   },
   {
     "record_id": "VAL_00007",
@@ -158,7 +158,7 @@
     "is_training_candidate": false,
     "validator_notes": "Track ID switch across occlusion",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.232169+00:00"
+    "validated_at": "2026-09-08T08:32:56.401493+00:00"
   },
   {
     "record_id": "VAL_00008",
@@ -175,7 +175,7 @@
     "is_training_candidate": false,
     "validator_notes": "Target detected outside legal zone",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.235170+00:00"
+    "validated_at": "2026-09-08T08:32:56.404245+00:00"
   },
   {
     "record_id": "VAL_00009",
@@ -192,28 +192,6 @@
     "is_training_candidate": false,
     "validator_notes": "Threat score under-weighted",
     "crop_path": null,
-    "validated_at": "2026-09-06T06:27:27.237168+00:00"
-  },
-  {
-    "record_id": "VAL_00010",
-    "scenario_id": "SCN_01",
-    "camera_id": "CAM_02",
-    "frame_idx": 12,
-    "timestamp": 0.4,
-    "tracking_id": null,
-    "ai_prediction": null,
-    "decision": "MANUAL_ADDITION",
-    "human_verified_class": "person",
-    "human_bbox": [
-      120.0,
-      140.0,
-      180.0,
-      220.0
-    ],
-    "error_category": "FALSE_NEGATIVE",
-    "is_training_candidate": true,
-    "validator_notes": "Human validator manual addition (missed detection)",
-    "crop_path": null,
-    "validated_at": "2026-09-06T06:43:09.806050+00:00"
+    "validated_at": "2026-09-08T08:32:56.407427+00:00"
   }
 ]

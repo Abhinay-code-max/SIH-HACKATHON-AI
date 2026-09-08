@@ -229,22 +229,28 @@ class DatasetGenerator:
 
     def _load_master_classes(self) -> Tuple[Dict[str, int], Dict[int, str]]:
         """Loads master surveillance classes from config/classes.yaml."""
+        default_names = [
+            "person", "car", "truck", "bus", "motorcycle",
+            "bicycle", "animal", "backpack", "bag"
+        ]
+        active_set = set(default_names)
+
         if self.classes_yaml_path.is_file():
             try:
                 with open(self.classes_yaml_path, "r", encoding="utf-8") as f:
                     data = yaml.safe_load(f)
                 raw_classes = data.get("classes", {})
-                id_to_cls = {int(k): str(v).lower().strip() for k, v in raw_classes.items()}
-                cls_to_id = {v: k for k, v in id_to_cls.items()}
-                return cls_to_id, id_to_cls
+                id_to_cls = {
+                    int(k): str(v).lower().strip()
+                    for k, v in raw_classes.items()
+                    if str(v).lower().strip() in active_set
+                }
+                if id_to_cls:
+                    cls_to_id = {v: k for k, v in id_to_cls.items()}
+                    return cls_to_id, id_to_cls
             except Exception:
                 pass
 
-        # Default master class fallback (config/classes.yaml)
-        default_names = [
-            "person", "car", "truck", "bus", "motorcycle",
-            "bicycle", "animal", "backpack", "bag"
-        ]
         cls_to_id = {name: i for i, name in enumerate(default_names)}
         id_to_cls = {i: name for i, name in enumerate(default_names)}
         return cls_to_id, id_to_cls

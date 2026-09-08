@@ -13,6 +13,8 @@ from pathlib import Path
 import sys
 import json
 import time
+import tempfile
+import cv2
 import numpy as np
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +25,7 @@ from training_lab.engine.video_manager import (
     VideoAssetManager,
     ensure_demo_camera_videos,
     get_video_metadata,
+    is_valid_video_file,
     video_manager,
 )
 from training_lab.engine.multi_cam_simulator import MultiCameraSimulator
@@ -260,8 +263,135 @@ def test_stage_5_camera_isolation_and_attribution():
     print("  --> PASS: Stage 5 Camera Isolation & Attribution Verified.")
 
 
+def test_stage_6_videowriter_backend_and_readability():
+    """Stage 6: VideoWriter backend initialization, frame writing, and readability verification."""
+    print("\n" + "=" * 80)
+    print("[Stage 6/8] Testing VideoWriter Backend Initialization & Stream Readability...")
+    print("=" * 80)
+
+    with tempfile.TemporaryDirectory() as td:
+        temp_mgr = VideoAssetManager(videos_dir=td)
+        for cam_id in ["CAM_01", "CAM_02", "CAM_03", "CAM_04", "CAM_05"]:
+            dest = Path(td) / f"test_{cam_id.lower()}.mp4"
+            out = temp_mgr.generate_synthetic_surveillance_video(
+                output_path=dest,
+                camera_id=cam_id,
+                duration_sec=1.0,
+            )
+            assert out.is_file(), f"Output file not created for {cam_id}"
+            assert out.stat().st_size > 50_000, f"File unexpectedly small: {out.stat().st_size} bytes"
+
+            # Check readability via cv2.VideoCapture
+            cap = cv2.VideoCapture(str(out))
+            assert cap.isOpened(), f"Failed to open generated video for {cam_id}"
+            w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            fps = float(cap.get(cv2.CAP_PROP_FPS))
+            fc = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+            assert w == 640, f"Expected width 640, got {w}"
+            assert h == 480, f"Expected height 480, got {h}"
+            assert abs(fps - 30.0) < 1.0, f"Expected 30 FPS, got {fps}"
+            assert fc == 30, f"Expected 30 frames for 1.0s, got {fc}"
+
+            ret, frame = cap.read()
+            cap.release()
+            assert ret and frame is not None, f"Failed to read first frame of {cam_id}"
+            assert frame.shape == (480, 640, 3), f"Invalid frame shape: {frame.shape}"
+            print(f"  [OK] {cam_id}: {w}x{h} @ {fps:.1f} FPS, {fc} frames, readable (size={out.stat().st_size / 1024:.1f} KB)")
+
+    print("  --> PASS: Stage 6 VideoWriter Backend & Readability Verified.")
+
+
+def test_stage_7_stale_corrupt_video_regeneration():
+    """Stage 7: Detect stale, 0-byte, and corrupted video files and regenerate them deterministically."""
+    print("\n" + "=" * 80)
+    print("[Stage 7/8] Testing Stale/Corrupted Video Detection & Auto-Regeneration...")
+    print("=" * 80)
+
+    with tempfile.TemporaryDirectory() as td:
+        temp_mgr = VideoAssetManager(videos_dir=td)
+
+        # 1. Place a 0-byte corrupt file for CAM_04 and a truncated file for CAM_05
+        corrupt_cam04 = Path(td) / "cam_04_terrain.mp4"
+        corrupt_cam04.write_bytes(b"")
+        assert not temp_mgr.is_valid_video_file(corrupt_cam04), "0-byte file must be deemed invalid"
+
+        corrupt_cam05 = Path(td) / "cam_05_secondary.mp4"
+        corrupt_cam05.write_bytes(b"NOT_A_VALID_MP4_HEADER_GARBAGE_BYTES")
+        assert not temp_mgr.is_valid_video_file(corrupt_cam05), "Corrupt file must be deemed invalid"
+
+        print("  [OK] Injected 0-byte and corrupted video artifacts detected as invalid.")
+
+        # 2. Call ensure_demo_camera_videos with overwrite=False
+        # It must detect that CAM_04 and CAM_05 are invalid and regenerate them
+        videos = temp_mgr.ensure_demo_camera_videos(duration_sec=1.0, overwrite=False)
+
+        assert len(videos) == 5
+        for cid, p in videos.items():
+            assert p.is_file(), f"{cid} file missing: {p}"
+            valid = temp_mgr.is_valid_video_file(
+                p,
+                expected_width=640,
+                expected_height=480,
+                expected_fps=30.0,
+                min_frames=30,
+            )
+            assert valid, f"{cid} video failed validation after auto-regeneration"
+            print(f"  [OK] {cid}: auto-regenerated and validated ({p.stat().st_size / 1024:.1f} KB)")
+
+    print("  --> PASS: Stage 7 Stale/Corrupted Video Auto-Regeneration Verified.")
+
+
+def test_stage_8_deterministic_offline_generation():
+    """Stage 8: Verify deterministic video synthesis and MultiCameraSimulator opening all 5 cameras."""
+    print("\n" + "=" * 80)
+    print("[Stage 8/8] Testing Deterministic Offline Video Generation & Simulator Opening...")
+    print("=" * 80)
+
+    with tempfile.TemporaryDirectory() as td:
+        temp_mgr = VideoAssetManager(videos_dir=td)
+        path1 = Path(td) / "cam01_run1.mp4"
+        path2 = Path(td) / "cam01_run2.mp4"
+
+        temp_mgr.generate_synthetic_surveillance_video(path1, camera_id="CAM_01", duration_sec=1.0)
+        temp_mgr.generate_synthetic_surveillance_video(path2, camera_id="CAM_01", duration_sec=1.0)
+
+        cap1 = cv2.VideoCapture(str(path1))
+        cap2 = cv2.VideoCapture(str(path2))
+
+        try:
+            fc1 = int(cap1.get(cv2.CAP_PROP_FRAME_COUNT))
+            fc2 = int(cap2.get(cv2.CAP_PROP_FRAME_COUNT))
+            assert fc1 == fc2 == 30
+
+            for f_idx in range(5):
+                r1, f1 = cap1.read()
+                r2, f2 = cap2.read()
+                assert r1 and r2
+                # Deterministic synthesis must produce identical frames across runs
+                assert np.array_equal(f1, f2), f"Frame {f_idx} differs between runs (non-deterministic)"
+        finally:
+            cap1.release()
+            cap2.release()
+
+        print("  [OK] Deterministic pixel-level reproducibility confirmed across independent runs.")
+
+        # Test MultiCameraSimulator binding all 5 freshly generated streams
+        vids = temp_mgr.ensure_demo_camera_videos(duration_sec=1.0, overwrite=False)
+        sim = MultiCameraSimulator(camera_bindings=vids, loop=True, fps=30.0)
+        assert len(sim.get_active_cameras()) == 5
+        bundle = sim.step()
+        assert bundle is not None
+        assert len(bundle["feeds"]) == 5
+        sim.close()
+        print("  [OK] MultiCameraSimulator cleanly bound and stepped across all 5 generated camera streams.")
+
+    print("  --> PASS: Stage 8 Deterministic Offline Video Generation & Simulator Verified.")
+
+
 def run_all_stages():
-    """Runs all 5 validation stages sequentially."""
+    """Runs all 8 validation stages sequentially."""
     print("=" * 80)
     print("BORDER SENTINEL - VIDEO ASSET MANAGER & 5-CAMERA SIMULATOR TEST SUITE")
     print("=" * 80)
@@ -272,10 +402,13 @@ def run_all_stages():
     test_stage_3_scenario_camera_binding()
     test_stage_4_synchronous_playback()
     test_stage_5_camera_isolation_and_attribution()
+    test_stage_6_videowriter_backend_and_readability()
+    test_stage_7_stale_corrupt_video_regeneration()
+    test_stage_8_deterministic_offline_generation()
 
     total_time = time.time() - start_time
     print("\n" + "=" * 80)
-    print(f"ALL 5 STAGES PASSED SUCCESSFULLY in {total_time:.2f}s! [100% PASS RATE]")
+    print(f"ALL 8 STAGES PASSED SUCCESSFULLY in {total_time:.2f}s! [100% PASS RATE]")
     print("=" * 80)
 
 

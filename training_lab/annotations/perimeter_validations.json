@@ -16,5 +16,284 @@
     "ai_decision": "BREACH",
     "notes": "False alarm: Target was outside outer thermal sensor fence line.",
     "timestamp": "2026-09-06T06:27:05.443839+00:00"
+  },
+  {
+    "validation_id": "pval_faa6cd55",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-06T12:58:13.998266+00:00"
+  },
+  {
+    "validation_id": "pval_26cc39a3",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-06T17:42:25.593968+00:00"
+  },
+  {
+    "validation_id": "pval_b7ce7607",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T07:07:00.524274+00:00"
+  },
+  {
+    "validation_id": "pval_d36aa24f",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T09:09:36.155085+00:00"
+  },
+  {
+    "validation_id": "pval_8648ba59",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T09:15:03.086737+00:00"
+  },
+  {
+    "validation_id": "pval_167b745e",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T09:25:13.810940+00:00"
+  },
+  {
+    "validation_id": "pval_ea9aed32",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T09:38:10.776695+00:00"
+  },
+  {
+    "validation_id": "pval_d01912b7",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T09:46:39.455070+00:00"
+  },
+  {
+    "validation_id": "pval_e2b04ada",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T11:41:28.297023+00:00"
+  },
+  {
+    "validation_id": "pval_50f86281",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T11:41:45.177708+00:00"
+  },
+  {
+    "validation_id": "pval_d01a53c8",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T11:57:49.138759+00:00"
+  },
+  {
+    "validation_id": "pval_e3bc3717",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T12:03:59.609160+00:00"
+  },
+  {
+    "validation_id": "pval_1bcab655",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T12:05:10.416214+00:00"
+  },
+  {
+    "validation_id": "pval_73d1d069",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T12:11:19.420252+00:00"
+  },
+  {
+    "validation_id": "pval_8eddc6d9",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-07T23:39:36.012840+00:00"
+  },
+  {
+    "validation_id": "pval_9a809d85",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T02:35:30.469607+00:00"
+  },
+  {
+    "validation_id": "pval_7e3a930e",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T02:42:54.779337+00:00"
+  },
+  {
+    "validation_id": "pval_2b0b9948",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T03:31:40.460939+00:00"
+  },
+  {
+    "validation_id": "pval_03cf6e95",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T06:43:25.245506+00:00"
+  },
+  {
+    "validation_id": "pval_6e5b50b8",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:44:46.479320+00:00"
+  },
+  {
+    "validation_id": "pval_87f8b577",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:45:52.335771+00:00"
+  },
+  {
+    "validation_id": "pval_fb7b3587",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:47:51.523612+00:00"
+  },
+  {
+    "validation_id": "pval_f2a4b4ee",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:50:33.743243+00:00"
+  },
+  {
+    "validation_id": "pval_d4c7c041",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:51:52.159644+00:00"
+  },
+  {
+    "validation_id": "pval_50fcd368",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:52:24.399824+00:00"
+  },
+  {
+    "validation_id": "pval_e31b5a5a",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:54:00.986131+00:00"
+  },
+  {
+    "validation_id": "pval_df9c1244",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:54:31.749240+00:00"
+  },
+  {
+    "validation_id": "pval_847e9734",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T07:56:55.581251+00:00"
+  },
+  {
+    "validation_id": "pval_e622c430",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T08:24:01.722796+00:00"
+  },
+  {
+    "validation_id": "pval_9fb29ddd",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T08:24:05.004751+00:00"
+  },
+  {
+    "validation_id": "pval_6344c858",
+    "event_id": "evt_test_101",
+    "is_correct": false,
+    "human_decision": "NO_BREACH",
+    "ai_decision": "BREACH",
+    "notes": "False alarm: Target was outside outer thermal sensor fence line.",
+    "timestamp": "2026-09-08T08:32:15.002711+00:00"
   }
 ]

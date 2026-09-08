@@ -6,6 +6,7 @@ internet dependency.
 """
 
 from pathlib import Path
+import os
 import sys
 import time
 import math
@@ -71,16 +72,22 @@ class VideoAssetManager:
 
         cap = cv2.VideoCapture(str(p))
         if not cap.isOpened():
+            try:
+                cap.release()
+            except Exception:
+                pass
             raise ValueError(f"Could not open video file: {filepath}")
 
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fps = float(cap.get(cv2.CAP_PROP_FPS))
-        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        duration_sec = round(frame_count / fps, 3) if fps > 0 else 0.0
-        file_size_bytes = p.stat().st_size
-        file_size_mb = round(file_size_bytes / (1024 * 1024), 3)
-        cap.release()
+        try:
+            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            fps = float(cap.get(cv2.CAP_PROP_FPS))
+            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            duration_sec = round(frame_count / fps, 3) if fps > 0 else 0.0
+            file_size_bytes = p.stat().st_size
+            file_size_mb = round(file_size_bytes / (1024 * 1024), 3)
+        finally:
+            cap.release()
 
         return {
             "filepath": str(p),
@@ -96,6 +103,63 @@ class VideoAssetManager:
             "file_size_mb": file_size_mb,
             "file_size_bytes": file_size_bytes,
         }
+
+    def is_valid_video_file(
+        self,
+        filepath: Union[str, Path],
+        expected_width: Optional[int] = WIDTH,
+        expected_height: Optional[int] = HEIGHT,
+        expected_fps: Optional[float] = FPS,
+        min_frames: int = 1,
+    ) -> bool:
+        """
+        Validates that an MP4 surveillance video on disk:
+          - exists and has non-trivial size (>1024 bytes)
+          - opens successfully via cv2.VideoCapture
+          - matches expected width and height (default 640x480)
+          - matches expected frame rate (default 30.0 FPS)
+          - contains at least min_frames (non-zero frame count)
+          - yields a valid readable first frame with matching dimensions
+        """
+        try:
+            p = Path(filepath).resolve()
+            if not p.is_file() or p.stat().st_size < 1024:
+                return False
+
+            cap = cv2.VideoCapture(str(p))
+            if not cap.isOpened():
+                try:
+                    cap.release()
+                except Exception:
+                    pass
+                return False
+
+            try:
+                width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                fps = float(cap.get(cv2.CAP_PROP_FPS))
+                frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+                if expected_width is not None and width != expected_width:
+                    return False
+                if expected_height is not None and height != expected_height:
+                    return False
+                if expected_fps is not None and abs(fps - expected_fps) > 1.0:
+                    return False
+                if frame_count < min_frames:
+                    return False
+
+                ret, frame = cap.read()
+                if not ret or frame is None:
+                    return False
+                if frame.shape[0] != height or frame.shape[1] != width:
+                    return False
+
+                return True
+            finally:
+                cap.release()
+        except Exception:
+            return False
 
     # -------------------------------------------------------------------------
     # Visual Synthesis Subroutines
@@ -476,6 +540,63 @@ class VideoAssetManager:
     # Public Synthesis Methods
     # -------------------------------------------------------------------------
 
+    def _create_video_writer(
+        self,
+        output_path: Path,
+        fps: float,
+        resolution: Tuple[int, int],
+    ) -> Tuple[cv2.VideoWriter, str]:
+        """
+        Initializes cv2.VideoWriter with MP4V encoding and fallback backends.
+        Tries default backend, explicit FFMPEG, then MSMF (Windows).
+        Returns (writer, backend_name).
+        """
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+
+        # 1. Default backend (standard OpenCV selection, typically FFMPEG on Windows)
+        writer = cv2.VideoWriter(str(output_path), fourcc, fps, resolution)
+        if writer.isOpened():
+            return writer, "mp4v/default"
+        try:
+            writer.release()
+        except Exception:
+            pass
+
+        # 2. Explicit CAP_FFMPEG backend
+        if hasattr(cv2, "CAP_FFMPEG"):
+            writer = cv2.VideoWriter(str(output_path), cv2.CAP_FFMPEG, fourcc, fps, resolution)
+            if writer.isOpened():
+                return writer, "mp4v/ffmpeg"
+            try:
+                writer.release()
+            except Exception:
+                pass
+
+        # 3. Windows Media Foundation (CAP_MSMF) fallback
+        if sys.platform == "win32" and hasattr(cv2, "CAP_MSMF"):
+            writer = cv2.VideoWriter(str(output_path), cv2.CAP_MSMF, fourcc, fps, resolution)
+            if writer.isOpened():
+                return writer, "mp4v/msmf"
+            try:
+                writer.release()
+            except Exception:
+                pass
+
+            # 4. CAP_MSMF with H.264 (avc1) fallback
+            fourcc_avc = cv2.VideoWriter_fourcc(*"avc1")
+            writer = cv2.VideoWriter(str(output_path), cv2.CAP_MSMF, fourcc_avc, fps, resolution)
+            if writer.isOpened():
+                return writer, "avc1/msmf"
+            try:
+                writer.release()
+            except Exception:
+                pass
+
+        raise IOError(
+            f"Failed to initialize VideoWriter for '{output_path}'. "
+            f"fourcc='mp4v' (and fallback 'avc1') could not be initialized with available backends."
+        )
+
     def generate_synthetic_surveillance_video(
         self,
         output_path: Union[str, Path],
@@ -486,6 +607,8 @@ class VideoAssetManager:
         """
         Generates a clean, 640x480 30FPS MP4 surveillance test clip using OpenCV.
         Offline, cross-platform, deterministic generation with zero internet dependency.
+        Employs staging-file generation, post-generation validation, and safe atomic replacement
+        to prevent partial/corrupted artifacts or Windows sharing violations.
 
         Args:
             output_path: destination path for MP4 file
@@ -496,37 +619,89 @@ class VideoAssetManager:
         out_p = Path(output_path).resolve()
         out_p.parent.mkdir(parents=True, exist_ok=True)
 
-        # Standard surveillance video format
         fps = self.FPS
         total_frames = max(1, int(round(duration_sec * fps)))
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        resolution = (self.WIDTH, self.HEIGHT)
 
-        writer = cv2.VideoWriter(str(out_p), fourcc, fps, (self.WIDTH, self.HEIGHT))
-        if not writer.isOpened():
-            raise IOError(f"Failed to initialize VideoWriter for {out_p}")
+        # Staging file prevents in-place locking conflicts and partial corrupted target files
+        staging_filename = f".tmp_{out_p.stem}_{os.getpid()}_{int(time.time() * 1000)}.mp4"
+        staging_p = out_p.parent / staging_filename
 
-        # Determine target renderer
-        cam_upper = camera_id.upper()
-        scen_lower = (scenario_type or "").lower()
+        writer = None
+        try:
+            writer, backend_tag = self._create_video_writer(staging_p, fps, resolution)
 
-        if "cam_01" in cam_upper or scen_lower == "perimeter":
-            renderer = self._render_cam_01_perimeter
-        elif "cam_02" in cam_upper or scen_lower == "roadway":
-            renderer = self._render_cam_02_roadway
-        elif "cam_03" in cam_upper or scen_lower == "restricted":
-            renderer = self._render_cam_03_restricted
-        elif "cam_04" in cam_upper or scen_lower == "terrain":
-            renderer = self._render_cam_04_terrain
-        elif "cam_05" in cam_upper or scen_lower == "secondary":
-            renderer = self._render_cam_05_secondary
-        else:
-            renderer = self._render_cam_01_perimeter
+            # Determine target renderer
+            cam_upper = camera_id.upper()
+            scen_lower = (scenario_type or "").lower()
 
-        for frame_idx in range(total_frames):
-            frame = renderer(frame_idx, total_frames)
-            writer.write(frame)
+            if "cam_01" in cam_upper or scen_lower == "perimeter":
+                renderer = self._render_cam_01_perimeter
+            elif "cam_02" in cam_upper or scen_lower == "roadway":
+                renderer = self._render_cam_02_roadway
+            elif "cam_03" in cam_upper or scen_lower == "restricted":
+                renderer = self._render_cam_03_restricted
+            elif "cam_04" in cam_upper or scen_lower == "terrain":
+                renderer = self._render_cam_04_terrain
+            elif "cam_05" in cam_upper or scen_lower == "secondary":
+                renderer = self._render_cam_05_secondary
+            else:
+                renderer = self._render_cam_01_perimeter
 
-        writer.release()
+            for frame_idx in range(total_frames):
+                frame = renderer(frame_idx, total_frames)
+                writer.write(frame)
+
+        except Exception as e:
+            if writer is not None:
+                try:
+                    writer.release()
+                except Exception:
+                    pass
+                writer = None
+            if staging_p.exists():
+                try:
+                    staging_p.unlink(missing_ok=True)
+                except Exception:
+                    pass
+            raise IOError(f"Failed to synthesize surveillance video for {out_p}: {e}") from e
+        finally:
+            if writer is not None:
+                try:
+                    writer.release()
+                except Exception:
+                    pass
+                writer = None
+
+        # Validate that the generated staging video meets technical specifications before publishing
+        if not self.is_valid_video_file(
+            staging_p,
+            expected_width=self.WIDTH,
+            expected_height=self.HEIGHT,
+            expected_fps=self.FPS,
+            min_frames=total_frames,
+        ):
+            if staging_p.exists():
+                try:
+                    staging_p.unlink(missing_ok=True)
+                except Exception:
+                    pass
+            raise IOError(
+                f"Generated video artifact at {staging_p} failed post-synthesis validation "
+                f"for destination {out_p}."
+            )
+
+        # Safely publish staging file to final destination
+        try:
+            _safe_replace(staging_p, out_p)
+        except Exception as e:
+            if staging_p.exists():
+                try:
+                    staging_p.unlink(missing_ok=True)
+                except Exception:
+                    pass
+            raise IOError(f"Failed to publish synthesized video to {out_p}: {e}") from e
+
         return out_p
 
     def ensure_demo_camera_videos(
@@ -542,6 +717,9 @@ class VideoAssetManager:
           - cam_04_terrain.mp4
           - cam_05_secondary.mp4
 
+        Validates that existing files are non-corrupted, readable, and match 640x480 @ 30 FPS.
+        If an existing asset is missing, corrupted, or stale, it is regenerated deterministically.
+
         Returns:
             Dict mapping camera ID to generated Path.
         """
@@ -553,10 +731,20 @@ class VideoAssetManager:
             ("CAM_05", "cam_05_secondary.mp4", "secondary"),
         ]
 
+        expected_frames = max(1, int(round(duration_sec * self.FPS)))
         result: Dict[str, Path] = {}
         for cam_id, filename, scn_type in targets:
             dest = self.videos_dir / filename
-            if not dest.is_file() or overwrite:
+            is_valid = False
+            if dest.is_file() and not overwrite:
+                is_valid = self.is_valid_video_file(
+                    filepath=dest,
+                    expected_width=self.WIDTH,
+                    expected_height=self.HEIGHT,
+                    expected_fps=self.FPS,
+                    min_frames=expected_frames,
+                )
+            if not is_valid or overwrite:
                 self.generate_synthetic_surveillance_video(
                     output_path=dest,
                     camera_id=cam_id,
@@ -568,6 +756,36 @@ class VideoAssetManager:
         return result
 
 
+def _safe_replace(src: Path, dst: Path, max_retries: int = 15, delay: float = 0.1) -> None:
+    """
+    Safely moves src to dst with retry logic to handle transient Windows file locks
+    (e.g., cloud sync agents, search indexers, antivirus scanners).
+    """
+    last_exc = None
+    for attempt in range(max_retries):
+        try:
+            if sys.platform == "win32" and dst.exists():
+                try:
+                    os.replace(str(src), str(dst))
+                    return
+                except (PermissionError, OSError) as pe:
+                    last_exc = pe
+                    try:
+                        dst.unlink(missing_ok=True)
+                    except Exception:
+                        pass
+                    src.replace(dst)
+                    return
+            else:
+                src.replace(dst)
+                return
+        except (PermissionError, OSError) as exc:
+            last_exc = exc
+            time.sleep(delay)
+    if last_exc:
+        raise last_exc
+
+
 # Singleton instance and module-level functions
 video_manager = VideoAssetManager()
 
@@ -575,6 +793,23 @@ video_manager = VideoAssetManager()
 def get_video_metadata(filepath: Union[str, Path]) -> Dict[str, Any]:
     """Module-level helper to extract video metadata."""
     return video_manager.get_video_metadata(filepath)
+
+
+def is_valid_video_file(
+    filepath: Union[str, Path],
+    expected_width: Optional[int] = VideoAssetManager.WIDTH,
+    expected_height: Optional[int] = VideoAssetManager.HEIGHT,
+    expected_fps: Optional[float] = VideoAssetManager.FPS,
+    min_frames: int = 1,
+) -> bool:
+    """Module-level helper to validate video file integrity and specifications."""
+    return video_manager.is_valid_video_file(
+        filepath=filepath,
+        expected_width=expected_width,
+        expected_height=expected_height,
+        expected_fps=expected_fps,
+        min_frames=min_frames,
+    )
 
 
 def generate_synthetic_surveillance_video(

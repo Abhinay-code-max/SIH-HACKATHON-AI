@@ -1,0 +1,9 @@
+# BORDER SENTINEL — Phase D: Experiment 1 (D1 Smoke Test)
+# Strict 2-Class Vehicle Dataset Configuration
+path: C:/Users/Abhinay Kandrika/OneDrive/Desktop/sih hackathon/training_lab/datasets/dataset_ua_detrac_v001
+train: images/train
+val: images/val
+
+names:
+  0: car
+  1: bus

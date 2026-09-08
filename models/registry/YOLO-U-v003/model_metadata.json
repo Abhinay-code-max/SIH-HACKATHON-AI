@@ -1,0 +1,68 @@
+{
+  "version": "YOLO-U-v003",
+  "status": "EXPERIMENTAL_CANDIDATE",
+  "type": "prototype / unified 9-class",
+  "base_model": "yolov8m.pt",
+  "architecture": "YOLOv8m (170 layers, 25.84M params, 78.7 GFLOPs)",
+  "training_experiment": "unified_9class_yolov8m_3f",
+  "weights_path": "models/registry/YOLO-U-v003/weights/best.pt",
+  "sha256": "d52658062b46d77f09202fb6e38d2432c4a82a47d996227adda0fd44d6c831eb",
+  "size_bytes": 52007883,
+  "classes": {
+    "0": "person",
+    "1": "car",
+    "2": "truck",
+    "3": "bus",
+    "4": "motorcycle",
+    "5": "bicycle",
+    "6": "animal",
+    "7": "backpack",
+    "8": "bag"
+  },
+  "validation_metrics": {
+    "split": "val (1,674 images)",
+    "mAP50": 62.21,
+    "mAP50-95": 42.72,
+    "precision": 71.2,
+    "recall": 56.36,
+    "per_class_mAP50": {
+      "person": 83.48,
+      "car": 94.72,
+      "truck": 36.96,
+      "bus": 82.45,
+      "motorcycle": 81.14,
+      "bicycle": 45.63,
+      "animal": 86.31,
+      "backpack": 23.75,
+      "bag": 25.41
+    }
+  },
+  "holdout_metrics": {
+    "ua_detrac_protected_holdout_11557_frames": {
+      "overall_mAP50": 93.13,
+      "overall_mAP50_95": 72.03,
+      "car_mAP50": 92.03,
+      "bus_mAP50": 94.23
+    },
+    "unified_multi_class_holdout_550_frames": {
+      "overall_mAP50": 59.74,
+      "overall_mAP50_95": 39.89,
+      "person_mAP50": 79.87,
+      "car_mAP50": 59.5,
+      "truck_mAP50": 45.49,
+      "bus_mAP50": 86.11,
+      "motorcycle_mAP50": 69.76,
+      "bicycle_mAP50": 58.65,
+      "animal_mAP50": 84.43,
+      "backpack_mAP50": 24.16,
+      "bag_mAP50": 29.66
+    }
+  },
+  "performance": {
+    "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "mean_latency_ms": 38.03,
+    "throughput_fps": 26.3,
+    "offline_status": "VERIFIED_OFFLINE_AIR_GAPPED"
+  },
+  "registered_at": "2026-09-08T08:00:00.000000+00:00"
+}

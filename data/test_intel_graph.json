@@ -1,0 +1,528 @@
+{
+  "cameras": [
+    {
+      "camera_id": "CAM_01",
+      "name": "Concourse Main Gateway",
+      "sector": "Sector Alpha (Entry)",
+      "location": {
+        "lat": 17.4435,
+        "lon": 78.3765
+      },
+      "node_type": "camera"
+    },
+    {
+      "camera_id": "CAM_02",
+      "name": "Gate 1 Checkpoint",
+      "sector": "Sector Bravo (Checkpoint)",
+      "location": {
+        "lat": 17.4442,
+        "lon": 78.3778
+      },
+      "node_type": "camera"
+    },
+    {
+      "camera_id": "CAM_03",
+      "name": "Perimeter Command Outpost",
+      "sector": "Sector Charlie (Perimeter)",
+      "location": {
+        "lat": 17.4455,
+        "lon": 78.3792
+      },
+      "node_type": "camera"
+    }
+  ],
+  "entities": [
+    {
+      "entity_id": "SUBJ_ALPHA_01",
+      "class_name": "person",
+      "first_seen": 100.0,
+      "last_seen": 145.0,
+      "total_sightings": 96,
+      "node_type": "entity",
+      "metadata": {}
+    }
+  ],
+  "transits": [
+    {
+      "edge_id": "TR_0001",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0002",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0003",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0004",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0005",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0006",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0007",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0008",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0009",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0010",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0011",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0012",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0013",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0014",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0015",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0016",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0017",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0018",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0019",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0020",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0021",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0022",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0023",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0024",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0025",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0026",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0027",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0028",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0029",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0030",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0031",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0032",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0033",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0034",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0035",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0036",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0037",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0038",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0039",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0040",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0041",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0042",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0043",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0044",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0045",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0046",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0047",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_01",
+      "to_camera": "CAM_02",
+      "transit_duration_sec": 15.0,
+      "similarity_score": 0.88,
+      "timestamp": 125.0,
+      "edge_type": "TRANSIT_EDGE"
+    },
+    {
+      "edge_id": "TR_0048",
+      "entity_id": "SUBJ_ALPHA_01",
+      "from_camera": "CAM_02",
+      "to_camera": "CAM_03",
+      "transit_duration_sec": 20.0,
+      "similarity_score": 0.84,
+      "timestamp": 145.0,
+      "edge_type": "TRANSIT_EDGE"
+    }
+  ],
+  "observations_count": 4
+}

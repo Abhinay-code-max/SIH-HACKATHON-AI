@@ -1,8 +1,7 @@
-"""
+﻿"""
 Compound Threat Assessment Engine & Human Disagreement Validator.
-Calculates multi-factor threat scores (0-100) combining target classification,
-zone severity, inward trajectory direction, dwell time persistence, and cluster density.
-Tracks human validator feedback, disagreement metrics, and confusion matrices.
+Integrates deterministic DEFCON 5–1 scoring, explainable contributing factor logs,
+and preserves human validation disagreement metrics and confusion matrices.
 """
 
 from datetime import datetime, timezone
@@ -16,6 +15,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+from training_lab.engine.threat_engine import threat_scoring_engine, score_to_defcon, ThreatAssessment
+from training_lab.engine.threat_config import THREAT_FACTOR_WEIGHTS, DEFCON_THRESHOLDS
+
 ANNOTATIONS_DIR = ROOT_DIR / "training_lab" / "annotations"
 ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
 THREAT_VALIDATIONS_FILE = ANNOTATIONS_DIR / "threat_validations.json"
@@ -28,8 +30,10 @@ class ThreatValidator:
 
     ZONE_SEVERITY_POINTS = {
         "SAFE": 0,
+        "NORMAL_ZONE": 0,
         "WARNING": 20,
         "RESTRICTED": 40,
+        "RESTRICTED_ZONE": 40,
         "CRITICAL": 60,
     }
 
@@ -61,6 +65,7 @@ class ThreatValidator:
         Computes compound threat score:
         Score = Baseline(15) + ZonePts + DirectionPts + DwellPts + ClusterPts
         Clamped to [0, 100].
+        Provides backward compatibility for existing test suite while mapping to DEFCON.
         """
         # 1. Baseline
         baseline = 15
@@ -94,12 +99,14 @@ class ThreatValidator:
                 threat_level = lvl
                 break
 
+        defcon = score_to_defcon(score)
         assessment_id = f"th_{uuid.uuid4().hex[:8]}"
 
         return {
             "assessment_id": assessment_id,
             "threat_score": score,
             "threat_level": threat_level,
+            "defcon_level": defcon,
             "class_name": class_name,
             "zone_type": z_type or "UNASSIGNED",
             "factors": {
@@ -114,6 +121,19 @@ class ThreatValidator:
             "cluster_count": cluster_count,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
+
+    def assess_comprehensive_threat(
+        self,
+        track_state: Dict[str, Any],
+        spatial_events: Optional[List[Dict[str, Any]]] = None,
+        behavior_features: Optional[Dict[str, Any]] = None,
+    ) -> ThreatAssessment:
+        """Invokes the standard ThreatScoringEngine for comprehensive DEFCON assessment."""
+        return threat_scoring_engine.assess_threat(
+            track_state=track_state,
+            spatial_events=spatial_events,
+            behavior_features=behavior_features,
+        )
 
     def validate_threat_assessment(
         self,

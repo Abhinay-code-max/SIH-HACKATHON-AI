@@ -51,7 +51,11 @@ class MultiCameraSimulator:
         self._camera_finished: Dict[str, bool] = {}
 
         if camera_bindings:
-            self.bind_cameras(camera_bindings)
+            try:
+                self.bind_cameras(camera_bindings)
+            except Exception:
+                self.close()
+                raise
 
     def bind_camera(self, camera_id: str, video_path: Union[str, Path]) -> None:
         """
@@ -80,6 +84,10 @@ class MultiCameraSimulator:
 
         cap = cv2.VideoCapture(str(path_obj))
         if not cap.isOpened():
+            try:
+                cap.release()
+            except Exception:
+                pass
             raise ValueError(f"Failed to open video capture for {cam_id}: {path_obj}")
 
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -241,17 +249,24 @@ class MultiCameraSimulator:
 
     def close(self) -> None:
         """Releases all open video capture streams."""
-        for cam_id, cap in self._captures.items():
+        for cam_id, cap in list(self._captures.items()):
             try:
                 cap.release()
             except Exception:
                 pass
         self._captures.clear()
         self._camera_finished.clear()
+        self._last_frames.clear()
 
     def release(self) -> None:
         """Alias for close()."""
         self.close()
+
+    def __del__(self) -> None:
+        try:
+            self.close()
+        except Exception:
+            pass
 
     def get_active_cameras(self) -> List[str]:
         """Returns list of currently active camera IDs."""
