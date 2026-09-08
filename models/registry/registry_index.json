@@ -57,6 +57,29 @@
       "weights_path": "models/registry/YOLO-L-v002/weights/best.pt",
       "status": "archived",
       "available": false
+    },
+    {
+      "version": "YOLO-U-v002",
+      "base_model": "yolov8m.pt",
+      "dataset_version": "dataset_unified_v002",
+      "date": "2026-09-08T06:45:00+00:00",
+      "duration_seconds": 1520.0,
+      "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "hyperparameters": {
+        "description": "Candidate U2 9-Class YOLOv8m Detector trained on unified v002 dataset",
+        "epochs": 5,
+        "imgsz": 640,
+        "batch": 4,
+        "workers": 0
+      },
+      "metrics": {
+        "mAP50": 42.52,
+        "precision": 58.12,
+        "recall": 44.30
+      },
+      "weights_path": "training_lab/runs/U2_yolov8m_640_9class_v002/weights/best.pt",
+      "status": "active",
+      "available": true
     }
   ]
 }

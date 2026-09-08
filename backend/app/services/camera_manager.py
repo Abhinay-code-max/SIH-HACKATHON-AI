@@ -98,6 +98,8 @@ class MultiCameraManager:
             "CAM_01": CameraStreamWorker("CAM_01", 0, "Main Demonstration CCTV / Webcam", detector=self.detector),
             "CAM_02": CameraStreamWorker("CAM_02", str(ROOT_DIR / "data" / "sample-videos" / "sample_surveillance.mp4"), "Gate 1 Vehicle Entry", detector=self.detector),
             "CAM_03": CameraStreamWorker("CAM_03", str(ROOT_DIR / "data" / "sample-videos" / "annotated_surveillance.mp4"), "Perimeter Command CCTV", detector=self.detector),
+            "CAM_04": CameraStreamWorker("CAM_04", str(ROOT_DIR / "training_lab" / "videos" / "CAM_04_north_fence.mp4"), "North Fence Sector", detector=self.detector),
+            "CAM_05": CameraStreamWorker("CAM_05", str(ROOT_DIR / "training_lab" / "videos" / "CAM_05_logistics.mp4"), "Logistics Road Crossing", detector=self.detector),
         }
 
     def get_camera_status(self) -> List[dict]:

@@ -14,10 +14,14 @@ pause
 exit /b 1
 :VENV_OK
 REM 2. Local Weights Check
+if exist training_lab\runs\U2_yolov8m_640_9class_v002\weights\best.pt (
+    echo [+] Verified Primary 9-Class Detector: U2 (training_lab\runs\U2_yolov8m_640_9class_v002\weights\best.pt)
+    goto WEIGHTS_OK
+)
 if exist models\registry\YOLO-L-v002\weights\best.pt goto WEIGHTS_OK
 if exist ai\models\yolov8l.pt goto WEIGHTS_OK
 if exist yolov8l.pt goto WEIGHTS_OK
-echo [ERROR] Local model weights not found!
+echo [ERROR] U2 9-class model checkpoint is required at training_lab\runs\U2_yolov8m_640_9class_v002\weights\best.pt!
 pause
 exit /b 1
 :WEIGHTS_OK

@@ -54,29 +54,59 @@ def load_detection_config(config_path: Optional[Union[str, Path]] = None) -> Dic
         return yaml.safe_load(f) or {}
 
 
+U2_DEFAULT_PATH = ROOT_DIR / "training_lab" / "runs" / "U2_yolov8m_640_9class_v002" / "weights" / "best.pt"
+U2_EXPECTED_SHA256 = "cd8e50a9a84aef125450e81e79c8d4e5d8b1252604cd820167c5f094ac5e7930"
+
+
 def resolve_registered_model(model_name: str = "auto") -> str:
     """
-    Resolves the latest registered fine-tuned model path from registry_index.json,
-    mirroring ObjectTracker resolution, or defaults to yolov8l.pt.
+    Resolves the primary 9-class U2 detector path or registry-configured model.
+    Prioritizes the accepted U2 candidate checkpoint:
+    training_lab/runs/U2_yolov8m_640_9class_v002/weights/best.pt
     """
-    if model_name != "auto":
+    if model_name not in ("auto", "u2", "U2"):
+        p = Path(model_name)
+        if p.is_file():
+            return str(p)
+        if (ROOT_DIR / p).is_file():
+            return str(ROOT_DIR / p)
         return model_name
 
+    # 1. Primary Accepted 9-Class Detector: U2
+    if U2_DEFAULT_PATH.is_file():
+        return str(U2_DEFAULT_PATH)
+
+    # 2. Check registry index for active fine-tuned entries
     index_file = ROOT_DIR / "models" / "registry" / "registry_index.json"
     if index_file.is_file():
         try:
             with open(index_file, "r", encoding="utf-8") as f:
                 idx = json.load(f)
             runs = idx.get("models", [])
-            if runs:
-                latest = runs[-1]
-                weights = ROOT_DIR / latest.get("weights_path", "")
-                if weights.is_file():
-                    return str(weights)
+            for entry in reversed(runs):
+                if entry.get("status") == "active" or entry.get("version") in ("YOLO-U-v002", "U2"):
+                    w = ROOT_DIR / entry.get("weights_path", "")
+                    if w.is_file():
+                        return str(w)
+            for entry in reversed(runs):
+                w = ROOT_DIR / entry.get("weights_path", "")
+                if w.is_file():
+                    return str(w)
         except Exception:
             pass
 
-    return "yolov8l.pt"
+    # 3. Fallback to local base models if present
+    for fallback_name in ("yolov8l.pt", "yolov8m.pt", "yolov8s.pt"):
+        fb_path = ROOT_DIR / fallback_name
+        if fb_path.is_file():
+            return str(fb_path)
+
+    # 4. Actionable error if U2 and local fallbacks are missing
+    raise FileNotFoundError(
+        f"U2 9-class model checkpoint is required at {U2_DEFAULT_PATH}. "
+        "Please ensure the accepted U2 model weights are present. "
+        "Air-gapped offline operation prohibits automatic model downloads."
+    )
 
 
 class BaseDetector(ABC):
@@ -159,9 +189,13 @@ class YoloDetector(BaseDetector):
 
         # 3. Resolve model path
         if model_name == "auto":
-            profile_name = self.config.get("profiles", {}).get("active_profile", "command_center")
-            profile_model = self.config.get("profiles", {}).get(profile_name, {}).get("model_name", "auto")
-            self.model_path = resolve_registered_model(profile_model)
+            # Prioritize primary accepted U2 model if available on disk
+            if U2_DEFAULT_PATH.is_file():
+                self.model_path = str(U2_DEFAULT_PATH)
+            else:
+                profile_name = self.config.get("profiles", {}).get("active_profile", "command_center")
+                profile_model = self.config.get("profiles", {}).get(profile_name, {}).get("model_name", "auto")
+                self.model_path = resolve_registered_model(profile_model)
         else:
             self.model_path = resolve_registered_model(model_name)
 

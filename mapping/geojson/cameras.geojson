@@ -64,6 +64,44 @@
         "type": "Point",
         "coordinates": [78.3780, 17.4465]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "CAM_04",
+      "properties": {
+        "camera_id": "CAM_04",
+        "name": "North Fence Sector CCTV",
+        "zone_id": "ZONE_03",
+        "zone_name": "Critical Infrastructure & Command Perimeter",
+        "status": "ONLINE",
+        "source": "training_lab/videos/CAM_04_north_fence.mp4",
+        "resolution": "640x480",
+        "fps": 25,
+        "heading_degrees": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.3755, 17.4475]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "CAM_05",
+      "properties": {
+        "camera_id": "CAM_05",
+        "name": "Logistics Road Crossing CCTV",
+        "zone_id": "ZONE_02",
+        "zone_name": "Gate 1 Access & Vehicle Checkpoint",
+        "status": "ONLINE",
+        "source": "training_lab/videos/CAM_05_logistics.mp4",
+        "resolution": "640x480",
+        "fps": 25,
+        "heading_degrees": 135
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.3805, 17.4445]
+      }
     }
   ]
 }

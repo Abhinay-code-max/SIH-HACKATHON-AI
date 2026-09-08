@@ -344,7 +344,7 @@
             <button class="btn" id="audio-toggle-btn" onclick="toggleAudioAlerts()" style="font-size:11px; padding:3px 8px; border-color:var(--border); color:var(--text-muted);">🔇 AUDIO: OFF</button>
             <div class="status-pill">
                 <div class="dot"></div>
-                <span id="hw-status">RTX 4060 GPU | YOLO-L-v002</span>
+                <span id="hw-status">RTX 4060 GPU | YOLO-U-v002 (U2)</span>
             </div>
             <div class="status-pill" style="color: var(--green);">
                 AIR-GAPPED 100% OFFLINE
@@ -355,20 +355,31 @@
     </header>
 
     <main>
-        <!-- Top Left: Dual Camera Concurrent Feeds -->
+        <!-- Top Left: Camera Feeds & Grid Selector -->
         <section class="panel">
-            <div class="panel-header">
-                <span>CONCURRENT SURVEILLANCE STREAMS (CAM_01 + CAM_02)</span>
-                <span style="color: var(--cyan); font-family: monospace;" id="cam-telemetry">2 FEEDS SYNCHRONIZED</span>
-            </div>
-            <div class="dual-cam-grid">
-                <div class="cam-box">
-                    <img id="stream-cam01" src="/api/stream/CAM_01" alt="CAM 01 Live Stream" onerror="retryStream(this, '/api/stream/CAM_01')" />
-                    <div class="cam-hud-tag">CAM_01: WEBCAM / DEMO FEED</div>
+            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span>SURVEILLANCE GRID</span>
+                    <select id="cam-layout-select" onchange="switchCamLayout(this.value)" style="background:var(--bg-card); color:var(--cyan); border:1px solid var(--border); font-size:11px; padding:2px 6px; border-radius:3px;">
+                        <option value="dual_1_2">CAM_01 + CAM_02 (Primary)</option>
+                        <option value="dual_4_5">CAM_04 + CAM_05 (North / Logistics)</option>
+                        <option value="cam_01">CAM_01 Solo (Demonstration)</option>
+                        <option value="cam_02">CAM_02 Solo (Gate Entry)</option>
+                        <option value="cam_03">CAM_03 Solo (Command CCTV)</option>
+                        <option value="cam_04">CAM_04 Solo (North Fence)</option>
+                        <option value="cam_05">CAM_05 Solo (Logistics Crossing)</option>
+                    </select>
                 </div>
-                <div class="cam-box">
-                    <img id="stream-cam02" src="/api/stream/CAM_02" alt="CAM 02 Live Stream" onerror="retryStream(this, '/api/stream/CAM_02')" />
-                    <div class="cam-hud-tag">CAM_02: GATE 1 CHECKPOINT</div>
+                <span style="color: var(--cyan); font-family: monospace;" id="cam-telemetry">5 FEEDS REGISTERED</span>
+            </div>
+            <div class="dual-cam-grid" id="cam-display-container">
+                <div class="cam-box" id="cam-box-a">
+                    <img id="stream-cam-a" src="/api/stream/CAM_01" alt="Camera Stream A" onerror="retryStream(this, this.src)" />
+                    <div class="cam-hud-tag" id="hud-tag-a">CAM_01: WEBCAM / DEMO FEED</div>
+                </div>
+                <div class="cam-box" id="cam-box-b">
+                    <img id="stream-cam-b" src="/api/stream/CAM_02" alt="Camera Stream B" onerror="retryStream(this, this.src)" />
+                    <div class="cam-hud-tag" id="hud-tag-b">CAM_02: GATE 1 CHECKPOINT</div>
                 </div>
             </div>
         </section>
@@ -454,8 +465,49 @@
 
         function retryStream(imgElem, url) {
             setTimeout(() => {
-                imgElem.src = url + '?t=' + Date.now();
+                const base = url.split('?')[0];
+                imgElem.src = base + '?t=' + Date.now();
             }, 1200);
+        }
+
+        function switchCamLayout(mode) {
+            const boxA = document.getElementById('cam-box-a');
+            const boxB = document.getElementById('cam-box-b');
+            const imgA = document.getElementById('stream-cam-a');
+            const imgB = document.getElementById('stream-cam-b');
+            const tagA = document.getElementById('hud-tag-a');
+            const tagB = document.getElementById('hud-tag-b');
+            const grid = document.getElementById('cam-display-container');
+
+            const camMeta = {
+                CAM_01: "CAM_01: WEBCAM / DEMO FEED",
+                CAM_02: "CAM_02: GATE 1 CHECKPOINT",
+                CAM_03: "CAM_03: COMMAND CCTV",
+                CAM_04: "CAM_04: NORTH FENCE SECTOR",
+                CAM_05: "CAM_05: LOGISTICS CROSSING",
+            };
+
+            if (mode === "dual_1_2") {
+                grid.style.gridTemplateColumns = "1fr 1fr";
+                boxB.style.display = "flex";
+                imgA.src = "/api/stream/CAM_01";
+                tagA.innerText = camMeta.CAM_01;
+                imgB.src = "/api/stream/CAM_02";
+                tagB.innerText = camMeta.CAM_02;
+            } else if (mode === "dual_4_5") {
+                grid.style.gridTemplateColumns = "1fr 1fr";
+                boxB.style.display = "flex";
+                imgA.src = "/api/stream/CAM_04";
+                tagA.innerText = camMeta.CAM_04;
+                imgB.src = "/api/stream/CAM_05";
+                tagB.innerText = camMeta.CAM_05;
+            } else {
+                const camId = mode.replace("cam_", "CAM_");
+                grid.style.gridTemplateColumns = "1fr";
+                boxB.style.display = "none";
+                imgA.src = `/api/stream/${camId}`;
+                tagA.innerText = camMeta[camId] || camId;
+            }
         }
 
         let audioEnabled = false;

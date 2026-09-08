@@ -10,7 +10,7 @@ profiles:
   active_profile: "command_center"
   command_center:
     model_name: "yolov8l.pt"
-    description: "High-accuracy command center profile (YOLOv8 Large / fine-tuned checkpoints)"
+    description: "High-accuracy command center profile (Primary U2 9-class fine-tuned detector)"
   edge:
     model_name: "yolov8s.pt"
     description: "Lightweight edge / embedded profile for high-FPS multi-stream inference"

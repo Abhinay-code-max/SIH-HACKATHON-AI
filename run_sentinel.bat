@@ -18,16 +18,24 @@ IF NOT EXIST ".venv\Scripts\activate.bat" (
 call .venv\Scripts\activate.bat
 
 REM 2. Verify AI Weights
-IF EXIST "ai\models\yolov8l.pt" (
-    echo [System] AI Model Weights verified: ai\models\yolov8l.pt
+IF EXIST "training_lab\runs\U2_yolov8m_640_9class_v002\weights\best.pt" (
+    echo [System] Primary 9-Class Detector verified: U2 (training_lab\runs\U2_yolov8m_640_9class_v002\weights\best.pt)
 ) ELSE IF EXIST "models\registry\YOLO-L-v002\weights\best.pt" (
     echo [System] AI Model Weights verified: models\registry\YOLO-L-v002\weights\best.pt
+) ELSE IF EXIST "ai\models\yolov8l.pt" (
+    echo [System] AI Model Weights verified: ai\models\yolov8l.pt
 ) ELSE IF EXIST "yolov8l.pt" (
     echo [System] AI Model Weights verified: yolov8l.pt
 ) ELSE (
-    echo [ERROR] No local YOLO weights found in ai\models or root directory!
+    echo [ERROR] U2 9-class model checkpoint is required at training_lab\runs\U2_yolov8m_640_9class_v002\weights\best.pt!
     pause
     exit /b 1
+)
+
+REM 2b. Verify Demo Surveillance Videos
+IF NOT EXIST "training_lab\videos\CAM_01_gateway.mp4" (
+    echo [System] Generating missing 5-camera surveillance demo videos...
+    python tools\generate_sample_videos.py
 )
 echo [System] Clearing any lingering processes on port 8000...
 
