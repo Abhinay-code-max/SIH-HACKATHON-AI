@@ -318,6 +318,44 @@ class IntelligenceEngine:
             triggered_events.append(vdossier)
 
         # -------------------------------------------------------------
+        # 4c. AIRBORNE DRONE / AIRSPACE THREAT DETECTION
+        # -------------------------------------------------------------
+        for t in tracks:
+            cls_name = str(t.get("class_name", "")).lower()
+            if cls_name in {"drone", "uav"}:
+                rule_key = f"{camera_id}_drone_{t.get('track_id', 0)}"
+                if not self._should_suppress(rule_key, cooldown_sec=2.0):
+                    self.event_counter += 1
+                    evt_id = f"EVT_{self.event_counter:05d}"
+                    history = t.get("trajectory") or t.get("history") or []
+                    dossier = evidence_engine.capture_evidence(
+                        event_id=evt_id,
+                        event_type="AIRBORNE_DRONE_INTRUSION",
+                        camera_id=camera_id,
+                        class_name="drone",
+                        confidence=t.get("confidence", 0.94),
+                        track_id=t.get("track_id", 0),
+                        bbox=t.get("bbox", [0.0, 0.0, 10.0, 10.0]),
+                        frame=frame,
+                        trajectory=history,
+                        severity="CRITICAL",
+                        metadata={"threat": "AIRSPACE_BREACH", "class_name": "drone"},
+                    )
+                    sec_evt = SecurityEvent(
+                        event_id=evt_id,
+                        source_id=camera_id,
+                        event_type=EventType.ZONE_INTRUSION,
+                        class_name="drone",
+                        confidence=t.get("confidence", 0.94),
+                        bbox=t.get("bbox", [0.0, 0.0, 10.0, 10.0]),
+                        severity=SeverityLevel.CRITICAL,
+                        location=loc,
+                        metadata={"threat": "AIRSPACE_BREACH", "track_id": t.get("track_id", 0)},
+                    )
+                    event_service.add_event(sec_evt)
+                    triggered_events.append(dossier)
+
+        # -------------------------------------------------------------
         # 5. REGISTER OR ESCALATE COMPOUND SECURITY INCIDENT
         # -------------------------------------------------------------
         if triggered_events:

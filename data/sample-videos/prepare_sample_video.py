@@ -60,4 +60,9 @@ def generate_sample_surveillance_video(
     return output_file
 
 if __name__ == "__main__":
-    generate_sample_surveillance_video()
+    import shutil
+    vid1 = generate_sample_surveillance_video()
+    target_dir = Path(__file__).resolve().parent
+    vid2 = target_dir / "annotated_surveillance.mp4"
+    shutil.copy2(vid1, vid2)
+    print(f"[Video Gen] Created copy: {vid2}")

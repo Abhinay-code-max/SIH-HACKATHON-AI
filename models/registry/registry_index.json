@@ -25,7 +25,9 @@
         "precision": 99.32,
         "recall": 87.5
       },
-      "weights_path": "models/registry/YOLO-L-v001/weights/best.pt"
+      "weights_path": "models/registry/YOLO-L-v001/weights/best.pt",
+      "status": "archived",
+      "available": false
     },
     {
       "version": "YOLO-L-v002",
@@ -52,7 +54,9 @@
         "precision": 95.89,
         "recall": 95.88
       },
-      "weights_path": "models/registry/YOLO-L-v002/weights/best.pt"
+      "weights_path": "models/registry/YOLO-L-v002/weights/best.pt",
+      "status": "archived",
+      "available": false
     }
   ]
 }

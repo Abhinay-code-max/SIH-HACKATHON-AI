@@ -16,6 +16,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+from ai.detection.detector import BaseDetector, YoloDetector
 from ai.tracking.tracker import ObjectTracker
 from ai.events.intelligence_engine import intelligence_engine
 from ai.reid.manager import global_subject_manager
@@ -23,11 +24,18 @@ from mapping.manager import OfflineMapManager
 
 
 class CameraStreamWorker:
-    def __init__(self, camera_id: str, source: str | int, name: str):
+    def __init__(
+        self,
+        camera_id: str,
+        source: str | int,
+        name: str,
+        detector: Optional[BaseDetector] = None,
+    ):
         self.camera_id = camera_id
         self.source = source
         self.name = name
-        self.tracker = ObjectTracker(model_name="auto")
+        self.detector = detector or YoloDetector(model_name="auto")
+        self.tracker = ObjectTracker(detector=self.detector)
         self.status = "ONLINE"
         self.fps = 0.0
         self.active_tracks_count = 0
@@ -84,10 +92,12 @@ class CameraStreamWorker:
 
 class MultiCameraManager:
     def __init__(self):
+        # Shared single YoloDetector instance across camera workers to conserve VRAM on 4GB hardware
+        self.detector = YoloDetector(model_name="auto")
         self.cameras: Dict[str, CameraStreamWorker] = {
-            "CAM_01": CameraStreamWorker("CAM_01", 0, "Main Demonstration CCTV / Webcam"),
-            "CAM_02": CameraStreamWorker("CAM_02", str(ROOT_DIR / "data" / "sample-videos" / "sample_surveillance.mp4"), "Gate 1 Vehicle Entry"),
-            "CAM_03": CameraStreamWorker("CAM_03", str(ROOT_DIR / "data" / "sample-videos" / "annotated_surveillance.mp4"), "Perimeter Command CCTV"),
+            "CAM_01": CameraStreamWorker("CAM_01", 0, "Main Demonstration CCTV / Webcam", detector=self.detector),
+            "CAM_02": CameraStreamWorker("CAM_02", str(ROOT_DIR / "data" / "sample-videos" / "sample_surveillance.mp4"), "Gate 1 Vehicle Entry", detector=self.detector),
+            "CAM_03": CameraStreamWorker("CAM_03", str(ROOT_DIR / "data" / "sample-videos" / "annotated_surveillance.mp4"), "Perimeter Command CCTV", detector=self.detector),
         }
 
     def get_camera_status(self) -> List[dict]:
@@ -102,16 +112,11 @@ class MultiCameraManager:
             for cid, c in self.cameras.items()
         ]
 
-    def generate_live_mjpeg(self, camera_id: str) -> Generator[bytes, None, None]:
-        """Streams live tracking feed with virtual fences and persistent IDs."""
-        if camera_id not in self.cameras:
-            camera_id = "CAM_01"
-
+    def _open_capture(self, camera_id: str) -> cv2.VideoCapture:
+        """Opens video capture for a camera with webcam fallback to sample video."""
         worker = self.cameras[camera_id]
         src = worker.source
-
         if src == 0:
-            # Use DirectShow on Windows for instant, reliable hardware access without MSMF lockups
             cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
             is_valid = False
             if cap.isOpened():
@@ -124,8 +129,17 @@ class MultiCameraManager:
                 if not fallback_video.is_file():
                     fallback_video = ROOT_DIR / "data" / "sample-videos" / "sample_surveillance.mp4"
                 cap = cv2.VideoCapture(str(fallback_video))
-        else:
-            cap = cv2.VideoCapture(src)
+            return cap
+        return cv2.VideoCapture(src)
+
+    def generate_live_mjpeg(self, camera_id: str) -> Generator[bytes, None, None]:
+        """Streams live tracking feed with virtual fences and persistent IDs."""
+        if camera_id not in self.cameras:
+            camera_id = "CAM_01"
+
+        worker = self.cameras[camera_id]
+        src = worker.source
+        cap = self._open_capture(camera_id)
 
         target_fps = 25
         frame_interval = 1.0 / target_fps
@@ -153,8 +167,16 @@ class MultiCameraManager:
                 if frame.shape[0] != 480 or frame.shape[1] != 640:
                     frame = cv2.resize(frame, (640, 480))
 
-                # 1. Update Object Tracking (confidence raised to 0.48 to reject false alarms)
-                tracks, tracked_frame = worker.tracker.update(frame, conf_threshold=0.48)
+                # 1. Single Unified Detection pass via BaseDetector (FP16 & Confidence Confirmation applied)
+                detections = worker.detector.detect(frame, camera_id=worker.camera_id)
+
+                # 2. Update Object Tracking consuming pre-computed detections (Zero duplicate YOLO inference)
+                tracks, tracked_frame = worker.tracker.update(
+                    frame=frame,
+                    detections=detections,
+                    conf_threshold=0.48,
+                    camera_id=worker.camera_id,
+                )
 
                 # 2. Cross-Camera Global Subject Association (Re-ID)
                 for t in tracks:
@@ -210,7 +232,29 @@ class MultiCameraManager:
 
     def get_latest_snapshot_bytes(self, camera_id: str) -> Optional[bytes]:
         if camera_id in self.cameras:
-            return self.cameras[camera_id].last_jpeg
+            worker = self.cameras[camera_id]
+            if worker.last_jpeg is not None:
+                return worker.last_jpeg
+            # On-demand single frame capture if stream has not started yet
+            cap = self._open_capture(camera_id)
+            try:
+                if cap.isOpened():
+                    ret, frame = cap.read()
+                    if ret and frame is not None:
+                        if frame.shape[0] != 480 or frame.shape[1] != 640:
+                            frame = cv2.resize(frame, (640, 480))
+                        detections = worker.detector.detect(frame, camera_id=worker.camera_id)
+                        tracks, tracked_frame = worker.tracker.update(
+                            frame=frame,
+                            detections=detections,
+                            camera_id=worker.camera_id,
+                        )
+                        final_frame = worker.draw_overlays(tracked_frame, tracks)
+                        _, jpeg_bytes = cv2.imencode(".jpg", final_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+                        worker.last_jpeg = jpeg_bytes.tobytes()
+                        return worker.last_jpeg
+            finally:
+                cap.release()
         return None
 
     def get_full_camera_info(self, camera_id: str) -> Optional[dict]:

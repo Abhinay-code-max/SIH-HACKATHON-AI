@@ -29,3 +29,6 @@ data/evidence/reid_crops/*
 
 # Large generated real datasets
 training_lab/datasets/dataset_ua_detrac_v001/
+
+# Specialist Model Weights
+ai/models/specialists/*.pt

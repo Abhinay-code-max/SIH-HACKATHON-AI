@@ -1,16 +1,16 @@
 @echo off
-TITLE BORDER SENTINEL — Autonomous Defense & Multi-Camera Intelligence Grid
+TITLE BORDER SENTINEL -- Autonomous Defense and Multi-Camera Intelligence Grid
 color 0B
 
 echo ======================================================================
-echo    BORDER SENTINEL // AUTONOMOUS DEFENSE & INTELLIGENCE GRID
+echo    BORDER SENTINEL // AUTONOMOUS DEFENSE AND INTELLIGENCE GRID
 echo    100%% Air-Gapped / Zero Internet Required / Localhost Architecture
 echo ======================================================================
 echo.
 
 REM 1. Verify Virtual Environment
 IF NOT EXIST ".venv\Scripts\activate.bat" (
-    echo [ERROR] Python virtual environment (.venv) not found!
+    echo [ERROR] Python virtual environment was not found!
     echo Please run: py -3.11 -m venv .venv
     pause
     exit /b 1
@@ -18,16 +18,17 @@ IF NOT EXIST ".venv\Scripts\activate.bat" (
 call .venv\Scripts\activate.bat
 
 REM 2. Verify AI Weights
-IF NOT EXIST "models\registry\YOLO-L-v002\weights\best.pt" (
-    IF NOT EXIST "yolov8l.pt" (
-        echo [ERROR] No local YOLO weights found in models\registry or root directory!
-        pause
-        exit /b 1
-    )
+IF EXIST "ai\models\yolov8l.pt" (
+    echo [System] AI Model Weights verified: ai\models\yolov8l.pt
+) ELSE IF EXIST "models\registry\YOLO-L-v002\weights\best.pt" (
+    echo [System] AI Model Weights verified: models\registry\YOLO-L-v002\weights\best.pt
+) ELSE IF EXIST "yolov8l.pt" (
+    echo [System] AI Model Weights verified: yolov8l.pt
+) ELSE (
+    echo [ERROR] No local YOLO weights found in ai\models or root directory!
+    pause
+    exit /b 1
 )
-
-echo [System] Virtual environment activated (.venv)
-echo [System] AI Model Weights verified (YOLO-L-v002)
 echo [System] Clearing any lingering processes on port 8000...
 
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8000" ^| findstr "LISTENING"') do (
@@ -39,7 +40,7 @@ start "" http://127.0.0.1:8000
 
 echo.
 echo ======================================================================
-echo SERVER ACTIVE — Press CTRL+C to terminate the tactical grid.
+echo SERVER ACTIVE -- Press CTRL+C to terminate the tactical grid.
 echo API Documentation: http://127.0.0.1:8000/docs
 echo AI Studio:         http://127.0.0.1:8000/annotate
 echo ======================================================================

@@ -148,5 +148,5 @@ Runs all 6 defense scenarios sequentially for judge evaluation without requiring
 
 For the external production UI currently under development:
 - **WebSocket Telemetry**: `ws://127.0.0.1:8000/ws/telemetry` (10 Hz feed with live cameras, tracks, global Re-ID subjects, DEFCON condition, and active incidents).
-- **Full API Documentation**: [`docs/EXTERNAL_UI_INTEGRATION.md`](file:///c:/Users/Abhinay%20Kandrika/OneDrive/Desktop/sih%20hackathon/docs/EXTERNAL_UI_INTEGRATION.md).
+- **Full API Documentation**: [`docs/EXTERNAL_UI_INTEGRATION.md`](EXTERNAL_UI_INTEGRATION.md).
 - **Interactive Swagger UI**: `http://127.0.0.1:8000/docs`.

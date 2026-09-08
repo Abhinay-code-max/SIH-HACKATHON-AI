@@ -82,8 +82,14 @@ class IncidentManager:
                 score += 15
             elif ev_type == "VEHICLE_LOITERING_ALERT":
                 score += 15
+            elif ev_type in {"AIRBORNE_DRONE_INTRUSION", "DRONE_DETECTED", "AIRSPACE_BREACH"}:
+                score += 45
 
-            if ev.get("class_name") in {"truck", "bus", "unauthorized_vehicle"}:
+            if ev.get("class_name") in {"drone", "uav"}:
+                score += 40
+            elif ev.get("class_name") in {"weapon"}:
+                score += 40
+            elif ev.get("class_name") in {"truck", "bus", "unauthorized_vehicle"}:
                 score += 20
 
         if has_multi_camera_transit:

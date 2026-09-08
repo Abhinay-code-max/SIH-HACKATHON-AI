@@ -7,7 +7,8 @@ Executes deterministic, realistic tactical defense scenarios on demand:
 [4] Unattended Baggage / Abandoned Luggage Alert
 [5] Doorway Tailgating / Anti-Piggybacking Breach
 [6] Cross-Camera Re-ID Subject Transit Journey (CAM_01 -> CAM_02)
-[7] Full Grand Demonstration (All scenarios executed sequentially)
+[7] Airborne UAV / Drone Perimeter Breach (Specialist Detection)
+[8] Full Grand Demonstration (All 7 scenarios executed sequentially)
 """
 
 import argparse
@@ -203,9 +204,39 @@ def run_scenario_6_reid_transit():
     print("  -> Verdict: MULTI-CAMERA RE-ID JOURNEY CONTINUITY VERIFIED")
 
 
+def run_scenario_7_drone_intrusion():
+    print("\n--- [7] Executing Airborne UAV / Drone Perimeter Breach (Specialist Detection) ---")
+    frame = create_synthetic_scene("SCENARIO 7: Airborne UAV / Drone Airspace Intrusion")
+    # Draw simulated quadcopter drone in upper airspace
+    cv2.circle(frame, (320, 90), 30, (0, 0, 255), -1)
+    cv2.line(frame, (270, 70), (370, 110), (0, 255, 255), 3)
+    cv2.line(frame, (270, 110), (370, 70), (0, 255, 255), 3)
+    cv2.putText(frame, "[AIRSPACE BREACH] QUADCOPTER UAV", (200, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
+
+    drone_track = {
+        "track_id": 707,
+        "class_id": 10,
+        "class_name": "drone",
+        "confidence": 0.94,
+        "bbox": [260.0, 40.0, 380.0, 140.0],
+        "center": (320.0, 90.0),
+        "dwell_seconds": 1.2,
+        "trajectory": [(320.0, 60.0), (320.0, 75.0), (320.0, 90.0)],
+        "history": [(320.0, 60.0), (320.0, 75.0), (320.0, 90.0)],
+    }
+
+    evts = intelligence_engine.evaluate_tracks("CAM_03", [drone_track], frame)
+    defcon = incident_manager.get_current_system_defcon()
+    print(f"  -> Specialist Model: TomSmail/drone-yolo-v1 (Airborne Threat Classifier)")
+    print(f"  -> Events Generated: {len(evts)}")
+    print(f"  -> System DEFCON:   {defcon['defcon']['level']} ({defcon['defcon']['status']}) | Threat Score: {defcon['threat_score']}/100")
+    print(f"  -> Defense Alert:   {defcon['defcon']['description']}")
+    print("  -> Verdict: DEFCON 1 / CRITICAL AIRSPACE INTRUSION ALARM TRIGGERED")
+
+
 def run_full_grand_demo():
     print("\n======================================================================")
-    print(" EXECUTING GRAND EVALUATION SUITE (ALL 6 SCENARIOS IN SEQUENCE)")
+    print(" EXECUTING GRAND EVALUATION SUITE (ALL 7 SCENARIOS IN SEQUENCE)")
     print("======================================================================")
     run_scenario_1_geofence()
     time.sleep(1.0)
@@ -218,6 +249,8 @@ def run_full_grand_demo():
     run_scenario_5_tailgating()
     time.sleep(1.0)
     run_scenario_6_reid_transit()
+    time.sleep(1.0)
+    run_scenario_7_drone_intrusion()
 
     final_defcon = incident_manager.get_current_system_defcon()
     all_incidents = incident_manager.get_all_incidents()
@@ -241,13 +274,14 @@ def interactive_menu():
         print(" [4] Unattended Baggage Alarm (Stationary Isolated Luggage)")
         print(" [5] Doorway Tailgating / Anti-Piggybacking Breach")
         print(" [6] Cross-Camera Re-ID Subject Journey (CAM_01 -> CAM_02)")
-        print(" [7] Execute Full Grand Demonstration (All 6 Scenarios)")
-        print(" [8] Reset System Incidents & Re-ID Memory")
+        print(" [7] Airborne UAV / Drone Perimeter Breach (Specialist Detection)")
+        print(" [8] Execute Full Grand Demonstration (All 7 Scenarios)")
+        print(" [9] Reset System Incidents & Re-ID Memory")
         print(" [0] Exit")
         print("======================================================================")
 
         try:
-            choice = input(" Select Scenario [0-8]: ").strip()
+            choice = input(" Select Scenario [0-9]: ").strip()
         except (KeyboardInterrupt, EOFError):
             break
 
@@ -264,8 +298,10 @@ def interactive_menu():
         elif choice == "6":
             run_scenario_6_reid_transit()
         elif choice == "7":
-            run_full_grand_demo()
+            run_scenario_7_drone_intrusion()
         elif choice == "8":
+            run_full_grand_demo()
+        elif choice == "9":
             incident_manager.incidents.clear()
             global_subject_manager.subjects.clear()
             global_subject_manager.active_track_map.clear()
@@ -274,7 +310,7 @@ def interactive_menu():
         elif choice == "0":
             break
         else:
-            print("Invalid option. Please choose 0-8.")
+            print("Invalid option. Please choose 0-9.")
 
 
 if __name__ == "__main__":

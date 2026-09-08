@@ -37,6 +37,29 @@ def run_tracking_intelligence_tests():
     tracks, annotated_frame = tracker.update(dummy_frame)
     print(f"  -> Tracker initialized on {tracker.device}. Memory cleared.")
 
+    # 1b. Test ObjectTracker with precomputed detections (zero YOLO inference)
+    from backend.app.models.contracts import RawDetection
+    precomputed = [
+        RawDetection(
+            detection_id="det_001",
+            class_name="person",
+            confidence=0.92,
+            bbox=[100.0, 100.0, 180.0, 260.0],
+            camera_id="CAM_01",
+        ),
+        RawDetection(
+            detection_id="det_002",
+            class_name="car",
+            confidence=0.88,
+            bbox=[300.0, 200.0, 450.0, 320.0],
+            camera_id="CAM_01",
+        ),
+    ]
+    tracks_pre, annotated_pre = tracker.update(dummy_frame, detections=precomputed)
+    assert len(tracks_pre) == 2, f"Expected 2 tracks, got {len(tracks_pre)}"
+    assert precomputed[0].object_id is not None, "Expected object_id to be populated on RawDetection"
+    print(f"  -> Precomputed detection tracking SUCCESS: {len(tracks_pre)} persistent tracks established.")
+
     # 2. Test Intelligence Engine with simulated intrusion
     print("\n[Stage 2/4] Testing Geofence & Tripwire rule triggers...")
     simulated_tracks = [
@@ -103,6 +126,25 @@ def run_tracking_intelligence_tests():
     print("ALL 4 TRACKING, GEOFENCE & EVIDENCE TESTS PASSED SUCCESSFULLY")
     print("=" * 70)
     return True
+
+
+def test_tracking_intelligence():
+    """PyTest entrypoint for tracking, geofence rules, and evidence dossiers."""
+    assert run_tracking_intelligence_tests() is True
+
+
+def test_drone_specialist_scenario_injection():
+    """Verify Scenario 7 drone intrusion produces immediate DEFCON 1 / CRITICAL alert."""
+    from tools.demo_scenario_injector import run_scenario_7_drone_intrusion
+    from ai.events.incident_manager import incident_manager
+
+    incident_manager.incidents.clear()
+    run_scenario_7_drone_intrusion()
+
+    defcon = incident_manager.get_current_system_defcon()
+    assert defcon["defcon"]["level"] == "DEFCON_1"
+    assert defcon["defcon"]["status"] == "CRITICAL"
+    assert defcon["threat_score"] >= 75
 
 
 if __name__ == "__main__":

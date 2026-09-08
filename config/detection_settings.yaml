@@ -1,0 +1,107 @@
+# =====================================================================
+# BORDER SENTINEL — DETECTION MODULE CONFIGURATION
+# 100% Offline Tactical Object Detection Settings
+# =====================================================================
+
+version: "1.0.0"
+
+# Model Profiles
+profiles:
+  active_profile: "command_center"
+  command_center:
+    model_name: "yolov8l.pt"
+    description: "High-accuracy command center profile (YOLOv8 Large / fine-tuned checkpoints)"
+  edge:
+    model_name: "yolov8s.pt"
+    description: "Lightweight edge / embedded profile for high-FPS multi-stream inference"
+
+# Inference Thresholds
+thresholds:
+  confidence: 0.35      # Matches existing inference pipeline default
+  iou: 0.70             # Standard Ultralytics NMS IoU threshold
+  half_precision: false  # FP16 half-precision (CUDA only; defaults to false for safety)
+
+
+# Multi-frame Confidence Confirmation (False Positive Reduction)
+confirmation:
+  enabled: true
+  consecutive_frames: 3  # Consecutive frames required to confirm detection
+  min_confidence: 0.35
+  max_history_age_sec: 5.0
+  filter_unconfirmed: false  # If true, detect() filters out unconfirmed provisional detections
+
+# Target Classes Configuration
+# Baseline classes initialized from config/classes.yaml
+# Future border surveillance classes marked pending training data
+classes:
+  # Active baseline classes (from config/classes.yaml)
+  person:
+    enabled: true
+    min_confidence: 0.30  # High-recall for distant/small human silhouettes (<35px)
+  car:
+    enabled: true
+    min_confidence: 0.45  # High-precision against road asphalt/shadow artifacts
+  truck:
+    enabled: true
+    min_confidence: 0.45
+  bus:
+    enabled: true
+    min_confidence: 0.45
+  motorcycle:
+    enabled: true
+    min_confidence: 0.35
+  bicycle:
+    enabled: true
+    min_confidence: 0.35
+  animal:
+    enabled: true
+    min_confidence: 0.45  # Suppresses wind-blown foliage and bush motion false alarms
+  backpack:
+    enabled: true
+    min_confidence: 0.35
+  bag:
+    enabled: true
+    min_confidence: 0.35
+
+  # Future Border Surveillance Target Classes (Pending Dataset v3)
+  # Taxonomy matches merge_config.yaml: weapon (ID 9), drone (ID 10), fire (ID 11), smoke (ID 12), boat (ID 13)
+  # Note: Drone and Fire/Smoke are now active via specialist modules (BaseSpecialistDetector).
+  weapon:
+    enabled: false
+    # Scaffolded-but-inactive: Disabled pending better training data / future fine-tuning due to
+    # high false-positive rate on real-world CCTV footage (7.1% - 21.4% across tested community models).
+    # Retained for future fine-tuning or evaluation. Status: in_development (not accidentally broken).
+    status: "in_development"
+    pending_training_data: true
+    min_confidence: 0.40
+  drone:
+    enabled: false
+    # Base model class inactive; handled via DroneSpecialistDetector (TomSmail/drone-yolo-v1)
+    pending_training_data: true
+    min_confidence: 0.40
+  fire:
+    enabled: false
+    # Base model class inactive; handled via FireSmokeSpecialistDetector (rabahdev/fire-smoke-yolov8n)
+    pending_training_data: true
+    min_confidence: 0.40
+  smoke:
+    enabled: false
+    # Base model class inactive; handled via FireSmokeSpecialistDetector (rabahdev/fire-smoke-yolov8n)
+    pending_training_data: true
+    min_confidence: 0.40
+  # Native COCO class scaffolded for maritime/riverine border security.
+  # Scaffolded-but-inactive (abandoned): Custom unified training run was cancelled and
+  # maritime/riverine imagery was not collected. Does not detect boats (not accidentally broken).
+  boat:
+    enabled: false
+    pending_training_data: true
+    min_confidence: 0.40
+
+# Preprocessing Pipeline (Night / Fog / IR Enhancement)
+# Scaffolded for future night/fog robustness work (task 18) — requires real validation before enabling in production.
+preprocessing:
+  enabled: false
+  enable_clahe: false
+  enable_gamma: false
+  enable_dehaze: false
+  enable_grayscale_ir: false
